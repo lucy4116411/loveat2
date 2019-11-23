@@ -21,7 +21,7 @@ def add(data):
             "email": data["email"],
             "birth": data["birth"],
             "role": data["role"],
-            "avatar": Binary(b'0')
+            "avatar": Binary(b'')
         })
         return True
     else:
@@ -33,11 +33,12 @@ def find(id, profile=False):
         projection = {
             "password": 0,
             "role": 0,
-            "toke": 0
+            "token": 0
         }
     else:
         projection = {
-            "role": 1
+            "role": 1,
+            "userName": 1
         }
     return USER_COLLECTION.find_one({
         "_id": ObjectId(id)
@@ -61,7 +62,7 @@ def validate_user(data, email=False, password=False):
             "_id": 1,
             "password": 1
         })
-        if check_password_hash(user["password"], data["password"]):
+        if user and check_password_hash(user["password"], data["password"]):
             return user["_id"]
     return None
 
