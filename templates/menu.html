@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% set active_page = "menu" %}
+{% set url = "customer" %}
+
+{% block header %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
+<script src="{{ url_for('static', filename='js/menu.js') }}"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="full-container">
+    <div class="item-container" id="menu">
+        {% for type in menu %}
+            {% for item in type["content"] %}
+            <div class="menu-item" id="{{item['_id']}}">
+                <div class="item-img-container">
+                    <img src="{{item['picture']}}" alt="老闆沒有放圖片喔~" class="item-img">
+                </div>
+                <div class="detail-info-container">
+                    名稱: {{item["name"]}}<br>
+                    價格: {{item["price"]}} <br>
+                    說明: {{item["description"]}} <br>
+                    {% if type["category"] == "combo" %}
+                    內容: <br>
+
+                    {% for combo_item in item["content"] %}
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    &nbsp
+                    {{combo_item["quantity"]}} * {{combo_item["name"]}} <br>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="number-container">
+                    <span>數量</span>
+                    <input type="number" class="form-control" id="input_{{item['_id']}}">
+                </div>
+                <div class="op-container">
+                    <button class="btn btn-primary" id="submit_{{item['_id']}}">加入</button>
+                </div>
+            </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <div class="info-container">
+        <div class="search-container">
+            <input class="form-control" type="search" placeholder="Search" aria-label="Search" id="search">
+        </div>
+        <div class="type-container">
+            <div>種類</div>
+            <ul>
+                {% for type in menu %}
+                    <li><a href="#" id="type{{loop.index}}">{{type['type']}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="time-container">
+            <div id="bussiness_data">可點餐時段</div>
+            {% for time in bussiness_data %}
+            <div> {{time}}&nbsp&nbsp{{bussiness_data[time]}}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
