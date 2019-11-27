@@ -1,7 +1,7 @@
 /* global FetchData, $ */
 const API = {
-  login: 'https://loveat2.appspot.com/api/user/login',
-  register: 'https://loveat2.appspot.com/api/user/register',
+  login: '/api/user/login',
+  register: '/api/user/register',
 };
 function validatePassword() {
   const confirmPassword = document.getElementById('register-confirm-password').value;
