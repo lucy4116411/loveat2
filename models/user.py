@@ -65,3 +65,9 @@ def update_token(id, token):
     USER_COLLECTION.update_one(
         {"_id": ObjectId(id)}, {"$set": {"token": token}}
     )
+
+
+def get_token_by_username(user_name):
+    return USER_COLLECTION.find_one(
+        {"userName": user_name}, {"token": 1, "_id": 0}
+    )

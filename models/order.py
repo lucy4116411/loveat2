@@ -217,3 +217,17 @@ def add_order(data):
         return True
     else:
         return False
+
+
+def update_state(data):
+    state = ["doing", "cancel", "finish", "end"]
+    if data["state"] in state:
+        ORDER_COLLECTION.update_one(
+            {"_id": ObjectId(data["id"])}, {"$set": {"state": data["state"]}}
+        )
+        result = ORDER_COLLECTION.find_one(
+            {"_id": ObjectId(data["id"])}, {"userName": 1, "_id": 0}
+        )
+        return result["userName"]
+    else:
+        return None
