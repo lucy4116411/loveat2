@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 from flask import Blueprint, request
 
-from flask_login import login_user
+from flask_login import current_user, login_required, login_user
 
 from itsdangerous import SignatureExpired, TimedJSONWebSignatureSerializer
 
@@ -72,3 +72,11 @@ def reset_password(token):
         return "", 200
     except SignatureExpired:
         return "", 401
+
+
+@user_api.route("/token", methods=["POST"])
+@login_required
+def update_token():
+    token = request.get_json()["token"]
+    user.update_token(current_user.id, token)
+    return "", 200
