@@ -138,20 +138,36 @@ def get_max_orderid():
 
 
 def get_not_end_by_username(user_name):
-    return ORDER_COLLECTION.find(
-        {
-            "userName": user_name,
-            "state": {"$nin": ["end"]},
-            "takenAt": {"$gte": datetime.now() - timedelta(days=1)},
-        },
-        {
-            "_id": 0,
-            "createdAt": 0,
-            "userName": 0,
-            "total": 0,
-            "content._id": 0,
-            "content.type": 0,
-        },
+    return ORDER_COLLECTION.aggregate(
+        [
+            {
+                "$match": {
+                    "userName": user_name,
+                    "state": {"$nin": ["end"]},
+                    "takenAt": {"$gte": datetime.now() - timedelta(days=1)},
+                }
+            },
+            {
+                "$addFields": {
+                    "takenAt": {
+                        "$dateToString": {
+                            "format": "%Y/%m/%d %H:%M",
+                            "date": "$takenAt",
+                        }
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "createdAt": 0,
+                    "userName": 0,
+                    "total": 0,
+                    "content._id": 0,
+                    "content.type": 0,
+                }
+            },
+        ]
     )
 
 
