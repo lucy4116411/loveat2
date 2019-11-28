@@ -81,7 +81,7 @@ def get_combo_by_id(data):
         [
             {"$match": {"_id": {"$in": id}}},
             {"$addFields": {"_id": {"$toString": "$_id"}}},
-            {"$project": {"name": 1, "price": 1}}
+            {"$project": {"name": 1, "price": 1}},
         ]
     )
     return list(result)

@@ -2,7 +2,7 @@ from config import URL
 
 from pymongo import MongoClient
 
-COLLECTION = MongoClient(URL)['loveat2']['businessTime']
+COLLECTION = MongoClient(URL)["loveat2"]["businessTime"]
 
 
 def get():
@@ -20,6 +20,4 @@ def update(data):
             "end": data[day]["end"],
         }
     # start update
-    COLLECTION.update_one({}, {
-        "$set": update_data
-    })
+    COLLECTION.update_one({}, {"$set": update_data})
