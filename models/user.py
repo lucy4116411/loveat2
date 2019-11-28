@@ -59,3 +59,9 @@ def update_password(id, password):
         {"_id": ObjectId(id)},
         {"$set": {"password": generate_password_hash(password)}},
     )
+
+
+def update_token(id, token):
+    USER_COLLECTION.update_one(
+        {"_id": ObjectId(id)}, {"$set": {"token": token}}
+    )
