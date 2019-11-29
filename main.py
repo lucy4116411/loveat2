@@ -11,6 +11,7 @@ from views import (
     menu_web,
     order_api,
     order_web,
+    root,
     setting_api,
     setting_web,
     user_api,
@@ -37,6 +38,8 @@ def create_app():
     app.config.from_object(config)
     login_manager.init_app(app)
     CORS(app, supports_credentials=True)
+    # register route
+    app.register_blueprint(root.root, url_prefix="/")
     register_api(app)
     register_web(app)
     return app
