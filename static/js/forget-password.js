@@ -1,7 +1,12 @@
 /* global FetchData */
 const sendEmailAPI = '/api/user/password/forget';
 
-async function checkEmailUserName() {
+
+function delayURL(url, time) {
+  setTimeout(() => { window.location.href = `${url}`; }, time);
+}
+
+async function sendResetRequest() {
   // validate field and show hint
   if (document.forms['forget-password-form'].reportValidity()) {
     // start post
@@ -24,9 +29,11 @@ async function checkEmailUserName() {
       document.getElementById('loadingImg').style.display = 'none';
       document.getElementById('forget-password-form').innerHTML = '';
       document.getElementById('txt').innerText = '重設密碼信件已發送，請至信箱查看。';
+      delayURL('/menu', 1800);
     }
   }
 }
+
 
 function clickOnEnter(event) {
   if (event.keyCode === 13) {
@@ -37,7 +44,7 @@ function clickOnEnter(event) {
 
 function init() {
   // add event listener
-  document.getElementById('forget-password-btn').addEventListener('click', checkEmailUserName);
+  document.getElementById('forget-password-btn').addEventListener('click', sendResetRequest);
   document.getElementById('user-name').addEventListener('keyup', clickOnEnter);
 }
 

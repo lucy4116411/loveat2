@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% set url = "customer" %}
+
+{% block header %}
+    <script src="{{ url_for('static', filename='js/signature-expired.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reset-password.css') }}">
+{% endblock %}
+
+{% block content%}
+<small id="txt" class="form-text wrong-msg">網頁已過期，自動跳轉菜單畫面。</small>
+{% endblock %}
