@@ -52,7 +52,7 @@ async function register() {
     }
   }
 }
-function init() {
+function authInit() {
   // add event listener
   document.getElementById('login').addEventListener('click', login);
   document.getElementById('register').addEventListener('click', register);
@@ -61,4 +61,4 @@ function init() {
   document.getElementById('register-confirm-password').addEventListener('keyup', validatePassword);
 }
 
-window.addEventListener('load', init);
+window.addEventListener('load', authInit);
