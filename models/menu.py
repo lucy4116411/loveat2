@@ -8,6 +8,7 @@ DB = MongoClient(URL)["loveat2"]
 TYPE_COLLECTION = DB["type"]
 ITEM_COLLECTION = DB["item"]
 COMBO_COLLECTION = DB["combo"]
+IMAGE_COLLECTION = DB["image"]
 
 
 def get_all():
@@ -85,3 +86,17 @@ def get_combo_by_id(data):
         ]
     )
     return list(result)
+
+
+def delete_item(id):
+    object_id = ObjectId(id)
+    item = ITEM_COLLECTION.find_one({"_id": object_id}, {"picture": 1})
+    ITEM_COLLECTION.delete_one({"_id": ObjectId(id)})
+    IMAGE_COLLECTION.delete_one({"uuid": item["picture"]})
+
+
+def delete_combo(id):
+    object_id = ObjectId(id)
+    combo = COMBO_COLLECTION.find_one({"_id": object_id}, {"picture": 1})
+    COMBO_COLLECTION.delete_one({"_id": ObjectId(id)})
+    IMAGE_COLLECTION.delete_one({"uuid": combo["picture"]})
