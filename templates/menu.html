@@ -5,6 +5,7 @@
 {% block header %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
 <script src="{{ url_for('static', filename='js/menu.js') }}"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 {% endblock %}
 
 
@@ -15,7 +16,7 @@
             {% for item in type["content"] %}
             <div class="menu-item" id="{{item['_id']}}">
                 <div class="item-img-container">
-                    <img src="{{item['picture']}}" alt="老闆沒有放圖片喔~" class="item-img">
+                    <img src="/img/{{item['picture']}}" alt="老闆沒有放圖片喔~" class="item-img">
                 </div>
                 <div class="detail-info-container">
                     名稱: {{item["name"]}}<br>
