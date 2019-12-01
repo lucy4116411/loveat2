@@ -1,3 +1,5 @@
+import uuid
+
 from bson.objectid import ObjectId
 
 from config import URL
@@ -91,6 +93,24 @@ def get_combo_by_id(data):
     return list(result)
 
 
+def add_item(data, pic):
+    cur_item = ITEM_COLLECTION.find_one({"name": data.get("name")})
+    if cur_item:
+        raise duplicateError
+    else:
+        pic_id = str(uuid.uuid4())
+        ITEM_COLLECTION.insert_one(
+            {
+                "type": ObjectId(data.get("type")),
+                "name": data.get("name"),
+                "picture": pic_id,
+                "price": int(data.get("price")),
+                "description": data.get("description"),
+            }
+        )
+        IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+
+
 def delete_item(id):
     object_id = ObjectId(id)
     item = ITEM_COLLECTION.find_one({"_id": object_id}, {"picture": 1})
@@ -103,6 +123,25 @@ def delete_combo(id):
     combo = COMBO_COLLECTION.find_one({"_id": object_id}, {"picture": 1})
     COMBO_COLLECTION.delete_one({"_id": ObjectId(id)})
     IMAGE_COLLECTION.delete_one({"uuid": combo["picture"]})
+
+
+def delete_type(id):
+    # update item or combo type to undefined
+    object_id = ObjectId(id)
+    cur_type = TYPE_COLLECTION.find_one({"_id": object_id})
+    if cur_type["category"] == "item":
+        new_id = TYPE_COLLECTION.find_one({"name": "未分類(單品)"})["_id"]
+        ITEM_COLLECTION.update_many(
+            {"type": object_id}, {"$set": {"type": new_id}}
+        )
+    elif cur_type["category"] == "combo":
+        new_id = TYPE_COLLECTION.find_one({"name": "未分類(套餐)"})["_id"]
+        COMBO_COLLECTION.update_many(
+            {"type": object_id}, {"$set": {"type": new_id}}
+        )
+
+    # start delete
+    TYPE_COLLECTION.delete_one({"_id": object_id})
 
 
 def add_type(data):
