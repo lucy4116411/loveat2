@@ -17,6 +17,9 @@ def logout():
 
 @user_web.route("/password/reset/<token>", methods=["GET"])
 def reset_password(token):
+    if not current_user.is_anonymous:
+        return redirect(url_for("menu_web.menu"))
+
     try:
         # try to decode token
         s = TimedJSONWebSignatureSerializer(SECRET_KEY, expires_in=3600)
@@ -24,21 +27,24 @@ def reset_password(token):
         return render_template(
             'reset-password.html',
             auth=current_user.role,
-            name=current_user.id,
+            name=current_user.name,
             id=id
             )
     except SignatureExpired:
         return render_template(
             'signature-expired.html',
             auth=current_user.role,
-            name=current_user.id
+            name=current_user.name
             )
 
 
 @user_web.route("/password/forget", methods=["GET"])
 def forget_password():
+    if not current_user.is_anonymous:
+        return redirect(url_for("menu_web.menu"))
+
     return render_template(
-        "forget-password.html", auth=current_user.role, name=current_user.id
+        "forget-password.html", auth=current_user.role, name=current_user.name
     )
 
 

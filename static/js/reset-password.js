@@ -6,7 +6,7 @@ function delayURL(url, time) {
   setTimeout(() => { window.location.href = `${url}`; }, time);
 }
 
-function validatePassword() {
+function validateNewPassword() {
   const confirmPassword = document.getElementById('confirm-new-password').value;
   const password = document.getElementById('new-password').value;
   if (confirmPassword !== password) {
@@ -55,8 +55,8 @@ function init() {
   // add event listener
   document.getElementById('reset-password-btn').addEventListener('click', resetPassword);
   // validate password when password or confirm password change
-  document.getElementById('new-password').addEventListener('keyup', validatePassword);
-  document.getElementById('confirm-new-password').addEventListener('keyup', validatePassword);
+  document.getElementById('new-password').addEventListener('keyup', validateNewPassword);
+  document.getElementById('confirm-new-password').addEventListener('keyup', validateNewPassword);
   document.getElementById('confirm-new-password').addEventListener('keyup', clickOnEnter);
 }
 
