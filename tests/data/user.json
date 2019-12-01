@@ -1,0 +1,20 @@
+[
+    {
+        "userName": "admin_name",
+        "password": "123456789",
+        "gender": "female",
+        "phone": "0920198409",
+        "email": "admin@gmail.com",
+        "birth": "1999-11-21T23:10",
+        "role": "admin"
+    },
+    {
+        "userName": "customer_name",
+        "password": "123456789",
+        "gender": "female",
+        "phone": "0920198409",
+        "email": "customer@gmail.com",
+        "birth": "1999-11-21T23:10",
+        "role": "customer"
+    }
+]

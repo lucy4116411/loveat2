@@ -8,6 +8,7 @@ pytest = "*"
 flake8 = "*"
 flake8-import-order = "*"
 black = "==19.3b0"
+mongomock = "*"
 
 [packages]
 flask = "*"
