@@ -1,6 +1,5 @@
-import uuid
-
 import json
+import uuid
 
 from bson.objectid import ObjectId
 
@@ -123,7 +122,9 @@ def add_combo(data, pic):
         content = json.loads(data.get("content"))
         for item in content:
             item["id"] = ObjectId(item["id"])
-            item["name"] = ITEM_COLLECTION.find_one({"_id": item["id"]}, {"name": 1})["name"]
+            item["name"] = ITEM_COLLECTION.find_one(
+                {"_id": item["id"]}, {"name": 1}
+            )["name"]
         # start insesrt
         COMBO_COLLECTION.insert_one(
             {
@@ -132,7 +133,7 @@ def add_combo(data, pic):
                 "picture": pic_id,
                 "price": int(data.get("price")),
                 "description": data.get("description"),
-                "content": content
+                "content": content,
             }
         )
         IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
