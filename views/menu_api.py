@@ -33,10 +33,28 @@ def update_type():
     return "", 200
 
 
+@menu_api.route("/type/delete", methods=["POST"])
+@admin_required
+def delete_type():
+    id = request.get_json()["id"]
+    menu.delete_type(id)
+    return "", 200
+
+
 @menu_api.route("/item", methods=["POST"])
 def get_item():
     data = request.get_json()
     return jsonify(menu.get_item_by_id(data))
+
+
+@menu_api.route("/item/new", methods=["POST"])
+@admin_required
+def add_item():
+    try:
+        menu.add_item(request.form, request.files["picture"].read())
+        return "", 200
+    except duplicateError:
+        return "", 409
 
 
 @menu_api.route("/item/delete", methods=["POST"])
@@ -51,6 +69,16 @@ def delete_item():
 def get_combo():
     data = request.get_json()
     return jsonify(menu.get_combo_by_id(data))
+
+
+@menu_api.route("/combo/new", methods=["POST"])
+@admin_required
+def add_combo():
+    try:
+        menu.add_combo(request.form, request.files["picture"].read())
+        return "", 200
+    except duplicateError:
+        return "", 409
 
 
 @menu_api.route("/combo/delete", methods=["POST"])
