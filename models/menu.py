@@ -1,5 +1,7 @@
 import uuid
 
+import json
+
 from bson.objectid import ObjectId
 
 from config import URL
@@ -106,6 +108,31 @@ def add_item(data, pic):
                 "picture": pic_id,
                 "price": int(data.get("price")),
                 "description": data.get("description"),
+            }
+        )
+        IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+
+
+def add_combo(data, pic):
+    cur_combo = COMBO_COLLECTION.find_one({"name": data.get("name")})
+    if cur_combo:
+        raise duplicateError
+    else:
+        pic_id = str(uuid.uuid4())
+        # pre processing content field
+        content = json.loads(data.get("content"))
+        for item in content:
+            item["id"] = ObjectId(item["id"])
+            item["name"] = ITEM_COLLECTION.find_one({"_id": item["id"]}, {"name": 1})["name"]
+        # start insesrt
+        COMBO_COLLECTION.insert_one(
+            {
+                "type": ObjectId(data.get("type")),
+                "name": data.get("name"),
+                "picture": pic_id,
+                "price": int(data.get("price")),
+                "description": data.get("description"),
+                "content": content
             }
         )
         IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})

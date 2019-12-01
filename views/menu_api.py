@@ -71,6 +71,16 @@ def get_combo():
     return jsonify(menu.get_combo_by_id(data))
 
 
+@menu_api.route("/combo/new", methods=["POST"])
+@admin_required
+def add_combo():
+    try:
+        menu.add_combo(request.form, request.files["picture"].read())
+        return "", 200
+    except duplicateError:
+        return "", 409
+
+
 @menu_api.route("/combo/delete", methods=["POST"])
 @admin_required
 def delete_combo():
