@@ -5,7 +5,7 @@ from bson.json_util import loads
 
 import main
 
-from models import menu, user
+from models import business_time, menu, user
 
 import mongomock
 
@@ -13,6 +13,16 @@ import pytest
 
 
 FILE_DIR = os.path.dirname(__file__)
+
+
+def establish_business_time():
+    dir = os.path.join(FILE_DIR, "data/businessTime.json")
+    with open(dir, "r", encoding="utf-8") as file:
+        data = loads(file.read())
+        colletion = mongomock.MongoClient().db.collection
+        colletion.insert_many(data)
+        return colletion
+    return None
 
 
 def establish_user():
@@ -35,14 +45,19 @@ def establish_type():
     return None
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 def client():
     main.app.config["db"] = {
         "USER_COLLECTION": establish_user(),
         "TYPE_COLLECTION": establish_type(),
+        "BUSINESS_TIME_COLLECTION": establish_business_time(),
     }
     user.USER_COLLECTION = main.app.config["db"]["USER_COLLECTION"]
     menu.TYPE_COLLECTION = main.app.config["db"]["TYPE_COLLECTION"]
+    business_time.COLLECTION = main.app.config["db"][
+        "BUSINESS_TIME_COLLECTION"
+    ]
+
     return main.app.test_client()
 
 
