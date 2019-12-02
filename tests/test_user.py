@@ -125,3 +125,35 @@ class TestUser(object):
             {"userName": "customer_name3"}
         )
         assert new_user is None
+
+    def test_update_token_success(self, client, customer):
+        # check original token is empty
+        token = client.application.config["db"]["USER_COLLECTION"].find_one(
+            {"userName": "customer_name"}, {"token": 1}
+        )
+        assert token["token"] == ""
+        # check update token api
+        update_token = "this is a new token"
+        url = URL_PREFIX + "/token"
+        rv = client.post(
+            url,
+            data=json.dumps({"token": update_token}),
+            content_type="application/json",
+        )
+        assert rv.status_code == 200
+        # check if update token of cutomer_name success
+        token = client.application.config["db"]["USER_COLLECTION"].find_one(
+            {"userName": "customer_name"}, {"token": 1}
+        )
+        assert token["token"] == update_token
+
+    def test_update_token_unauthorized(self, client):
+        # check update token api
+        update_token = "this is a new token"
+        url = URL_PREFIX + "/token"
+        rv = client.post(
+            url,
+            data=json.dumps({"token": update_token}),
+            content_type="application/json",
+        )
+        assert rv.status_code == 401

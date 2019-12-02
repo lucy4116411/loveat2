@@ -1,8 +1,7 @@
 import json
 import os
-from datetime import datetime
 
-from bson.binary import Binary
+from bson.json_util import loads
 
 import main
 
@@ -12,8 +11,6 @@ import mongomock
 
 import pytest
 
-from werkzeug.security import generate_password_hash
-
 
 FILE_DIR = os.path.dirname(__file__)
 
@@ -21,21 +18,9 @@ FILE_DIR = os.path.dirname(__file__)
 def establish_user():
     dir = os.path.join(FILE_DIR, "data/user.json")
     with open(dir, "r", encoding="utf-8") as file:
-        data_set = json.load(file)
+        data = loads(file.read())
         colletion = mongomock.MongoClient().db.collection
-        for data in data_set:
-            cur_data = {
-                "userName": data["userName"],
-                "password": generate_password_hash(data["password"]),
-                "gender": data["gender"],
-                "phone": data["phone"],
-                "email": data["email"],
-                "birth": datetime.strptime(data["birth"], "%Y-%m-%dT%H:%M"),
-                "role": data["role"],
-                "avatar": Binary(b""),
-                "token": "",
-            }
-            colletion.insert_one(cur_data)
+        colletion.insert_many(data)
         return colletion
     return None
 
@@ -43,7 +28,7 @@ def establish_user():
 def establish_type():
     dir = os.path.join(FILE_DIR, "data/type.json")
     with open(dir, "r", encoding="utf-8") as file:
-        data = json.load(file)
+        data = loads(file.read())
         colletion = mongomock.MongoClient().db.collection
         colletion.insert_many(data)
         return colletion
