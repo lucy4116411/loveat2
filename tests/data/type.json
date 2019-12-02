@@ -25,5 +25,5 @@
     {"_id":{"$oid":"5de236555ac223853943397b"},"category":"item","name":"滿福堡"},
     {"_id":{"$oid":"5de35bb170a5892250dfdc6c"},"name":"飲料","category":"item"},
     {"_id":{"$oid":"5de35d6370a5892250dfdc6f"},"category":"combo","name":"超值套餐"},
-    {"_id":{"$oid":"5de3cf61eea6ba4eee57c137"},"category":"item","name":"test!!!"}
+    {"_id":{"$oid":"5de3cf61eea6ba4eee57c137"},"category":"item","name":"testType"}
 ]
