@@ -25,17 +25,17 @@ def reset_password(token):
         s = TimedJSONWebSignatureSerializer(SECRET_KEY, expires_in=3600)
         id = s.loads(token)["reset_id"]
         return render_template(
-            'reset-password.html',
+            "reset-password.html",
             auth=current_user.role,
             name=current_user.name,
-            id=id
-            )
+            id=id,
+        )
     except SignatureExpired:
         return render_template(
-            'signature-expired.html',
+            "signature-expired.html",
             auth=current_user.role,
-            name=current_user.name
-            )
+            name=current_user.name,
+        )
 
 
 @user_web.route("/password/forget", methods=["GET"])
