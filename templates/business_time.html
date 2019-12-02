@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% set url = "boss" %}
+
+{% block header %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/business-time.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% endblock %}
+{% block content %}
+    <form action="">
+        <div class="form-inline padding5">
+            <div class="form-group">
+                <label for="inputPassword6">星期一</label>
+                <input type="time" name="usr_time" id="monStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                <input type="time" name="usr_time" id="monEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            </div>
+        </div>
+        <div class="form-inline padding5">
+            <div class="form-group">
+                <label for="inputPassword6">星期二</label>
+                <input type="time" id="tueStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                <input type="time" id="tueEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            </div>
+        </div>
+        <div class="form-inline padding5">
+            <div class="form-group">
+                <label for="inputPassword6">星期三</label>
+                <input type="time" id="wedStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                <input type="time" id="wedEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            </div>
+        </div>
+        <div class="form-inline padding5">
+            <div class="form-group">
+                <label for="inputPassword6">星期四</label>
+                <input type="time" id="thuStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                <input type="time" id="thuEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            </div>
+        </div>
+        <div class="form-inline padding5">
+            <div class="form-group">
+                <label for="inputPassword6">星期五</label>
+                <input type="time" id="friStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                <input type="time" id="friEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            </div>
+        </div>
+        <div class="form-inline padding5">
+            <div class="form-group">
+                <label for="inputPassword6">星期六</label>
+                <input type="time" id="satStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                <input type="time" id="satEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            </div>
+        </div>
+        <div class="form-inline padding5">
+            <div class="form-group">
+                <label for="inputPassword6">星期日</label>
+                <input type="time" id="sunStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                <input type="time" id="sunEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            </div>
+        </div>
+        <div class="save-container">
+            <button class="btn btn-primary" id="btn">save</button>
+        </div>
+        <script src="{{ url_for('static', filename='js/business_time.js') }}"></script>
+    </form>
+
+{% endblock %}

@@ -2,6 +2,7 @@ from config import URL
 
 from pymongo import MongoClient
 
+
 COLLECTION = MongoClient(URL)["loveat2"]["businessTime"]
 
 
