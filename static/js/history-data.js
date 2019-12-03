@@ -50,7 +50,7 @@ async function updateUI(tabActive, result) {
         });
       } else if ((document.getElementById('gender-check').checked) && (!document.getElementById('age-check').checked)) {
         // thead
-        document.getElementById('contact-thead').innerHTML = '<tr><th>品項</th><th align="center">女</th><th>男</th><th>合計</th></tr>';
+        tmpHead = "<tr><th>品項</th><th>女</th><th>男</th><th>合計</th></tr>";
         // tbody
         Object.entries(data.itemAnalysis).forEach((element) => {
           tmpBody += `<tr><td>${element[0]}</td><td>${element[1].femaleTotal}</td><td>${element[1].maleTotal}</td><td>${element[1].total}</tr>`;
