@@ -1,5 +1,4 @@
 .full-container {
-    height: 100%;
     width: 100%;
     display: flex;
     justify-content: space-around;
@@ -47,7 +46,7 @@
 
 .chart-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     flex-direction: row;
 }
 
@@ -70,4 +69,55 @@ th,td {
 
 h6{
    text-align: center;
+}
+@media screen and (max-height:500px)
+{
+    .full-container{
+        display: flex;
+        flex-direction: column;
+        height: 450px;
+        overflow-y: scroll;
+    }
+    .search-container{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+    }
+    .result-container{
+        margin-left: 0px;
+        width: 100%;
+        overflow-y: scroll;
+    }
+
+    .chart-container {
+        flex-direction: column;
+    }
+    .canvas-container-gender {
+        width: calc(100% - 5px);
+    }
+}
+
+@media screen and (max-width:480px)  
+{
+    .full-container{
+        display: flex;
+        flex-direction: column;
+        height: 900px;
+        overflow-y: scroll;
+    }
+    .search-container{
+        width: 100%;
+    }
+    .result-container{
+        margin-left: 0px;
+        width: 100%;
+        overflow-y: scroll;
+    }
+    .chart-container {
+        flex-direction: column;
+    }
+    .canvas-container-gender {
+        width: calc(100% - 5px);
+    }
 }

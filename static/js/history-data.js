@@ -109,6 +109,7 @@ async function getData() {
     drawChart(analysisHistoryResult);
   }
 }
+
 function initHistory() {
   // initial page
   getData();
@@ -117,6 +118,5 @@ function initHistory() {
   document.getElementById('gender-check').addEventListener('change', getData);
   document.getElementById('age-check').addEventListener('change', getData);
 }
-
 
 window.addEventListener('load', initHistory);

@@ -26,7 +26,6 @@ function toggleGender() {
 
 function drawItem(item, itemNum) {
   const barChart = document.getElementById('item-bar-chart');
-  const pieChart = document.getElementById('item-pie-chart');
 
   // eslint-disable-next-line no-unused-vars
   const myItemBar = new Chart(barChart, {
@@ -46,32 +45,6 @@ function drawItem(item, itemNum) {
           '#0080FF',
         ],
       }],
-    },
-  });
-  // eslint-disable-next-line no-unused-vars
-  const myItemPie = new Chart(pieChart, {
-    type: 'pie',
-    data: {
-      labels: item,
-      datasets: [{
-        label: 'Groups',
-        data: itemNum,
-        backgroundColor: [
-          '#60acfc', '#32d3eb', '#5bc49f', '#feb64d', '#ff7c7c',
-          '#9287e7', '#27A1EA', '#4EBECD', '#9CDC82', '#FF9F69',
-          '#E9668E', '#747BE1', '#39B3EA', '#40CEC7', '#D4EC59',
-          '#FA816D', '#D660A8', '#6370DE', '#35C5EA', '#63D5B2',
-          '#FFDA43', '#FB6E6C', '#B55CBD', '#668ED6', '#9FCDFD',
-          '#FF79BC', '#FF9797', '#CA8EFF', '#019858', '#C48888',
-          '#0080FF',
-        ],
-      }],
-    },
-    options: {
-      title: {
-        display: true,
-        text: '各餐點銷售數量',
-      },
     },
   });
 }
@@ -104,6 +77,11 @@ function drawGender(ageInterval, femaleNum, maleNum, ageIntervalNum, genderNum) 
         display: true,
         text: '女性各年齡銷售數量',
       },
+      legend: {
+        labels: {
+          fontSize: 0,
+        },
+      },
     },
   });
   // eslint-disable-next-line no-unused-vars
@@ -128,6 +106,11 @@ function drawGender(ageInterval, femaleNum, maleNum, ageIntervalNum, genderNum) 
         display: true,
         text: '男性各年齡銷售數量',
       },
+      legend: {
+        labels: {
+          fontSize: 0,
+        },
+      },
     },
   });
   // eslint-disable-next-line no-unused-vars
@@ -149,6 +132,11 @@ function drawGender(ageInterval, femaleNum, maleNum, ageIntervalNum, genderNum) 
         display: true,
         text: '男女各銷售數量',
       },
+      legend: {
+        labels: {
+          fontSize: 0,
+        },
+      },
     },
   });
   // eslint-disable-next-line no-unused-vars
@@ -169,6 +157,11 @@ function drawGender(ageInterval, femaleNum, maleNum, ageIntervalNum, genderNum) 
       title: {
         display: true,
         text: '各年齡層銷售數量',
+      },
+      legend: {
+        labels: {
+          fontSize: 0,
+        },
       },
     },
   });

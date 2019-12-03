@@ -12,14 +12,14 @@
 
 {% block content %}
     <div class="full-container">
-        <div class="search-container">
+        <div class="search-container" >
             <div class="form-group">
                 <label for="start-time">開始時間</label>
                 <input type="datetime-local" class="form-control" id="start-time" value={{begin}}>
             </div>
             <div class="form-group">
                 <label for="end-time">結束時間</label>
-                <input type="datetime-local" class="form-control" id="end-time" value = {{end}}>
+                <input type="datetime-local" class="form-control" id="end-time" value={{end}}>
             </div>
             <button class="btn btn-primary" id="history-time-send">查詢</button>
         </div>
@@ -70,13 +70,6 @@
                         <div class="chart-container">
                             <div class="canvas-container-item">
                                 <canvas id="item-bar-chart">
-
-                                </canvas>
-                            </div>
-                        </div>
-						<div class="chart-container">
-                            <div class="canvas-container-item">
-                                <canvas id="item-pie-chart">
 
                                 </canvas>
                             </div>
