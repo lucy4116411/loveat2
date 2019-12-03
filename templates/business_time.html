@@ -7,59 +7,84 @@
 {% endblock %}
 {% block content %}
     <form action="">
-        <div class="form-inline padding5">
-            <div class="form-group">
-                <label for="inputPassword6">星期一</label>
-                <input type="time" name="usr_time" id="monStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-                <input type="time" name="usr_time" id="monEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+        <div class="work_time">
+            <div class="form-inline padding5">
+                <div class="form-group">
+                    <label for="inputPassword6">星期一</label>
+                    <input type="time" name="usr_time" id="monStart" value="{{work_time.mon.start}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                    <input type="time" name="usr_time" id="monEnd" value="{{work_time.mon.end}}"class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                </div>
             </div>
-        </div>
-        <div class="form-inline padding5">
-            <div class="form-group">
-                <label for="inputPassword6">星期二</label>
-                <input type="time" id="tueStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-                <input type="time" id="tueEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            <div class="form-inline padding5">
+                <div class="form-group">
+                    <label for="inputPassword6">星期二</label>
+                    <input type="time" id="tueStart" value="{{work_time.tue.start}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                    <input type="time" id="tueEnd" value="{{work_time.tue.end}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                </div>
             </div>
-        </div>
-        <div class="form-inline padding5">
-            <div class="form-group">
-                <label for="inputPassword6">星期三</label>
-                <input type="time" id="wedStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-                <input type="time" id="wedEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            <div class="form-inline padding5">
+                <div class="form-group">
+                    <label for="inputPassword6">星期三</label>
+                    <input type="time" id="wedStart" value="{{work_time.wed.start}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                    <input type="time" id="wedEnd" value="{{work_time.wed.end}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                </div>
             </div>
-        </div>
-        <div class="form-inline padding5">
-            <div class="form-group">
-                <label for="inputPassword6">星期四</label>
-                <input type="time" id="thuStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-                <input type="time" id="thuEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            <div class="form-inline padding5">
+                <div class="form-group">
+                    <label for="inputPassword6">星期四</label>
+                    <input type="time" id="thuStart" value="{{work_time.thu.start}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                    <input type="time" id="thuEnd" value="{{work_time.thu.end}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                </div>
             </div>
-        </div>
-        <div class="form-inline padding5">
-            <div class="form-group">
-                <label for="inputPassword6">星期五</label>
-                <input type="time" id="friStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-                <input type="time" id="friEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            <div class="form-inline padding5">
+                <div class="form-group">
+                    <label for="inputPassword6">星期五</label>
+                    <input type="time" id="friStart" value="{{work_time.fri.start}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                    <input type="time" id="friEnd" value="{{work_time.fri.end}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                </div>
             </div>
-        </div>
-        <div class="form-inline padding5">
-            <div class="form-group">
-                <label for="inputPassword6">星期六</label>
-                <input type="time" id="satStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-                <input type="time" id="satEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+            <div class="form-inline padding5">
+                <div class="form-group">
+                    <label for="inputPassword6">星期六</label>
+                    <input type="time" id="satStart" value="{{work_time.sat.start}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                    <input type="time" id="satEnd" value="{{work_time.sat.end}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                </div>
             </div>
-        </div>
-        <div class="form-inline padding5">
-            <div class="form-group">
-                <label for="inputPassword6">星期日</label>
-                <input type="time" id="sunStart" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-                <input type="time" id="sunEnd" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-            </div>
-        </div>
-        <div class="save-container">
-            <button class="btn btn-primary" id="btn">save</button>
-        </div>
+            <div class="form-inline padding5">
+                <div class="form-group">
+                    <label for="inputPassword6">星期日</label>
+                    <input type="time" id="sunStart" value="{{work_time.sun.start}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                    <input type="time" id="sunEnd" value="{{work_time.sun.end}}" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                </div>
+                <br>
+                <button type="button" id="btn" class="btn btn-primary" data-toggle="modal" data-target="#myModal">save</button>
+                <!-- The Modal -->
+                <div class="modal" id="myModal">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        
+                        <div class="modal-header">
+                            <h4 class="modal-title">目前狀態</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <p id="inform"><h5></h5></p>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                          
+                      </div>
+                    </div>
+                </div>  
+            </div>            
+
         <script src="{{ url_for('static', filename='js/business_time.js') }}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     </form>
 
 {% endblock %}
