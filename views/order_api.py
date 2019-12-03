@@ -62,3 +62,9 @@ def update_order_state():
         return "", 200
     else:
         return "", 404
+
+
+@order_api.route("/todo", methods=["GET"])
+@admin_required
+def todo():
+    return jsonify(list(order.get_todo_order()))
