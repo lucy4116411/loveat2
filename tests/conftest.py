@@ -5,7 +5,7 @@ from bson.json_util import loads
 
 import main
 
-from models import business_time, menu, user
+from models import business_time, menu, order, user
 
 import mongomock
 
@@ -13,6 +13,16 @@ import pytest
 
 
 FILE_DIR = os.path.dirname(__file__)
+
+
+def establish_order():
+    dir = os.path.join(FILE_DIR, "data/order.json")
+    with open(dir, "r", encoding="utf-8") as file:
+        data = loads(file.read())
+        colletion = mongomock.MongoClient().db.collection
+        colletion.insert_many(data)
+        return colletion
+    return None
 
 
 def establish_item():
@@ -61,9 +71,11 @@ def client():
         "USER_COLLECTION": establish_user(),
         "TYPE_COLLECTION": establish_type(),
         "BUSINESS_TIME_COLLECTION": establish_business_time(),
+        "ORDER_COLLECTION": mongomock.MongoClient().db.collection,
     }
     user.USER_COLLECTION = main.app.config["db"]["USER_COLLECTION"]
     menu.TYPE_COLLECTION = main.app.config["db"]["TYPE_COLLECTION"]
+    order.ORDER_COLLECTION = main.app.config["db"]["ORDER_COLLECTION"]
     business_time.COLLECTION = main.app.config["db"][
         "BUSINESS_TIME_COLLECTION"
     ]
@@ -73,7 +85,7 @@ def client():
 
 @pytest.fixture(scope="function")
 def mock_item(client):
-    client.config["db"]["ITEM_COLLECTION"] = establish_item()
+    client.application.config["db"]["ITEM_COLLECTION"] = establish_item()
     menu.ITEM_COLLECTION = main.app.config["db"]["ITEM_COLLECTION"]
 
 
