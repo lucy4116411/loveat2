@@ -20,7 +20,7 @@ def send_forget_password_email(email, link):
 
     {link}
 
-    為了確保您的會員資料安全，重設密碼的連結將於此信件寄出後30分內或您重設密碼後失效。
+    為了確保您的會員資料安全，重設密碼的連結將於此信件寄出一小時後失效。
     """.format(
         link=link
     )
