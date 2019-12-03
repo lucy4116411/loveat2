@@ -1,11 +1,12 @@
 from flask import Blueprint
+from flask import render_template
 
 order_web = Blueprint("order_web", __name__)
 
 
 @order_web.route("/new", methods=["GET"])
 def cart():
-    return "cart"
+    return render_template('cart.html')
 
 
 @order_web.route("/history", methods=["GET"])
