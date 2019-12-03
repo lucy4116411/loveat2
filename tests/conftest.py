@@ -15,6 +15,16 @@ import pytest
 FILE_DIR = os.path.dirname(__file__)
 
 
+def establish_item():
+    dir = os.path.join(FILE_DIR, "data/item.json")
+    with open(dir, "r", encoding="utf-8") as file:
+        data = loads(file.read())
+        colletion = mongomock.MongoClient().db.collection
+        colletion.insert_many(data)
+        return colletion
+    return None
+
+
 def establish_business_time():
     dir = os.path.join(FILE_DIR, "data/businessTime.json")
     with open(dir, "r", encoding="utf-8") as file:
@@ -59,6 +69,12 @@ def client():
     ]
 
     return main.app.test_client()
+
+
+@pytest.fixture(scope="function")
+def mock_item(client):
+    client.config["db"]["ITEM_COLLECTION"] = establish_item()
+    menu.ITEM_COLLECTION = main.app.config["db"]["ITEM_COLLECTION"]
 
 
 @pytest.fixture(scope="function")
