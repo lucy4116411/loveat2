@@ -71,7 +71,7 @@ def client():
         "USER_COLLECTION": establish_user(),
         "TYPE_COLLECTION": establish_type(),
         "BUSINESS_TIME_COLLECTION": establish_business_time(),
-        "ORDER_COLLECTION": mongomock.MongoClient().db.collection,
+        "ORDER_COLLECTION": establish_order(),
     }
     user.USER_COLLECTION = main.app.config["db"]["USER_COLLECTION"]
     menu.TYPE_COLLECTION = main.app.config["db"]["TYPE_COLLECTION"]
