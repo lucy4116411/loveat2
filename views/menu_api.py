@@ -57,6 +57,16 @@ def add_item():
         return "", 409
 
 
+@menu_api.route("/item/update", methods=["POST"])
+@admin_required
+def update_item():
+    try:
+        menu.update_item(request.form, request.files["picture"].read())
+    except KeyError:
+        menu.update_item(request.form, None)
+    return "", 200
+
+
 @menu_api.route("/item/delete", methods=["POST"])
 @admin_required
 def delete_item():
@@ -79,6 +89,16 @@ def add_combo():
         return "", 200
     except duplicateError:
         return "", 409
+
+
+@menu_api.route("/combo/update", methods=["POST"])
+@admin_required
+def update_combo():
+    try:
+        menu.update_combo(request.form, request.files["picture"].read())
+    except KeyError:
+        menu.update_combo(request.form, None)
+    return "", 200
 
 
 @menu_api.route("/combo/delete", methods=["POST"])
