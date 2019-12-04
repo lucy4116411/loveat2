@@ -8,6 +8,7 @@ pytest = "*"
 flake8 = "*"
 flake8-import-order = "*"
 black = "==19.3b0"
+mongomock = "*"
 
 [packages]
 flask = "*"
@@ -16,6 +17,7 @@ flask-login = "*"
 pymongo = "*"
 python-dateutil = "*"
 flask-cors = "*"
+freezegun = "*"
 
 [requires]
 python_version = "3.7"

@@ -228,7 +228,7 @@ def update_state(data):
         result = ORDER_COLLECTION.find_one(
             {"_id": ObjectId(data["id"])}, {"userName": 1, "_id": 0}
         )
-        return result["userName"]
+        return result["userName"] if result is not None else result
     else:
         return None
 
