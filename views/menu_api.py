@@ -51,8 +51,12 @@ def get_item():
 @admin_required
 def add_item():
     try:
-        menu.add_item(request.form, request.files["picture"].read())
-        return "", 200
+        pic = request.files["picture"].read()
+    except KeyError:
+        pic = None
+
+    try:
+        menu.add_item(request.form, pic)
     except duplicateError:
         return "", 409
 
@@ -85,7 +89,12 @@ def get_combo():
 @admin_required
 def add_combo():
     try:
-        menu.add_combo(request.form, request.files["picture"].read())
+        pic = request.files["picture"].read()
+    except KeyError:
+        pic = None
+
+    try:
+        menu.add_combo(request.form, pic)
         return "", 200
     except duplicateError:
         return "", 409

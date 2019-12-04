@@ -1,6 +1,7 @@
 import json
 import uuid
 
+from bson.binary import Binary
 from bson.objectid import ObjectId
 
 from config import URL
@@ -109,7 +110,12 @@ def add_item(data, pic):
                 "description": data.get("description"),
             }
         )
-        IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+        if pic is None:
+            IMAGE_COLLECTION.insert_one(
+                {"uuid": pic_id, "picture": Binary(b"")}
+            )
+        else:
+            IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
 
 
 def add_combo(data, pic):
@@ -136,7 +142,12 @@ def add_combo(data, pic):
                 "content": content,
             }
         )
-        IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+        if pic is None:
+            IMAGE_COLLECTION.insert_one(
+                {"uuid": pic_id, "picture": Binary(b"")}
+            )
+        else:
+            IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
 
 
 def add_type(data):
