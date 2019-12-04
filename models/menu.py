@@ -95,6 +95,12 @@ def get_combo_by_id(data):
     return list(result)
 
 
+def get_all_type():
+    return TYPE_COLLECTION.aggregate(
+        [{"$project": {"_id": {"$toString": "$_id"}, "name": 1}}]
+    )
+
+
 def add_item(data, pic):
     cur_item = ITEM_COLLECTION.find_one({"name": data.get("name")})
     if cur_item:
