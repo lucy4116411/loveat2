@@ -7,7 +7,7 @@ jobs:
     name: python test
     python: '3.7'
     before_install:
-    - openssl aes-256-cbc -K $encrypted_caace5a6e9e3_key -iv $encrypted_caace5a6e9e3_iv -in secrets.tar.enc -out secrets.tar -d
+    - openssl aes-256-cbc -K $key -iv $iv -in secrets.tar.enc -out secrets.tar -d
     - tar xvf secrets.tar
     install:
     - pip install pipenv
@@ -30,7 +30,7 @@ jobs:
     before_deploy:
     - pipenv lock -r > requirements.txt
     before_install:
-    - openssl aes-256-cbc -K $encrypted_caace5a6e9e3_key -iv $encrypted_caace5a6e9e3_iv -in secrets.tar.enc -out secrets.tar -d
+    - openssl aes-256-cbc -K $key -iv $iv -in secrets.tar.enc -out secrets.tar -d
     - tar xvf secrets.tar
     deploy:
       provider: gae
