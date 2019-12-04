@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* global Cart, $, FetchData */
 /* eslint no-underscore-dangle: ["error", {"allow":["_id"]}] */
+
 let myCart = null;
 
 function drawItem(data) {
@@ -15,17 +16,10 @@ function drawItem(data) {
               </td>
               <td id="item-sum-${key}" >${data[key].price}</td>
               <td>
-                <button id="delete-${key}" class="btn btn-primary" onClick="deleteItem(this.id)">Delete</button>
+                <button id="delete-${key}" class="btn btn-primary" type="button" onClick="deleteItem(this)">Delete</button>
               </td>
             </tr>`, '');
-  document.getElementById('cart-table').innerHTML = result;
-}
-
-
-function deleteItem(key) {
-  const id = key.substr(7);
-  myCart.delete(id);
-  document.getElementById(id).innerHTML = '';
+  document.querySelector('#cart-table tbody').innerHTML = result;
 }
 
 function orderTotal() {
@@ -37,13 +31,25 @@ function orderTotal() {
   document.getElementById('total').innerHTML = total;
 }
 
-function changeQuantity(key) {
-  const id = key.substr(9);
-  const newQuantity = document.getElementById(key).value;
+function deleteItem(e) {
+  const itemId = e.id.substr(7);
+  const key = e.parentNode.parentNode.rowIndex;
+  myCart.delete(itemId);
+  document.getElementById('cart-table').deleteRow(key);
+  orderTotal();
+}
+
+
+function updateSum(id) {
   const order = myCart.get();
-  order[id].quantity = newQuantity;
-  myCart.updateLocalStorage();
   document.getElementById(`item-sum-${id}`).innerHTML = order[id].price * order[id].quantity;
+}
+
+function changeQuantity(key) {
+  const newQuantity = document.getElementById(key).value;
+  const id = key.substr(9);
+  myCart.updateQuantity(id, newQuantity);
+  updateSum(id);
   orderTotal();
 }
 
@@ -60,17 +66,15 @@ function orderDescription() {
 }
 
 function orderContent() {
-  const postOrder = [];
   const dataSet = myCart.get();
-
-  Object.keys(dataSet).forEach((key) => {
-    const result = {};
-    result.id = key;
-    result.category = dataSet[key].category;
-    result.quantity = dataSet[key].quantity;
-    postOrder.push(result);
-  });
-
+  const postOrder = Object.keys(dataSet).reduce((acc, key) => {
+    acc.push({
+      id: key,
+      category: dataSet[key].category,
+      quantity: dataSet[key].quantity,
+    });
+    return acc;
+  }, []);
   return postOrder;
 }
 

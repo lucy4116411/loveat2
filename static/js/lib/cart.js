@@ -95,4 +95,9 @@ class Cart {
   clear() {
     localStorage.removeItem(this.prefix);
   }
+
+  updateQuantity(id, quantity) {
+    this.content[id].quantity = quantity;
+    this.updateLocalStorage();
+  }
 }
