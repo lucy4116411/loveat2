@@ -231,3 +231,40 @@ def update_state(data):
         return result["userName"] if result is not None else result
     else:
         return None
+
+
+def get_todo_order():
+    result = ORDER_COLLECTION.aggregate(
+        [
+            {"$match": {"state": {"$in": ["doing", "finish"]}}},
+            {
+                "$lookup": {
+                    "from": "user",
+                    "localField": "userName",
+                    "foreignField": "userName",
+                    "as": "user",
+                }
+            },
+            {"$unwind": {"path": "$user"}},
+            {"$project": {"content._id": 0, "content.type": 0}},
+            {
+                "$project": {
+                    "_id": {"$toString": "$_id"},
+                    "orderID": {"$toInt": "$orderID"},
+                    "takenAt": {
+                        "$dateToString": {
+                            "format": "%Y/%m/%d %H:%M",
+                            "date": "$takenAt",
+                        }
+                    },
+                    "state": 1,
+                    "content": 1,
+                    "notes": 1,
+                    "user_id": {"$toString": "$user._id"},
+                    "phone": "$user.phone",
+                }
+            },
+            {"$sort": {"orderID": -1}},
+        ]
+    )
+    return result
