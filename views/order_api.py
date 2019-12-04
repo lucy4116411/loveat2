@@ -9,6 +9,7 @@ from lib.auth import admin_required
 
 from models import order, user
 
+
 order_api = Blueprint("order_api", __name__)
 push.init()
 
