@@ -74,6 +74,21 @@ def reset_password(token):
         return "", 401
 
 
+@user_api.route("/password/update", methods=["POST"])
+@login_required
+def update_passworde():
+    data = request.get_json()
+    user_info = {
+        "userName": current_user.name,
+        "password": data["oldPassword"]
+    }
+    if user.validate_user(user_info, password=True):
+        user.update_password(current_user.id, data["newPassword"])
+        return "", 200
+    else:
+        return "", 401
+
+
 @user_api.route("/token", methods=["POST"])
 @login_required
 def update_token():
