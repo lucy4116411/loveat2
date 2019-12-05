@@ -56,7 +56,7 @@ class Cart {
    */
   add(data) {
     if (data._id in this.content) {
-      this.content[data._id].quantity += 1;
+      this.content[data._id].quantity += data.quantity;
     } else {
       this.content[data._id] = {
         category: data.category,
