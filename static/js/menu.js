@@ -56,10 +56,10 @@ function addContent(event) {
   };
   if (data.quantity >= 1 && data.quantity <= 99) {
     myCart.add(data);
-    document.getElementById('orderHintContent').innerHTML = '下單成功囉~<br>祝您吃的開心~';
+    document.getElementById('orderHintContent').innerHTML = '新增成功~<br>祝您吃的開心~';
     $('#orderHintModal').modal('show');
   } else {
-    document.getElementById('orderHintContent').innerHTML = '下單失敗囉~<br>請再確認一次訂單資訊喔~';
+    document.getElementById('orderHintContent').innerHTML = '新增失敗~<br>請再確認一次訂單資訊喔~';
     $('#orderHintModal').modal('show');
   }
 }
