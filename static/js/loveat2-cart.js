@@ -81,6 +81,7 @@ function orderContent() {
 function clearOrder() {
   myCart.clear();
   document.getElementById('cart-table').innerHTML = '';
+  document.getElementById('total').innerHTML = 0;
 }
 
 function toState() {
