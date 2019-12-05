@@ -134,7 +134,10 @@ def get_max_orderid():
             ]
         )
     )
-    return result[0]["max"]
+    if len(result) == 0:
+        return 0
+    else:
+        return result[0]["max"]
 
 
 def get_not_end_by_username(user_name):
