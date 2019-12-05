@@ -9,6 +9,7 @@ from lib.auth import admin_required
 
 from models import order, user
 
+
 order_api = Blueprint("order_api", __name__)
 push.init()
 
@@ -56,9 +57,12 @@ def update_order_state():
         "finish": {"title": "訂單已完成", "content": "餐點已製作完成，請儘速來取餐"},
     }
     if user_name:
-        token = user.get_token_by_username(user_name)["token"]
-        if data["state"] in message:
-            push.send_to_customer(token, message[data["state"]])
+        try:
+            token = user.get_token_by_username(user_name)["token"]
+            if data["state"] in message:
+                push.send_to_customer(token, message[data["state"]])
+        except ValueError:
+            pass
         return "", 200
     else:
         return "", 404

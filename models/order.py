@@ -134,7 +134,10 @@ def get_max_orderid():
             ]
         )
     )
-    return result[0]["max"]
+    if len(result) == 0:
+        return 0
+    else:
+        return result[0]["max"]
 
 
 def get_not_end_by_username(user_name):
@@ -228,7 +231,7 @@ def update_state(data):
         result = ORDER_COLLECTION.find_one(
             {"_id": ObjectId(data["id"])}, {"userName": 1, "_id": 0}
         )
-        return result["userName"]
+        return result["userName"] if result is not None else result
     else:
         return None
 

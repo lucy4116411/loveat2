@@ -1,6 +1,7 @@
 import json
 import uuid
 
+from bson.binary import Binary
 from bson.objectid import ObjectId
 
 from config import URL
@@ -94,6 +95,12 @@ def get_combo_by_id(data):
     return list(result)
 
 
+def get_all_type():
+    return TYPE_COLLECTION.aggregate(
+        [{"$project": {"_id": {"$toString": "$_id"}, "name": 1}}]
+    )
+
+
 def add_item(data, pic):
     cur_item = ITEM_COLLECTION.find_one({"name": data.get("name")})
     if cur_item:
@@ -109,7 +116,12 @@ def add_item(data, pic):
                 "description": data.get("description"),
             }
         )
-        IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+        if pic is None:
+            IMAGE_COLLECTION.insert_one(
+                {"uuid": pic_id, "picture": Binary(b"")}
+            )
+        else:
+            IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
 
 
 def add_combo(data, pic):
@@ -125,7 +137,7 @@ def add_combo(data, pic):
             item["name"] = ITEM_COLLECTION.find_one(
                 {"_id": item["id"]}, {"name": 1}
             )["name"]
-        # start insesrt
+        # start insert
         COMBO_COLLECTION.insert_one(
             {
                 "type": ObjectId(data.get("type")),
@@ -136,7 +148,24 @@ def add_combo(data, pic):
                 "content": content,
             }
         )
-        IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+        if pic is None:
+            IMAGE_COLLECTION.insert_one(
+                {"uuid": pic_id, "picture": Binary(b"")}
+            )
+        else:
+            IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+
+
+def add_type(data):
+    cur_type = TYPE_COLLECTION.find_one(
+        {"category": data["category"], "name": data["type"]}
+    )
+    if cur_type:
+        raise duplicateError
+    else:
+        TYPE_COLLECTION.insert_one(
+            {"category": data["category"], "name": data["type"]}
+        )
 
 
 def delete_item(id):
@@ -172,15 +201,54 @@ def delete_type(id):
     TYPE_COLLECTION.delete_one({"_id": object_id})
 
 
-def add_type(data):
-    cur_type = TYPE_COLLECTION.find_one(
-        {"category": data["category"], "name": data["type"]}
+def update_item(data, pic):
+    pic_id = ITEM_COLLECTION.find_one(
+        {"_id": ObjectId(data.get("id"))}, {"picture": 1}
+    )["picture"]
+    ITEM_COLLECTION.update_one(
+        {"_id": ObjectId(data.get("id"))},
+        {
+            "$set": {
+                "type": ObjectId(data.get("type")),
+                "name": data.get("name"),
+                "price": int(data.get("price")),
+                "description": data.get("description"),
+            }
+        },
     )
-    if cur_type:
-        raise duplicateError
-    else:
-        TYPE_COLLECTION.insert_one(
-            {"category": data["category"], "name": data["type"]}
+    if pic is not None:
+        IMAGE_COLLECTION.update_one(
+            {"uuid": pic_id}, {"$set": {"picture": pic}}
+        )
+
+
+def update_combo(data, pic):
+    pic_id = COMBO_COLLECTION.find_one(
+        {"_id": ObjectId(data.get("id"))}, {"picture": 1}
+    )["picture"]
+    # pre processing content field
+    content = json.loads(data.get("content"))
+    for item in content:
+        item["id"] = ObjectId(item["id"])
+        item["name"] = ITEM_COLLECTION.find_one(
+            {"_id": item["id"]}, {"name": 1}
+        )["name"]
+    # start update
+    COMBO_COLLECTION.update_one(
+        {"_id": ObjectId(data.get("id"))},
+        {
+            "$set": {
+                "type": ObjectId(data.get("type")),
+                "name": data.get("name"),
+                "price": int(data.get("price")),
+                "description": data.get("description"),
+                "content": content,
+            }
+        },
+    )
+    if pic is not None:
+        IMAGE_COLLECTION.update_one(
+            {"uuid": pic_id}, {"$set": {"picture": pic}}
         )
 
 

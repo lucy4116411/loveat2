@@ -6,7 +6,7 @@ COLLECTION = MongoClient(URL)["loveat2"]["businessTime"]
 
 
 def get():
-    data = COLLECTION.find_one()
+    data = COLLECTION.find_one({}, {"_id": 0})
     return data
 
 

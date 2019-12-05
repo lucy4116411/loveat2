@@ -1,0 +1,48 @@
+[
+    {
+        "_id": {
+            "$oid": "5dd8a604371301b428df5602"
+        },
+        "userName": "admin_name",
+        "password": "pbkdf2:sha256:150000$CEOLSKrq$2b0b5dca23bed0e2f58e0a63d3f4a435a4967e9b3a8ed87ef8fbead4f15a7bcc",
+        "gender": "female",
+        "phone": "0920198409",
+        "email": "admin@gmail.com",
+        "birth": {
+            "$date": {
+                "$numberLong": "943225842908"
+            }
+        },
+        "role": "admin",
+        "avatar": {
+            "$binary": {
+                "base64": "MA==",
+                "subType": "00"
+            }
+        },
+        "token": ""
+    },
+    {
+        "_id": {
+            "$oid": "5dde223874fbccb7319f4cb8"
+        },
+        "userName": "customer_name",
+        "password": "pbkdf2:sha256:150000$U5JoRkm2$1c4c8d0b9f5b4087d7e7b39c0d7348612afa156e391ce1cdc6cbc01e2d310019",
+        "gender": "female",
+        "phone": "0945678912",
+        "email": "123@gmail.com",
+        "birth": {
+            "$date": {
+                "$numberLong": "1196147639767"
+            }
+        },
+        "role": "customer",
+        "avatar": {
+            "$binary": {
+                "base64": "",
+                "subType": "00"
+            }
+        },
+        "token": ""
+    }
+]
