@@ -35,7 +35,7 @@
                 </div>
                 <div class="number-container">
                     <span>數量</span>
-                    <input type="number" class="form-control" id="input_{{item['_id']}}">
+                    <input type="number" class="form-control" id="input_{{item['_id']}}" value="1" min="1" max="99">
                 </div>
                 <div class="op-container">
                     <button class="btn btn-primary" id="submit_{{item['_id']}}">加入</button>
@@ -64,5 +64,26 @@
             {% endfor %}
         </div>
     </div>
+
+      <!-- Modal -->
+    <div class="modal fade" id="orderHintModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+             <h5>Hint</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="orderHintContent">
+              下單成功囉~~
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary"
+              data-dismiss="modal">確認</button>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>
 {% endblock %}

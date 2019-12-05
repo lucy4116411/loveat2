@@ -1,11 +1,9 @@
-/* global Cart, FetchData */
+/* global Cart, $, FetchData */
 /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
 
 
-const ID_TO_NAME = {}; // {"_id1":"name1",...}
-const TYPE_DATA = {}; // {type1:{"id":[], "category":"item"},...}
-let UNCATER_ITEM_INDEX = '';
-let UNCATER_COMBO_INDEX = '';
+const ID_TO_NAME = {}; // {"_id1":"name1"}
+const TYPE_DATA = {}; // {type1:{"id":[], "category":"item"}}
 let myCart = null;
 
 
@@ -16,25 +14,13 @@ function searchByType(event) {
   tarTypeId.forEach((id) => {
     document.getElementById(id).classList.remove('hidden');
   });
-  if (tarType === UNCATER_ITEM_INDEX || tarType === UNCATER_COMBO_INDEX) {
-    if (tarType === UNCATER_ITEM_INDEX) {
-      TYPE_DATA[UNCATER_COMBO_INDEX].id.forEach((id) => {
-        document.getElementById(id).classList.add('hidden');
-      });
-    } else {
-      TYPE_DATA[UNCATER_ITEM_INDEX].id.forEach((id) => {
+  Object.keys(TYPE_DATA).forEach((type) => {
+    if (tarType !== type) {
+      TYPE_DATA[type].id.forEach((id) => {
         document.getElementById(id).classList.add('hidden');
       });
     }
-  } else {
-    Object.keys(TYPE_DATA).forEach((type) => {
-      if (tarType !== type && type !== UNCATER_ITEM_INDEX && type !== UNCATER_COMBO_INDEX) {
-        TYPE_DATA[type].id.forEach((id) => {
-          document.getElementById(id).classList.add('hidden');
-        });
-      }
-    });
-  }
+  });
 }
 
 /* ---- search by name ---- */
@@ -52,7 +38,7 @@ function searchByName(event) {
 }
 
 /* ---- user add item into local storage ----*/
-async function addContent(event) {
+function addContent(event) {
   const itemId = event.target.id.replace('submit_', '');
   const itemQuantity = parseInt(document.getElementById(`input_${itemId}`).value, 10);
   let itemCategory = '';
@@ -68,8 +54,14 @@ async function addContent(event) {
     category: itemCategory,
     quantity: itemQuantity,
   };
-
-  myCart.add(data);
+  if (data.quantity >= 1 && data.quantity <= 99) {
+    myCart.add(data);
+    document.getElementById('orderHintContent').innerHTML = '下單成功囉~<br>祝您吃的開心~';
+    $('#orderHintModal').modal('show');
+  } else {
+    document.getElementById('orderHintContent').innerHTML = '下單失敗囉~<br>請再確認一次訂單資訊喔~';
+    $('#orderHintModal').modal('show');
+  }
 }
 
 async function init() {
@@ -78,30 +70,14 @@ async function init() {
   const res = await FetchData.get('/api/menu');
   const menu = await res.json();
   let totalType = 0;
-  const itemAll = [];
-  const comboAll = [];
-  menu.forEach((type) => {
-    if (type.type === '未分類(單品)') {
-      UNCATER_ITEM_INDEX = `type${totalType + 1}`;
-    } else if (type.type === '未分類(套餐)') {
-      UNCATER_COMBO_INDEX = `type${totalType + 1}`;
-    }
-    TYPE_DATA[`type${totalType + 1}`] = { id: [], category: '' };
-    TYPE_DATA[`type${totalType + 1}`].category = type.category;
+  menu.forEach((type, idx) => {
+    TYPE_DATA[`type${idx + 1}`] = { id: [], category: type.category };
     type.content.forEach((i) => {
-      if (type.category === 'item') {
-        itemAll.push(i._id);
-      } else if (type.category === 'combo') {
-        comboAll.push(i._id);
-      }
-      TYPE_DATA[`type${totalType + 1}`].id.push(i._id);
+      TYPE_DATA[`type${idx + 1}`].id.push(i._id);
       ID_TO_NAME[i._id] = i.name;
     });
-    totalType += 1;
+    totalType = idx + 1;
   });
-  TYPE_DATA[UNCATER_ITEM_INDEX].id = itemAll;
-  TYPE_DATA[UNCATER_COMBO_INDEX].id = comboAll;
-
 
   /* -- listener for type --*/
   for (let i = 0; i < totalType; i += 1) {
