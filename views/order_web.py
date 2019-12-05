@@ -8,8 +8,6 @@ from lib.auth import admin_required
 
 order_web = Blueprint("order_web", __name__)
 
-time_format = '%Y-%m-%dT%H:%M'
-
 
 @order_web.route("/new", methods=["GET"])
 def cart():
@@ -19,9 +17,16 @@ def cart():
 @order_web.route("/history", methods=["GET"])
 @admin_required
 def history():
-    begin = (datetime.now()-timedelta(days=7)).strftime(time_format)
+    time_format = "%Y-%m-%dT%H:%M"
+    begin = (datetime.now() - timedelta(days=7)).strftime(time_format)
     end = datetime.now().strftime(time_format)
-    return render_template('history.html', auth=current_user.role, name=current_user.name, begin=begin, end=end) # noqa
+    return render_template(
+        "history.html",
+        auth=current_user.role,
+        name=current_user.name,
+        begin=begin,
+        end=end,
+    )  # noqa
 
 
 @order_web.route("/pending", methods=["GET"])

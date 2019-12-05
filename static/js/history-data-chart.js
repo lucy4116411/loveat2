@@ -4,9 +4,11 @@ let tableGender = true;
 
 function toggleItem() {
   if (tableItem) {
+    document.getElementById('item-analysis-btn').innerHTML = '切換詳細資料';
     document.getElementById('item-analysis-table').classList.add('hidden');
     document.getElementById('item-analysis-chart').classList.remove('hidden');
   } else {
+    document.getElementById('item-analysis-btn').innerHTML = '切換圖表';
     document.getElementById('item-analysis-table').classList.remove('hidden');
     document.getElementById('item-analysis-chart').classList.add('hidden');
   }
@@ -15,9 +17,11 @@ function toggleItem() {
 
 function toggleGender() {
   if (tableGender) {
+    document.getElementById('gender-analysis-btn').innerHTML = '切換詳細資料';
     document.getElementById('gender-analysis-table').classList.add('hidden');
     document.getElementById('gender-analysis-chart').classList.remove('hidden');
   } else {
+    document.getElementById('gender-analysis-btn').innerHTML = '切換圖表';
     document.getElementById('gender-analysis-table').classList.remove('hidden');
     document.getElementById('gender-analysis-chart').classList.add('hidden');
   }
@@ -168,27 +172,16 @@ function drawGender(ageInterval, femaleNum, maleNum, ageIntervalNum, genderNum) 
 }
 
 // eslint-disable-next-line no-unused-vars
-async function drawChart(res) {
-  const data = await res.json();
+async function drawChart(data) {
   const itemData = data.itemAnalysis;
   const item = Object.keys(itemData);
   const ageInterval = data.interval;
-  const itemNum = [];
-  const femaleNum = [];
-  const maleNum = [];
-  const ageIntervalNum = [];
-  const genderNum = [0, 0];
+  const itemNum = Object.values(data.itemAnalysis).map((element) => element.total);
+  const femaleNum = Object.values(data.genderAnalysis).map((element) => element.female);
+  const maleNum = Object.values(data.genderAnalysis).map((element) => element.male);
+  const ageIntervalNum = Object.values(data.genderAnalysis).map((element) => element.total);
+  const genderNum = [femaleNum.reduce((a, b) => a + b), maleNum.reduce((a, b) => a + b)];
 
-  Object.values(data.itemAnalysis).forEach((element) => {
-    itemNum.push(element.total);
-  });
-  Object.values(data.genderAnalysis).forEach((element) => {
-    femaleNum.push(element.female);
-    genderNum[0] += element.female;
-    maleNum.push(element.male);
-    genderNum[1] += element.male;
-    ageIntervalNum.push(element.total);
-  });
   drawItem(item, itemNum);
   drawGender(ageInterval, femaleNum, maleNum, ageIntervalNum, genderNum);
 }
