@@ -39,12 +39,19 @@ def menu():
 
 @menu_web.route("/edit", methods=["GET"])
 def edit_menu():
-    return "edit menu"
+    return render_template(
+        "menu-edit.html", auth=current_user.role, name=current_user.name
+    )
 
 
 @menu_web.route("/item/new", methods=["GET"])
 def new_item():
-    return "new item"
+    return render_template(
+        "edit-add-item.html",
+        auth=current_user.role,
+        name=current_user.name,
+        add=True,
+    )
 
 
 @menu_web.route("/item/<id>/edit", methods=["GET"])
@@ -54,7 +61,12 @@ def edit_item(id):
 
 @menu_web.route("/combo/new", methods=["GET"])
 def new_combo():
-    return "new combo"
+    return render_template(
+        "edit-add-combo.html",
+        auth=current_user.role,
+        name=current_user.name,
+        add=True,
+    )
 
 
 @menu_web.route("/combo/<id>/edit", methods=["GET"])

@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% set active_page = "menu-edit" %}
+{% set url = "boss" %}
+
+{% block header %}
+    <script src="{{ url_for('static', filename='js/edit-add-item.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit-add-item.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="full-container">
+    {% if add %}
+        <h2>單品新增</h2>
+    {% else %}
+        <h2>單品修改</h2>
+    {% endif %}
+    <form id="item-form">
+        <div class="form-group">
+            <label for="name">名稱</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="type">種類</label>
+            <select name="type" id="type" class="form-control">
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="price">單價</label>
+            <input type="number" name="price" id="price" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="picture">照片</label>
+            <input type="file" name="picture" id="picture" accept="image/*" class="form-control-file">
+        </div>
+        <div class="form-group">
+            <label for="description">說明</label>
+            <textarea name="description" id="description" cols="30" rows="5" class="form-control"></textarea>
+        </div>
+        <div class="form-group ml-auto">
+            <button class="btn btn-primary">清空</button>
+            {% if add %}
+                <button type="button" id="submit" class="btn btn-primary">品項添加</button>
+            {% else %}
+                <button type="button" id="submit" class="btn btn-primary">確認修改</button>
+            {% endif %}
+
+        </div>
+    </form>
+
+    <div class="preview-container">
+        <div class="menu-item">
+            <div class="item-img-container">
+                <img src="" id="picture-show" class="item-img">
+            </div>
+            <div id="detail" class="detail-info-container">
+                名稱：<br>
+                價格：<br>
+                說明：<br>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

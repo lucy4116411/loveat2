@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+{% set active_page = "menu-edit" %}
+{% set url = "boss" %}
+
+{% block header %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/menu-edit.css') }}">
+<script src="{{ url_for('static', filename='js/menu-edit.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<!--edit-menu pop-up window-->
+<div class="modal fade" id="edit-type" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="edit-type-title">編輯種類</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <!--add type-->
+                    <form id="add-type-form">
+                        <div class="form-inline padding5">
+                            <div class="form-group">
+                                <label for="add-type">新增種類</label>
+                                <input type="text" id="add-type" class="form-control mx-sm-3">
+                                <select id="item-or-combo-type" class="form-control mx-sm-3">
+                                    <option value="item">單品</option>
+                                    <option value="combo">套餐</option>
+                                </select>
+                                <button type="button" class="btn btn-primary" id="add-type-btn">新增</button>
+                            </div>
+                        </div>
+                    </form>
+                    <small id="add-type-txt" class="form-text wrong-msg"></small>
+                    <hr>
+                    <!--update type-->
+                    <form id = "update-type-form">
+                        <div class="form-inline padding5">
+                            <div class="form-group">
+                                <label for="update-type">修改種類</label>
+                                <select id="update-type-list" class="form-control mx-sm-3"></select>
+                                <input type="text" id="update-type" class="form-control mx-sm-3">
+                                <button type="button" class="btn btn-primary" id="update-type-btn">修改</button>
+                            </div>
+                        </div>
+                    </form>
+                    <small id="update-type-txt" class="form-text wrong-msg"></small>
+                    <hr>
+                    <!--delete type-->
+                    <form id = "delete-type-form">
+                        <div class="form-inline padding5">
+                            <div class="form-group">
+                                <label for="delete-type-btn">刪除種類</label>
+                                <select id="delete-type-list" class="form-control mx-sm-3"></select>
+                                <button type="button" class="btn btn-primary" id="delete-type-btn">刪除</button>
+                            </div>
+                        </div>
+                    </form>
+                    <small id="delete-type-txt" class="form-text wrong-msg"></small>
+                  </div>
+                </div>
+              </div>
+</div>
+
+<!--main html-->
+    <div id="edit-menu-container" class="edit-menu-container">
+        <div class="op-container">
+            <div class="category-container">
+                <div class="from-group form-inline">
+                    <select name="typeList" id="type-list" class="form-control">
+                        <option value="0">全部</option>
+                    </select>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit-type" id="edit-type">編輯種類</button>
+                </div>
+            </div>
+            <div class="add-op-container">
+                <button type="button" class="btn btn-primary">
+                    <a href="{{ url_for('menu_web.new_item') }}">
+                    新增單品
+                    </a>
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <a href="{{ url_for('menu_web.new_combo') }}">
+                    新增套餐
+                    </a>
+                </button>
+            </div>
+        </div>
+        <!--menu table-->
+        <div class="full-container">
+            <div class="table-container">
+                <table id="menu-table"class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>名稱</th>
+                            <th>價格</th>
+                            <th>內容</th>
+                            <th>照片</th>
+                            <th>說明</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id = 'menu'></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!--alert pop-up window-->
+    <div class="modal" id="alert-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">發生錯誤！</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>使用者權限錯誤。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
