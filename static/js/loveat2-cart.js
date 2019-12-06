@@ -14,7 +14,7 @@ function drawItem(data) {
               <td>
                 <input type="text" id="description-${key}">
               </td>
-              <td id="item-sum-${key}" >${data[key].price}</td>
+              <td id="item-sum-${key}" >${data[key].price * data[key].quantity}</td>
               <td>
                 <button id="delete-${key}" class="btn btn-primary" type="button" onClick="deleteItem(this)">Delete</button>
               </td>
@@ -80,7 +80,7 @@ function orderContent() {
 
 function clearOrder() {
   myCart.clear();
-  document.getElementById('cart-table').innerHTML = '';
+  document.getElementById('item-table').innerHTML = '';
   document.getElementById('total').innerHTML = 0;
 }
 
