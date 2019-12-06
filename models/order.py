@@ -196,12 +196,10 @@ def add_order(data):
         for meal in data["content"]:
             meal["id"] = ObjectId(meal["id"])
             if meal["category"] == "item":
-                tar = ITEM_COLLECTION.find_one(
-                    {"_id": meal["id"]}, {"name": 1}
-                )
+                tar = ITEM_COLLECTION.find_one({"id": meal["id"]}, {"name": 1})
             else:
                 tar = COMBO_COLLECTION.find_one(
-                    {"_id": meal["id"]}, {"name": 1}
+                    {"id": meal["id"]}, {"name": 1}
                 )
             meal["name"] = tar["name"]
 
@@ -210,7 +208,7 @@ def add_order(data):
                 "userName": data["userName"],
                 "notes": data["notes"],
                 "total": data["total"],
-                "contet": data["content"],
+                "content": data["content"],
                 "state": "unknown",
                 "createdAt": datetime.now(),
                 "takenAt": taken_at,
@@ -268,6 +266,30 @@ def get_todo_order():
                 }
             },
             {"$sort": {"orderID": -1}},
+        ]
+    )
+    return result
+
+
+def get_unknown_order():
+    result = ORDER_COLLECTION.aggregate(
+        [
+            {"$match": {"state": "unknown"}},
+            {"$project": {"content.id": 0, "content.type": 0}},
+            {
+                "$project": {
+                    "_id": {"$toString": "$_id"},
+                    "takenAt": {
+                        "$dateToString": {
+                            "format": "%Y/%m/%d %H:%M",
+                            "date": "$takenAt",
+                        }
+                    },
+                    "content": 1,
+                    "notes": 1,
+                }
+            },
+            {"$sort": {"orderID": 1}},
         ]
     )
     return result
