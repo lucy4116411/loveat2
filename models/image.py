@@ -1,5 +1,3 @@
-from bson.binary import Binary
-
 from config import URL
 
 from pymongo import MongoClient
@@ -14,4 +12,3 @@ def get_by_uuid(uuid):
         return None
     else:
         return pic["picture"]
-

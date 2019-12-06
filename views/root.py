@@ -1,6 +1,4 @@
-import os
-
-from flask import Blueprint, make_response, send_from_directory, current_app
+from flask import Blueprint, current_app, make_response, send_from_directory
 
 from models import image
 
@@ -11,7 +9,9 @@ root = Blueprint("root", __name__)
 def show_image(uuid):
     pic = image.get_by_uuid(uuid)
     if pic is None:
-        return send_from_directory(current_app.static_folder, "img/default.png")
+        return send_from_directory(
+            current_app.static_folder, "img/default.png"
+        )
     else:
         response = make_response(pic)
         response.headers.set("Content-Type", "image/jpeg")
