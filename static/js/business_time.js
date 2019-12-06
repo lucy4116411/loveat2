@@ -4,36 +4,15 @@ const bsAPI = {
 };
 
 async function update() {
-  const result = await FetchData.post(bsAPI.business_time, {
-    mon: {
-      start: document.getElementById('monStart').value,
-      end: document.getElementById('monEnd').value,
-    },
-    tue: {
-      start: document.getElementById('tueStart').value,
-      end: document.getElementById('tueEnd').value,
-    },
-    wed: {
-      start: document.getElementById('wedStart').value,
-      end: document.getElementById('wedEnd').value,
-    },
-    thu: {
-      start: document.getElementById('thuStart').value,
-      end: document.getElementById('thuEnd').value,
-    },
-    fri: {
-      start: document.getElementById('friStart').value,
-      end: document.getElementById('friEnd').value,
-    },
-    sat: {
-      start: document.getElementById('satStart').value,
-      end: document.getElementById('satEnd').value,
-    },
-    sun: {
-      start: document.getElementById('sunStart').value,
-      end: document.getElementById('sunEnd').value,
-    },
+  const setTime = {};
+  const week = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  week.forEach((element) => {
+    setTime[element] = {
+      start: document.getElementById(`${element}Start`).value,
+      end: document.getElementById(`${element}End`).value,
+    };
   });
+  const result = await FetchData.post(bsAPI.business_time, setTime);
   if (result.status === 403) {
     document.getElementById('inform').outerText = '無此權限';
   } else if (result.status === 400) {

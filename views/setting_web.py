@@ -13,7 +13,6 @@ setting_web = Blueprint("setting_web", __name__)
 @admin_required
 def business_time():
     everyday_work_time = models.business_time.get()
-    # print(everyday_work_time)
     return render_template(
         "business_time.html",
         work_time=everyday_work_time,

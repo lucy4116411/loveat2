@@ -3,6 +3,7 @@
 
 {% block header %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/business-time.css') }}">
+    <script src="{{ url_for('static', filename='js/business_time.js') }}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 {% endblock %}
 {% block content %}
@@ -80,11 +81,6 @@
                     </div>
                 </div>  
             </div>            
-
-        <script src="{{ url_for('static', filename='js/business_time.js') }}"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     </form>
 
 {% endblock %}
