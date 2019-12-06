@@ -1,0 +1,123 @@
+.full-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    min-height: 0;
+}
+
+.search-container {
+    padding: 5px;
+    border-radius: 5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 127, 255, 0.5);
+    flex-flow: 0;
+    background: rgba(100, 196, 237, 0.5);
+}
+
+.result-container {
+    flex: 1;
+    max-height: 100%;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+
+
+.fixed-table th {
+    position: sticky;
+    top: 0;
+}
+
+.toggle-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 5px;
+}
+
+.hidden {
+    display: none;
+}
+
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+}
+
+.canvas-container-gender {
+    width: calc(50% - 5px);
+}
+
+.canvas-container-item {
+    width: calc(100% - 5px);
+}
+
+.checkbox-container {
+    margin-right: 5px;
+}
+
+th,td {
+    text-align: center;
+	border:1px gray solid;
+}
+
+h6{
+   text-align: center;
+}
+
+@media screen and (max-height:500px)
+{
+    .full-container{
+        display: flex;
+        flex-direction: column;
+        height: 450px;
+        overflow-y: scroll;
+    }
+    .search-container{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+    }
+    .result-container{
+        margin-left: 0px;
+        width: 100%;
+        overflow-y: scroll;
+    }
+
+    .chart-container {
+        flex-direction: column;
+    }
+    .canvas-container-gender {
+        width: calc(100% - 5px);
+    }
+}
+
+@media screen and (max-width:480px)  
+{
+    .full-container{
+        display: flex;
+        flex-direction: column;
+        height: 900px;
+        overflow-y: scroll;
+    }
+    .search-container{
+        width: 100%;
+    }
+    .result-container{
+        margin-left: 0px;
+        width: 100%;
+        overflow-y: scroll;
+    }
+    .chart-container {
+        flex-direction: column;
+    }
+    .canvas-container-gender {
+        width: calc(100% - 5px);
+    }
+}
