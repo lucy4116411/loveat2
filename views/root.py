@@ -1,4 +1,4 @@
-from flask import Blueprint, make_response
+from flask import Blueprint, current_app, make_response, send_from_directory
 
 from models import image
 
@@ -13,3 +13,17 @@ def show_image(uuid):
         "Content-Disposition", "attachment", filename="{}.jpg".format(uuid)
     )
     return response
+
+
+@root.route("/firebase-messaging-sw.js", methods=["GET"])
+def service_worker():
+    return send_from_directory(
+        current_app.static_folder,
+        "js/lib/firebase-messaging-sw.js",
+        mimetype="application/javascript",
+    )
+
+
+@root.route("/favicon.ico", methods=["GET"])
+def favicon():
+    return send_from_directory(current_app.static_folder, "favicon.ico")
