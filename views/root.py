@@ -26,7 +26,4 @@ def service_worker():
 
 @root.route("/favicon.ico", methods=["GET"])
 def favicon():
-    return send_from_directory(
-        current_app.static_folder,
-        "favicon.ico",
-    )
+    return send_from_directory(current_app.static_folder, "favicon.ico")
