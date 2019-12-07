@@ -14,6 +14,24 @@ BUSINESS_COLLECTION = DB["businessTime"]
 
 MAX_ORDERID = -1
 
+# projection for unknown page
+UNKNOWN_PROJECT = [
+    {"$project": {"content.id": 0, "content.category": 0}},
+    {
+        "$project": {
+            "_id": {"$toString": "$_id"},
+            "takenAt": {
+                "$dateToString": {
+                    "format": "%Y/%m/%d %H:%M",
+                    "date": "$takenAt",
+                }
+            },
+            "content": 1,
+            "notes": 1,
+        }
+    },
+]
+
 
 def find_by_time(start, end):
     return {"takenAt": {"$gte": start, "$lte": end}, "state": "end"}
@@ -195,15 +213,13 @@ def add_order(data):
         MAX_ORDERID += 1
         for meal in data["content"]:
             meal["id"] = ObjectId(meal["id"])
-            if meal["category"] == "item":
-                tar = ITEM_COLLECTION.find_one({"id": meal["id"]}, {"name": 1})
-            else:
-                tar = COMBO_COLLECTION.find_one(
-                    {"id": meal["id"]}, {"name": 1}
-                )
+            tar_col = {"item": ITEM_COLLECTION, "combo": COMBO_COLLECTION}
+            tar = tar_col[meal["category"]].find_one(
+                {"_id": meal["id"]}, {"name": 1}
+            )
             meal["name"] = tar["name"]
 
-        ORDER_COLLECTION.insert_one(
+        result = ORDER_COLLECTION.insert_one(
             {
                 "userName": data["userName"],
                 "notes": data["notes"],
@@ -215,9 +231,11 @@ def add_order(data):
                 "orderID": str(MAX_ORDERID),
             }
         )
-        return True
+
+        pipeline = [{"$match": {"_id": result.inserted_id}}] + UNKNOWN_PROJECT
+        return list(ORDER_COLLECTION.aggregate(pipeline))[0]
     else:
-        return False
+        return None
 
 
 def update_state(data):
@@ -227,9 +245,14 @@ def update_state(data):
             {"_id": ObjectId(data["id"])}, {"$set": {"state": data["state"]}}
         )
         result = ORDER_COLLECTION.find_one(
-            {"_id": ObjectId(data["id"])}, {"userName": 1, "_id": 0}
+            {"_id": ObjectId(data["id"])},
+            {"userName": 1, "_id": 1, "orderID": 1, "state": 1},
         )
-        return result["userName"] if result is not None else result
+        if result:
+            result["_id"] = str(result["_id"])
+            return result
+        else:
+            return None
     else:
         return None
 
@@ -272,24 +295,10 @@ def get_todo_order():
 
 
 def get_unknown_order():
-    result = ORDER_COLLECTION.aggregate(
-        [
-            {"$match": {"state": "unknown"}},
-            {"$project": {"content.id": 0, "content.type": 0}},
-            {
-                "$project": {
-                    "_id": {"$toString": "$_id"},
-                    "takenAt": {
-                        "$dateToString": {
-                            "format": "%Y/%m/%d %H:%M",
-                            "date": "$takenAt",
-                        }
-                    },
-                    "content": 1,
-                    "notes": 1,
-                }
-            },
-            {"$sort": {"orderID": 1}},
-        ]
+    pipeline = (
+        [{"$match": {"state": "unknown"}}]
+        + UNKNOWN_PROJECT
+        + [{"$sort": {"orderID": 1}}]
     )
+    result = ORDER_COLLECTION.aggregate(pipeline)
     return result

@@ -1,6 +1,7 @@
+import json
 from datetime import datetime
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, url_for
 
 from flask_login import current_user, login_required
 
@@ -38,12 +39,17 @@ def add_order():
     data = request.get_json()
     data["userName"] = current_user.name
     try:
-        if order.add_order(data):
-            push.send_to_topic({
-                "title": "新訂單",
-                "content": "您有新訂單",
-                "url": "/order/pending"
-            }, push.TOPIC_ADMIN)
+        cur_order = order.add_order(data)
+        if cur_order:
+            push.send_to_topic(
+                {
+                    "title": "新訂單",
+                    "content": "您有新訂單",
+                    "url": url_for("order_web.pending", _externale=True),
+                    "detail": json.dumps(cur_order),
+                },
+                push.TOPIC_ADMIN,
+            )
             return "", 200
         else:
             return "", 422
@@ -55,28 +61,22 @@ def add_order():
 @admin_required
 def update_order_state():
     data = request.get_json()
-    user_name = order.update_state(data)
+    result = order.update_state(data)
     message = {
-        "doing": {
-            "title": "訂單已接受",
-            "content": "老闆已接受您的訂單",
-            "url": "/order/state",
-        },
-        "cancel": {
-            "title": "訂單被拒絕",
-            "content": "抱歉，老闆拒絕了您的訂單",
-            "url": "/order/state",
-        },
-        "finish": {
-            "title": "訂單已完成",
-            "content": "餐點已製作完成，請儘速來取餐",
-            "url": "/order/state",
-        },
+        "doing": {"title": "訂單已接受", "content": "老闆已接受您的訂單"},
+        "cancel": {"title": "訂單被拒絕", "content": "抱歉，老闆拒絕了您的訂單"},
+        "finish": {"title": "訂單已完成", "content": "餐點已製作完成，請儘速來取餐"},
     }
-    if user_name:
+    if result:
         try:
-            token = user.get_token_by_username(user_name)["token"]
+            token = user.get_token_by_username(result["userName"])["token"]
             if data["state"] in message:
+                message[data["state"]].update(
+                    {
+                        "url": url_for("order_web.state", _external=True),
+                        "detail": json.dumps(result),
+                    }
+                )
                 push.send_to_customer(token, message[data["state"]])
         except ValueError:
             pass

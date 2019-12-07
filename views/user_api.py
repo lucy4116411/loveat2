@@ -10,7 +10,7 @@ from flask_login import current_user, login_required, login_user
 
 from itsdangerous import SignatureExpired, TimedJSONWebSignatureSerializer
 
-from lib import send_email
+from lib import push, send_email
 from lib.auth import User
 
 from models import user
@@ -94,6 +94,8 @@ def update_password():
 def update_token():
     token = request.get_json()["token"]
     user.update_token(current_user.id, token)
+    if current_user.role == "admin":
+        push.subscribe(push.TOPIC_ADMIN)
     return "", 200
 
 

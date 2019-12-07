@@ -7,26 +7,12 @@ TOPIC_ADMIN = "admin"
 
 
 def send_to_customer(token, data):
-    message = messaging.Message(
-        data={
-            "content": data["content"],
-            "title": data["title"],
-            "url": data["url"],
-        },
-        token=token,
-    )
+    message = messaging.Message(data=data, token=token)
     messaging.send(message)
 
 
 def send_to_topic(data, topic):
-    message = messaging.Message(
-        data={
-            "content": data["content"],
-            "title": data["title"],
-            "url": data["url"],
-        },
-        topic=topic,
-    )
+    message = messaging.Message(data=data, topic=topic)
     messaging.send(message)
 
 
