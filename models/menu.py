@@ -95,9 +95,21 @@ def get_combo_by_id(data):
     return list(result)
 
 
-def get_all_type():
-    return TYPE_COLLECTION.aggregate(
-        [{"$project": {"_id": {"$toString": "$_id"}, "name": 1}}]
+def get_type(item=False, combo=False):
+    # build match
+    match = []
+    if item:
+        match.append("item")
+    if combo:
+        match.append("combo")
+    # start query
+    return list(
+        TYPE_COLLECTION.aggregate(
+            [
+                {"$match": {"category": {"$in": match}}},
+                {"$project": {"_id": {"$toString": "$_id"}, "name": 1}},
+            ]
+        )
     )
 
 
