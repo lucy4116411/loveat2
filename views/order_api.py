@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from flask import Blueprint, jsonify, request
@@ -38,12 +39,17 @@ def add_order():
     data = request.get_json()
     data["userName"] = current_user.name
     try:
-        if order.add_order(data):
-            push.send_to_topic({
-                "title": "新訂單",
-                "content": "您有新訂單",
-                "url": "/order/pending"
-            }, push.TOPIC_ADMIN)
+        cur_order = order.add_order(data)
+        if cur_order:
+            push.send_to_topic(
+                {
+                    "title": "新訂單",
+                    "content": "您有新訂單",
+                    "url": "/order/pending",
+                    "detail": json.dumps(cur_order),
+                },
+                push.TOPIC_ADMIN,
+            )
             return "", 200
         else:
             return "", 422

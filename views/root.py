@@ -1,11 +1,23 @@
-from flask import Blueprint, current_app, make_response, send_from_directory
+from flask import (
+    Blueprint,
+    current_app,
+    make_response,
+    redirect,
+    send_from_directory,
+    url_for,
+)
 
 from models import image
 
 root = Blueprint("root", __name__)
 
 
-@root.route("/img/<uuid>")
+@root.route("/", methods=["GET"])
+def index():
+    return redirect(url_for("menu_web.menu"))
+
+
+@root.route("/img/<uuid>", methods=["GET"])
 def show_image(uuid):
     response = make_response(image.get_by_uuid(uuid)["picture"])
     response.headers.set("Content-Type", "image/jpeg")
