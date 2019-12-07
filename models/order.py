@@ -41,7 +41,7 @@ def get_raw_history(start, end):
     return ORDER_COLLECTION.find(
         find_by_time(start, end),
         {
-            "content._id": 0,
+            "content.id": 0,
             "content.type": 0,
             "_id": 0,
             "takenAt": 0,
@@ -175,16 +175,18 @@ def get_not_end_by_username(user_name):
                             "format": "%Y/%m/%d %H:%M",
                             "date": "$takenAt",
                         }
-                    }
+                    },
+                    "_id": {
+                        "$toString": "$_id"
+                    },
                 }
             },
             {
                 "$project": {
-                    "_id": 0,
                     "createdAt": 0,
                     "userName": 0,
                     "total": 0,
-                    "content._id": 0,
+                    "content.id": 0,
                     "content.type": 0,
                 }
             },
@@ -270,7 +272,7 @@ def get_todo_order():
                 }
             },
             {"$unwind": {"path": "$user"}},
-            {"$project": {"content._id": 0, "content.type": 0}},
+            {"$project": {"content.id": 0, "content.type": 0}},
             {
                 "$project": {
                     "_id": {"$toString": "$_id"},
