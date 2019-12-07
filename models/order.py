@@ -245,9 +245,11 @@ def update_state(data):
             {"_id": ObjectId(data["id"])}, {"$set": {"state": data["state"]}}
         )
         result = ORDER_COLLECTION.find_one(
-            {"_id": ObjectId(data["id"])}, {"userName": 1, "_id": 0}
+            {"_id": ObjectId(data["id"])},
+            {"userName": 1, "_id": 1, "orderID": 1, "state": 1},
         )
-        return result["userName"] if result is not None else result
+        result["_id"] = str(result["_id"])
+        return result if result is not None else result
     else:
         return None
 
