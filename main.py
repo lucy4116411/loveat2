@@ -39,7 +39,7 @@ def create_app():
     login_manager.init_app(app)
     CORS(app, supports_credentials=True)
     # register route
-    app.register_blueprint(root.root, url_prefix="/")
+    app.register_blueprint(root.root, url_prefix="")
     register_api(app)
     register_web(app)
     return app

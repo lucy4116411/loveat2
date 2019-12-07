@@ -39,6 +39,11 @@ def add_order():
     data["userName"] = current_user.name
     try:
         if order.add_order(data):
+            push.send_to_topic({
+                "title": "新訂單",
+                "content": "您有新訂單",
+                "url": "/order/pending"
+            }, push.TOPIC_ADMIN)
             return "", 200
         else:
             return "", 422
@@ -52,9 +57,21 @@ def update_order_state():
     data = request.get_json()
     user_name = order.update_state(data)
     message = {
-        "doing": {"title": "訂單已接受", "content": "老闆已接受您的訂單"},
-        "cancel": {"title": "訂單被拒絕", "content": "抱歉，老闆拒絕了您的訂單"},
-        "finish": {"title": "訂單已完成", "content": "餐點已製作完成，請儘速來取餐"},
+        "doing": {
+            "title": "訂單已接受",
+            "content": "老闆已接受您的訂單",
+            "url": "/order/state",
+        },
+        "cancel": {
+            "title": "訂單被拒絕",
+            "content": "抱歉，老闆拒絕了您的訂單",
+            "url": "/order/state",
+        },
+        "finish": {
+            "title": "訂單已完成",
+            "content": "餐點已製作完成，請儘速來取餐",
+            "url": "/order/state",
+        },
     }
     if user_name:
         try:

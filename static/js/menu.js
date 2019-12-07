@@ -1,4 +1,4 @@
-/* global Cart, $, FetchData */
+/* global Cart, $, FetchData, lozad */
 /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
 
 
@@ -65,6 +65,10 @@ function addContent(event) {
 }
 
 async function init() {
+  // init lazy load pic
+  const observer = lozad();
+  observer.observe();
+  // init cart
   myCart = await new Cart();
   /* ---- fetch menu data ----- */
   const res = await FetchData.get('/api/menu');
