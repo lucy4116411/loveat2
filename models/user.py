@@ -1,3 +1,5 @@
+import uuid
+
 from bson.binary import Binary
 from bson.objectid import ObjectId
 
@@ -7,12 +9,14 @@ from pymongo import MongoClient
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-
-USER_COLLECTION = MongoClient(URL)["loveat2"]["user"]
+DB = MongoClient(URL)["loveat2"]
+USER_COLLECTION = DB["user"]
+IMAGE_COLLECTION = DB["image"]
 
 
 def add(data):
     if USER_COLLECTION.find_one({"userName": data["userName"]}) is None:
+        pic_id = str(uuid.uuid4())
         USER_COLLECTION.insert_one(
             {
                 "userName": data["userName"],
@@ -22,12 +26,35 @@ def add(data):
                 "email": data["email"],
                 "birth": data["birth"],
                 "role": data["role"],
-                "avatar": Binary(b""),
+                "avatar": pic_id,
             }
         )
+        IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": Binary(b"")})
         return True
     else:
         return False
+
+
+def update_profile(id, data, pic, birth):
+    pic_id = USER_COLLECTION.find_one({"_id": ObjectId(id)}, {"avatar": 1})[
+        "avatar"
+    ]
+    USER_COLLECTION.update_one(
+        {"_id": ObjectId(id)},
+        {
+            "$set": {
+                "birth": birth,
+                "gender": data.get("gender"),
+                "email": data.get("email"),
+                "phone": data.get("phone"),
+            }
+        },
+    )
+    if pic is not None:
+        print(pic)
+        IMAGE_COLLECTION.update_one(
+            {"uuid": pic_id}, {"$set": {"picture": pic}}
+        )
 
 
 def find(id, profile=False):

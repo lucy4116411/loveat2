@@ -74,9 +74,42 @@ def reset_password(token):
         return "", 401
 
 
+@user_api.route("/password/update", methods=["POST"])
+@login_required
+def update_password():
+    data = request.get_json()
+    user_info = {
+        "userName": current_user.name,
+        "password": data["oldPassword"],
+    }
+    if user.validate_user(user_info, password=True):
+        user.update_password(current_user.id, data["newPassword"])
+        return "", 200
+    else:
+        return "", 401
+
+
 @user_api.route("/token", methods=["POST"])
 @login_required
 def update_token():
     token = request.get_json()["token"]
     user.update_token(current_user.id, token)
     return "", 200
+
+
+@user_api.route("/update", methods=["POST"])
+@login_required
+def update_profile():
+    data = request.form
+    birth = datetime.now() - relativedelta(years=int(data.get("age")))
+    # deal with no upload pic condition
+    try:
+        pic = request.files["picture"].read()
+    except KeyError:
+        pic = None
+
+    try:
+        user.update_profile(current_user.id, data, pic, birth)
+        return "", 200
+    except KeyError:
+        return "", 400
