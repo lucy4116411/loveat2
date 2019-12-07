@@ -248,8 +248,11 @@ def update_state(data):
             {"_id": ObjectId(data["id"])},
             {"userName": 1, "_id": 1, "orderID": 1, "state": 1},
         )
-        result["_id"] = str(result["_id"])
-        return result if result is not None else result
+        if result:
+            result["_id"] = str(result["_id"])
+            return result
+        else:
+            return None
     else:
         return None
 
