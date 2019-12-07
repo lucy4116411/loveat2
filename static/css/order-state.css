@@ -1,0 +1,36 @@
+.full-container {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+th {
+    position: sticky;
+    top: 0;
+}
+
+.finish {
+    background: #b6e6bd;
+}
+
+.doing {
+    background: #9be3de;
+}
+
+.cancel {
+    background: #f2a6a6;
+}
+
+.unknown {
+    background: #ffc5a1;
+}
+
+@media screen and (max-width:480px)
+{
+    .full-container {
+        float:left;
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+    }
+}
