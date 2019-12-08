@@ -38,6 +38,4 @@ messaging.onMessage((payload) => {
     </tr>
   `;
   table.innerHTML += result;
-  console.log("new message");
-  console.log(result);
 });
