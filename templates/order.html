@@ -1,0 +1,67 @@
+{% extends "layout.html" %} 
+{% set active_page = "order" %} 
+{% set url = "boss" %} 
+
+{% set defaultPush = False %}
+{% block header %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/order.css') }}"> 
+<script src="{{ url_for('static', filename='js/order.js') }}"></script>
+{% endblock %} 
+
+{% block content %}
+<div class="full-container">
+    <table class="table table-striped" id="pending-table">
+        <thead class="thead-dark">
+            <tr>
+                <th>預定取餐時間</th>
+                <th>數量及項目</th>
+                <th>備註</th>
+                <th>其他</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for eachOrder in unknown_order%}
+            <tr id="{{eachOrder['_id']}}">
+                <td>
+                    {% autoescape false %}
+                    {{eachOrder['takenAt'] | replace(" ",'</br>')}}
+                    {% endautoescape %}
+                </td>
+                <td>
+                    {% for content in eachOrder['content']%}
+                        {{content['name']}}*{{content['quantity']}}<br>
+                    {%endfor%}
+                </td>
+                <td>
+                    {{eachOrder['notes']}}
+                </td>
+                <td>
+                    <button class="btn btn-primary" onclick="update('doing','{{eachOrder['_id']}}')">接受</button>
+                    <button class="btn btn-danger"  onclick="update('cancel','{{eachOrder['_id']}}')" >拒絕</button>
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+
+    </table>
+    <div class="modal fade" id="orderHintModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                 <h5>Hint</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="orderHintContent">
+                  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary"
+                  data-dismiss="modal">確認</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+{% endblock %}

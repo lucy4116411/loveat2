@@ -2,9 +2,11 @@ from datetime import datetime, timedelta
 
 from flask import Blueprint, render_template
 
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 from lib.auth import admin_required
+
+from models import order
 
 
 order_web = Blueprint("order_web", __name__)
@@ -33,15 +35,30 @@ def history():
 
 
 @order_web.route("/pending", methods=["GET"])
+@admin_required
 def pending():
-    return "pending"
+    temp = list(order.get_unknown_order())
+    return render_template(
+        "order.html",
+        auth=current_user.role,
+        name=current_user.name,
+        unknown_order=temp,
+    )
 
 
+@login_required
 @order_web.route("/todo", methods=["GET"])
 def todo():
     return "todo"
 
 
 @order_web.route("/state", methods=["GET"])
+@login_required
 def state():
-    return "state"
+    temp = list(order.get_not_end_by_username(current_user.name))
+    return render_template(
+        "order-state.html",
+        auth=current_user.role,
+        name=current_user.name,
+        order=temp,
+    )
