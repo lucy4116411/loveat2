@@ -28,15 +28,19 @@ function getTokenAndSend() {
 }
 
 function requestPermission() {
-  if (Notification.permission === 'default' || Notification.permission === 'undefined') {
-    Notification.requestPermission().then((permission) => {
-      if (permission === 'granted') {
-        getTokenAndSend();
-      }
-    });
-  } else {
-    getTokenAndSend();
+  const nav = document.getElementById('settingDropDown');
+  // check if user login
+  if (nav != null) {
+    if (Notification.permission === 'default' || Notification.permission === 'undefined') {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          getTokenAndSend();
+        }
+      });
+    } else {
+      getTokenAndSend();
+    }
   }
 }
 
-requestPermission();
+window.addEventListener('load', requestPermission);

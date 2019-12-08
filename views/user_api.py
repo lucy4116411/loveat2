@@ -95,7 +95,7 @@ def update_token():
     token = request.get_json()["token"]
     user.update_token(current_user.id, token)
     if current_user.role == "admin":
-        push.subscribe(push.TOPIC_ADMIN)
+        push.subscribe(token, push.TOPIC_ADMIN)
     return "", 200
 
 
