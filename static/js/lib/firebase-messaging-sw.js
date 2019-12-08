@@ -13,17 +13,23 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.setBackgroundMessageHandler((payload) => {
-  const notificationTitle = payload.data.title;
-  const notificationOptions = {
-    body: payload.data.content,
-    icon: 'favicon.ico',
-    data: { url: '/menu' },
-    actions: [{ action: 'open_url', title: '立刻查看' }],
+  if (payload.data.type === 'admin-order-update') {
+    const channel = new BroadcastChannel('order-todo');
+    channel.postMessage(JSON.parse(payload.data.detail));
+  } else {
+    const notificationTitle = payload.data.title;
+    const notificationOptions = {
+      body: payload.data.content,
+      icon: 'favicon.ico',
+      data: { url: '/menu' },
+      actions: [{ action: 'open_url', title: '立刻查看' }],
 
-  };
+    };
 
-  // eslint-disable-next-line no-restricted-globals
-  return self.registration.showNotification(notificationTitle, notificationOptions);
+    // eslint-disable-next-line no-restricted-globals
+    return self.registration.showNotification(notificationTitle, notificationOptions);
+  }
+  return undefined;
 });
 
 // eslint-disable-next-line no-restricted-globals
