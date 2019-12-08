@@ -35,10 +35,18 @@ def history():
 
 
 @order_web.route("/pending", methods=["GET"])
+@admin_required
 def pending():
-    return "pending"
+    temp = list(order.get_unknown_order())
+    return render_template(
+        "order.html",
+        auth=current_user.role,
+        name=current_user.name,
+        unknown_order=temp,
+    )
 
 
+@login_required
 @order_web.route("/todo", methods=["GET"])
 def todo():
     return "todo"
@@ -51,6 +59,6 @@ def state():
     return render_template(
         "order-state.html",
         auth=current_user.role,
-        name=current_user.id,
+        name=current_user.name,
         order=temp,
     )

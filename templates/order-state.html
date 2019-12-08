@@ -2,8 +2,10 @@
 {% set active_page = "order_state" %}
 {% set url = "customer" %}
 
+{%set defaultPush = False %}
 {% block header %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/order-state.css') }}">
+    <script src="{{ url_for('static', filename='js/order-state.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -20,14 +22,18 @@
             </thead>
             <tbody>
                 {% for eachOrder in order%}
-                    <tr class = "{{eachOrder['state']}}">
-                        {% if eachOrder['state'] == 'cancel' %}
-                            <td>X</td>
-                        {% elif eachOrder['state'] == 'unknown' %}
-                            <td>?</td>
-                        {% else %}
-                            <td>{{eachOrder['orderID']}}</td>
-                        {% endif %}
+                    <tr class = "{{eachOrder['state']}}"  id = "tr-{{eachOrder['_id']}}">
+
+                        <td id="id-{{eachOrder['_id']}}">
+                            {% if eachOrder['state'] == 'cancel' %}
+                                X
+                            {% elif eachOrder['state'] == 'unknown' %}
+                                ?
+                            {% else %}
+                                {{eachOrder['orderID']}}
+                            {% endif %}
+                        </td>
+
                         <td>{{eachOrder['takenAt']}}</td>
 
                         <td>
@@ -36,21 +42,20 @@
                         {%endfor%}
                         </td>
 
-                        {% if eachOrder['state'] == 'doing'%}
-                        <td id = "{{eachOrder['orderID']}}">製作中</td>
-                        {%endif%}
 
-                        {% if eachOrder['state'] == 'unknown'%}
-                        <td id = "{{eachOrder['orderID']}}">未回應</td>
-                        {%endif%}
+                        <td id = "state-{{eachOrder['_id']}}">
+                            {% if eachOrder['state'] == 'doing'%}
+                                製作中
+                            {% elif eachOrder['state'] == 'unknown'%}
+                                未回應
+                            {% elif eachOrder['state'] == 'finish'%}
+                                已完成
+                            {% elif eachOrder['state'] == 'cancel'%}
+                                拒絕
+                            {% endif %}
+                        </td>
 
-                        {% if eachOrder['state'] == 'finish'%}
-                        <td id = "{{eachOrder['orderID']}}">已完成</td>
-                        {%endif%}
 
-                        {% if eachOrder['state'] == 'cancel'%}
-                        <td id = "{{eachOrder['orderID']}}">拒絕</td>
-                        {%endif%}
 
                         <td >{{eachOrder['notes']}}</td>
                     </tr>

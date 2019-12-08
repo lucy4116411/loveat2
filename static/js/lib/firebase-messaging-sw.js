@@ -21,7 +21,7 @@ messaging.setBackgroundMessageHandler((payload) => {
     const notificationOptions = {
       body: payload.data.content,
       icon: 'favicon.ico',
-      data: { url: '/menu' },
+      data: { url: payload.data.url },
       actions: [{ action: 'open_url', title: '立刻查看' }],
 
     };
