@@ -2,10 +2,13 @@ import json
 
 from models import db
 
+from werkzeug.security import check_password_hash
+
 URL_PREFIX = "/api/user"
 
 
 class TestUser(object):
+
     def test_login_success(self, client):
         url = URL_PREFIX + "/login"
         rv = client.post(
@@ -143,3 +146,48 @@ class TestUser(object):
             content_type="application/json",
         )
         assert rv.status_code == 401
+
+    def test_update_password_unauthorized(self, client):
+        url = URL_PREFIX + "/password/update"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "oldPassword": "132456789",
+                "newPassword": "1324567890",
+            }),
+            content_type="appliction/json"
+        )
+        # check for status code
+        assert rv.status_code == 401
+
+    def test_update_password_wrong_pwd(self, client, customer):
+        url = URL_PREFIX + "/password/update"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "oldPassword": "1324567890",
+                "newPassword": "1234567890",
+            }),
+            content_type="application/json"
+        )
+        # check for correct status code
+        assert rv.status_code == 401
+        cur_user = db.USER_COLLECTION.find_one({"userName": "customer_name"})
+        # check password isn't updated
+        assert check_password_hash(cur_user["password"], "123456789")
+
+    def test_update_password_success(self, client, customer):
+        url = URL_PREFIX + "/password/update"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "oldPassword": "123456789",
+                "newPassword": "1324567890",
+            }),
+            content_type="application/json"
+        )
+        # check for correct status code
+        assert rv.status_code == 200
+        # check if update success
+        cur_user = db.USER_COLLECTION.find_one({"userName": "customer_name"})
+        assert check_password_hash(cur_user["password"], "1324567890")
