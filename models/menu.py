@@ -183,8 +183,12 @@ def add_type(data):
 def delete_item(id):
     object_id = ObjectId(id)
     item = ITEM_COLLECTION.find_one({"_id": object_id}, {"picture": 1})
-    ITEM_COLLECTION.delete_one({"_id": ObjectId(id)})
+    ITEM_COLLECTION.delete_one({"_id": object_id})
     IMAGE_COLLECTION.delete_one({"uuid": item["picture"]})
+    # delete cur item in combo
+    COMBO_COLLECTION.update_many(
+        {"content.id": object_id}, {"$pull": {"content": {"id": object_id}}}
+    )
 
 
 def delete_combo(id):
@@ -217,6 +221,7 @@ def update_item(data, pic):
     pic_id = ITEM_COLLECTION.find_one(
         {"_id": ObjectId(data.get("id"))}, {"picture": 1}
     )["picture"]
+    # update item
     ITEM_COLLECTION.update_one(
         {"_id": ObjectId(data.get("id"))},
         {
@@ -228,6 +233,12 @@ def update_item(data, pic):
             }
         },
     )
+    # update item name in combo
+    COMBO_COLLECTION.update_many(
+        {"content.id": ObjectId(data.get("id"))},
+        {"$set": {"content.$.name": data.get("name")}},
+    )
+    # update pic
     if pic is not None:
         IMAGE_COLLECTION.update_one(
             {"uuid": pic_id}, {"$set": {"picture": pic}}
