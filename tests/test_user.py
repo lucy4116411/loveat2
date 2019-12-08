@@ -1,5 +1,7 @@
 import json
 
+from models import db
+
 URL_PREFIX = "/api/user"
 
 
@@ -37,9 +39,7 @@ class TestUser(object):
 
     def test_register_success(self, client):
         # check if there is no customer_name2 in user collection
-        new_user = client.application.config["db"]["USER_COLLECTION"].find_one(
-            {"userName": "customer_name2"}
-        )
+        new_user = db.USER_COLLECTION.find_one({"userName": "customer_name2"})
         assert new_user is None
         # test register api
         url = URL_PREFIX + "/register"
@@ -59,18 +59,12 @@ class TestUser(object):
         )
         assert rv.status_code == 200
         # check if insert customer_name2 success
-        new_user = client.application.config["db"]["USER_COLLECTION"].find_one(
-            {"userName": "customer_name2"}
-        )
+        new_user = db.USER_COLLECTION.find_one({"userName": "customer_name2"})
         assert new_user is not None
 
     def test_register_duplicate_account(self, client):
         # check if there is only one customer_name in user collection
-        new_user = list(
-            client.application.config["db"]["USER_COLLECTION"].find(
-                {"userName": "customer_name"}
-            )
-        )
+        new_user = list(db.USER_COLLECTION.find({"userName": "customer_name"}))
         assert len(new_user) == 1
         # test register api
         url = URL_PREFIX + "/register"
@@ -90,18 +84,12 @@ class TestUser(object):
         )
         assert rv.status_code == 409
         # check if there is only one customer_name in user collection
-        new_user = list(
-            client.application.config["db"]["USER_COLLECTION"].find(
-                {"userName": "customer_name"}
-            )
-        )
+        new_user = list(db.USER_COLLECTION.find({"userName": "customer_name"}))
         assert len(new_user) == 1
 
     def test_register_wrong_fomat(self, client):
         # check if there is no customer_name3 in user collection
-        new_user = client.application.config["db"]["USER_COLLECTION"].find_one(
-            {"userName": "customer_name3"}
-        )
+        new_user = db.USER_COLLECTION.find_one({"userName": "customer_name3"})
         assert new_user is None
         # test register api
         url = URL_PREFIX + "/register"
@@ -121,14 +109,12 @@ class TestUser(object):
         )
         assert rv.status_code == 400
         # check if there is no customer_name3 in user collection
-        new_user = client.application.config["db"]["USER_COLLECTION"].find_one(
-            {"userName": "customer_name3"}
-        )
+        new_user = db.USER_COLLECTION.find_one({"userName": "customer_name3"})
         assert new_user is None
 
     def test_update_token_success(self, client, customer):
         # check original token is empty
-        token = client.application.config["db"]["USER_COLLECTION"].find_one(
+        token = db.USER_COLLECTION.find_one(
             {"userName": "customer_name"}, {"token": 1}
         )
         assert token["token"] == ""
@@ -142,7 +128,7 @@ class TestUser(object):
         )
         assert rv.status_code == 200
         # check if update token of cutomer_name success
-        token = client.application.config["db"]["USER_COLLECTION"].find_one(
+        token = db.USER_COLLECTION.find_one(
             {"userName": "customer_name"}, {"token": 1}
         )
         assert token["token"] == update_token

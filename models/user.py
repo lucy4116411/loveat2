@@ -3,21 +3,15 @@ import uuid
 from bson.binary import Binary
 from bson.objectid import ObjectId
 
-from config import URL
-
-from pymongo import MongoClient
+from models import db
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-DB = MongoClient(URL)["loveat2"]
-USER_COLLECTION = DB["user"]
-IMAGE_COLLECTION = DB["image"]
-
 
 def add(data):
-    if USER_COLLECTION.find_one({"userName": data["userName"]}) is None:
+    if db.USER_COLLECTION.find_one({"userName": data["userName"]}) is None:
         pic_id = str(uuid.uuid4())
-        USER_COLLECTION.insert_one(
+        db.USER_COLLECTION.insert_one(
             {
                 "userName": data["userName"],
                 "password": generate_password_hash(data["password"]),
@@ -29,17 +23,19 @@ def add(data):
                 "avatar": pic_id,
             }
         )
-        IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": Binary(b"")})
+        db.IMAGE_COLLECTION.insert_one(
+            {"uuid": pic_id, "picture": Binary(b"")}
+        )
         return True
     else:
         return False
 
 
 def update_profile(id, data, pic, birth):
-    pic_id = USER_COLLECTION.find_one({"_id": ObjectId(id)}, {"avatar": 1})[
+    pic_id = db.USER_COLLECTION.find_one({"_id": ObjectId(id)}, {"avatar": 1})[
         "avatar"
     ]
-    USER_COLLECTION.update_one(
+    db.USER_COLLECTION.update_one(
         {"_id": ObjectId(id)},
         {
             "$set": {
@@ -52,7 +48,7 @@ def update_profile(id, data, pic, birth):
     )
     if pic is not None:
         print(pic)
-        IMAGE_COLLECTION.update_one(
+        db.IMAGE_COLLECTION.update_one(
             {"uuid": pic_id}, {"$set": {"picture": pic}}
         )
 
@@ -62,18 +58,18 @@ def find(id, profile=False):
         projection = {"password": 0, "role": 0, "token": 0}
     else:
         projection = {"role": 1, "userName": 1}
-    return USER_COLLECTION.find_one({"_id": ObjectId(id)}, projection)
+    return db.USER_COLLECTION.find_one({"_id": ObjectId(id)}, projection)
 
 
 def validate_user(data, email=False, password=False):
     if email:
-        user = USER_COLLECTION.find_one(
+        user = db.USER_COLLECTION.find_one(
             {"userName": data["userName"], "email": data["email"]}, {"_id": 1}
         )
         if user:
             return user["_id"]
     elif password:
-        user = USER_COLLECTION.find_one(
+        user = db.USER_COLLECTION.find_one(
             {"userName": data["userName"]}, {"_id": 1, "password": 1}
         )
         if user and check_password_hash(user["password"], data["password"]):
@@ -82,19 +78,19 @@ def validate_user(data, email=False, password=False):
 
 
 def update_password(id, password):
-    USER_COLLECTION.update_one(
+    db.USER_COLLECTION.update_one(
         {"_id": ObjectId(id)},
         {"$set": {"password": generate_password_hash(password)}},
     )
 
 
 def update_token(id, token):
-    USER_COLLECTION.update_one(
+    db.USER_COLLECTION.update_one(
         {"_id": ObjectId(id)}, {"$set": {"token": token}}
     )
 
 
 def get_token_by_username(user_name):
-    return USER_COLLECTION.find_one(
+    return db.USER_COLLECTION.find_one(
         {"userName": user_name}, {"token": 1, "_id": 0}
     )

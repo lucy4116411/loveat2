@@ -2,15 +2,8 @@ from datetime import datetime, timedelta
 
 from bson.objectid import ObjectId
 
-from config import URL
+from models import db
 
-from pymongo import MongoClient
-
-DB = MongoClient(URL)["loveat2"]
-ORDER_COLLECTION = DB["order"]
-ITEM_COLLECTION = DB["item"]
-COMBO_COLLECTION = DB["combo"]
-BUSINESS_COLLECTION = DB["businessTime"]
 
 MAX_ORDERID = -1
 
@@ -38,7 +31,7 @@ def find_by_time(start, end):
 
 
 def get_raw_history(start, end):
-    return ORDER_COLLECTION.find(
+    return db.ORDER_COLLECTION.find(
         find_by_time(start, end),
         {
             "content.id": 0,
@@ -75,7 +68,7 @@ def get_analysis_data(start, end):
     slot = 7
     result = build_analysis_struct(interval, slot)
     # query
-    raw_data = ORDER_COLLECTION.aggregate(
+    raw_data = db.ORDER_COLLECTION.aggregate(
         [
             {"$match": find_by_time(start, end)},
             {
@@ -145,7 +138,7 @@ def get_analysis_data(start, end):
 
 def get_max_orderid():
     result = list(
-        ORDER_COLLECTION.aggregate(
+        db.ORDER_COLLECTION.aggregate(
             [
                 {"$addFields": {"orderID": {"$toInt": "$orderID"}}},
                 {"$group": {"_id": None, "max": {"$max": "$orderID"}}},
@@ -159,7 +152,7 @@ def get_max_orderid():
 
 
 def get_not_end_by_username(user_name):
-    return ORDER_COLLECTION.aggregate(
+    return db.ORDER_COLLECTION.aggregate(
         [
             {
                 "$match": {
@@ -204,7 +197,9 @@ def add_order(data):
 
     # check if takenAt is in business time insterval
     taken_at = datetime.strptime(data["takenAt"], "%Y-%m-%dT%H:%M")
-    business_time = list(BUSINESS_COLLECTION.find_one({}, {"_id": 0}).values())
+    business_time = list(
+        db.BUSINESS_COLLECTION.find_one({}, {"_id": 0}).values()
+    )
     business_time = business_time[taken_at.isoweekday() - 1]
     start = build_business_time(business_time["start"])
     end = build_business_time(business_time["end"])
@@ -213,13 +208,16 @@ def add_order(data):
         MAX_ORDERID += 1
         for meal in data["content"]:
             meal["id"] = ObjectId(meal["id"])
-            tar_col = {"item": ITEM_COLLECTION, "combo": COMBO_COLLECTION}
+            tar_col = {
+                "item": db.ITEM_COLLECTION,
+                "combo": db.COMBO_COLLECTION,
+            }
             tar = tar_col[meal["category"]].find_one(
                 {"_id": meal["id"]}, {"name": 1}
             )
             meal["name"] = tar["name"]
 
-        result = ORDER_COLLECTION.insert_one(
+        result = db.ORDER_COLLECTION.insert_one(
             {
                 "userName": data["userName"],
                 "notes": data["notes"],
@@ -233,7 +231,7 @@ def add_order(data):
         )
 
         pipeline = [{"$match": {"_id": result.inserted_id}}] + UNKNOWN_PROJECT
-        return list(ORDER_COLLECTION.aggregate(pipeline))[0]
+        return list(db.ORDER_COLLECTION.aggregate(pipeline))[0]
     else:
         return None
 
@@ -241,10 +239,10 @@ def add_order(data):
 def update_state(data):
     state = ["doing", "cancel", "finish", "end"]
     if data["state"] in state:
-        ORDER_COLLECTION.update_one(
+        db.ORDER_COLLECTION.update_one(
             {"_id": ObjectId(data["id"])}, {"$set": {"state": data["state"]}}
         )
-        result = ORDER_COLLECTION.find_one(
+        result = db.ORDER_COLLECTION.find_one(
             {"_id": ObjectId(data["id"])},
             {"userName": 1, "_id": 1, "orderID": 1, "state": 1},
         )
@@ -268,7 +266,7 @@ def get_todo_order(id=None):
     else:
         match = {"$match": {"state": {"$in": ["doing", "finish"]}}}
 
-    result = ORDER_COLLECTION.aggregate(
+    result = db.ORDER_COLLECTION.aggregate(
         [
             match,
             {
@@ -310,5 +308,5 @@ def get_unknown_order():
         + UNKNOWN_PROJECT
         + [{"$sort": {"orderID": 1}}]
     )
-    result = ORDER_COLLECTION.aggregate(pipeline)
+    result = db.ORDER_COLLECTION.aggregate(pipeline)
     return result
