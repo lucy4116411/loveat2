@@ -30,7 +30,7 @@
         "password": "pbkdf2:sha256:150000$U5JoRkm2$1c4c8d0b9f5b4087d7e7b39c0d7348612afa156e391ce1cdc6cbc01e2d310019",
         "gender": "female",
         "phone": "0945678912",
-        "email": "123@gmail.com",
+        "email": "customer_name@gmail.com",
         "birth": {
             "$date": {
                 "$numberLong": "1196147639767"

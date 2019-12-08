@@ -187,3 +187,29 @@ class TestUser(object):
         # check if update success
         cur_user = db.USER_COLLECTION.find_one({"userName": "customer_name"})
         assert check_password_hash(cur_user["password"], "1324567890")
+
+    def test_forget_password_success(self, client, customer):
+        url = URL_PREFIX + "/password/forget"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "userName": "customer_name",
+                "email": "customer_name@gmail.com",
+            }),
+            content_type="application/json"
+        )
+        # check for correct status code
+        assert rv.status_code == 200
+
+    def test_forget_password_wrong_email(self, client, customer):
+        url = URL_PREFIX + "/password/forget"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "userName": "customer_name",
+                "email": "wrongEmail@gmail.com",
+            }),
+            content_type="application/json"
+        )
+        # check for correct status code
+        assert rv.status_code == 401
