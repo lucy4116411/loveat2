@@ -296,7 +296,7 @@ def get_todo_order(id=None):
                     "phone": "$user.phone",
                 }
             },
-            {"$sort": {"orderID": -1}},
+            {"$sort": {"orderID": 1}},
         ]
     )
     return result

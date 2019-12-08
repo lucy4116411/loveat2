@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% set active_page = "todo" %}
+{% set url = "boss" %}
+
+{% block header %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/todo.css') }}">
+    <script src="{{ url_for('static', filename='js/todo.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="full-container">
+        <table class="table" id="order_table">
+            <thead class="thead-dark">
+                <tr>
+                    <th class="order-table" id="orderID">取餐序號</th>
+                    <th class="order-table" id="myTakenAt">預定取餐時間</th>
+                    <th>數量及項目</th>
+                    <th>備註</th>
+                    <th>顧客資料</th>
+                    <th>其他</th>
+                </tr>
+            </thead>
+            <tbody>
+                    {% for order in order_data %}
+                    {% if order["state"] == "finish" %}
+                        <tr class="finish" id="{{order['_id']}}_order">
+                    {% else %}
+                        <tr id="{{order['_id']}}_order">
+                    {% endif %}
+                            <td>{{order["orderID"]}}</td>
+                            <td>{{order["takenAt"] | replace(" ", "<br/>") | safe}}
+                            </td>
+                            <td>
+                                {% for item in order["content"] %}
+                                    {{ item["quantity"]}} * {{item["name"]}}<br>
+                                {% endfor%}
+                            </td>
+                            <td>
+                                {{order["notes"] | replace(";", "<br/>") | safe}}
+                            </td>
+                            <td>
+                                {{order["phone"]}}<br>
+                                <a href="/user/profile/{{order['user_id']}}">詳細資料</a>
+                            </td>
+                            <td>
+                                {% if order["state"] == "finish" %}
+                                    <button class="btn btn-primary" id="{{order['_id']}}_finish" disabled>製作完成</button>
+                                {% else %}
+                                    <button class="btn btn-primary" id="{{order['_id']}}_finish">製作完成</button>
+                                {% endif %}
+                                <button class="btn btn-primary" id="{{order['_id']}}_end">已取餐</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+    
+            </tbody>
+        </table>
+          <!-- Modal -->
+          <div class="modal fade" id="orderHintModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                 <h5>Hint</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="orderHintContent">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary"
+                  data-dismiss="modal">確認</button>
+                </div>
+              </div>
+            </div>
+          </div>
+            <!-- Modal -->
+            <div class="modal fade" id="newOrderHintModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5>Hint</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="newOrderHintContent">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary"
+                        data-dismiss="modal" id="reloadBtn">刷新頁面</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+    </div>
+{% endblock %}

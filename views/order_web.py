@@ -8,7 +8,6 @@ from lib.auth import admin_required
 
 from models import order
 
-
 order_web = Blueprint("order_web", __name__)
 
 
@@ -48,8 +47,16 @@ def pending():
 
 @login_required
 @order_web.route("/todo", methods=["GET"])
+@admin_required
 def todo():
-    return "todo"
+    order_data = list(order.get_todo_order())
+    return render_template(
+        "todo.html",
+        order_data=order_data,
+        auth=current_user.role,
+        name=current_user.name,
+        id=current_user.id,
+    )
 
 
 @order_web.route("/state", methods=["GET"])
