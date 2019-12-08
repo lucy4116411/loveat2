@@ -176,9 +176,7 @@ def get_not_end_by_username(user_name):
                             "date": "$takenAt",
                         }
                     },
-                    "_id": {
-                        "$toString": "$_id"
-                    },
+                    "_id": {"$toString": "$_id"},
                 }
             },
             {
@@ -259,10 +257,20 @@ def update_state(data):
         return None
 
 
-def get_todo_order():
+def get_todo_order(id=None):
+    if id:
+        match = {
+            "$match": {
+                "state": {"$in": ["doing", "finish"]},
+                "_id": ObjectId(id),
+            }
+        }
+    else:
+        match = {"$match": {"state": {"$in": ["doing", "finish"]}}}
+
     result = ORDER_COLLECTION.aggregate(
         [
-            {"$match": {"state": {"$in": ["doing", "finish"]}}},
+            match,
             {
                 "$lookup": {
                     "from": "user",
@@ -272,7 +280,7 @@ def get_todo_order():
                 }
             },
             {"$unwind": {"path": "$user"}},
-            {"$project": {"content.id": 0, "content.type": 0}},
+            {"$project": {"content.id": 0, "content.category": 0}},
             {
                 "$project": {
                     "_id": {"$toString": "$_id"},

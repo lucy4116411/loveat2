@@ -1,9 +1,12 @@
 import json
 from datetime import datetime
 
+from firebase_admin import messaging
+
 from flask import Blueprint, jsonify, request, url_for
 
 from flask_login import current_user, login_required
+
 
 from lib import push
 from lib.auth import admin_required
@@ -47,6 +50,7 @@ def add_order():
                     "content": "您有新訂單",
                     "url": url_for("order_web.pending", _externale=True),
                     "detail": json.dumps(cur_order),
+                    "type": "admin-order-new",
                 },
                 push.TOPIC_ADMIN,
             )
@@ -70,6 +74,7 @@ def update_order_state():
     if result:
         try:
             token = user.get_token_by_username(result["userName"])["token"]
+            # push to customer
             if data["state"] in message:
                 message[data["state"]].update(
                     {
@@ -78,9 +83,21 @@ def update_order_state():
                     }
                 )
                 push.send_to_customer(token, message[data["state"]])
-        except ValueError:
+        except (ValueError, messaging.UnregisteredError):
             pass
-        return "", 200
+        finally:
+            # push to admin
+            if data["state"] == "doing":
+                push.send_to_topic(
+                    {
+                        "type": "admin-order-update",
+                        "detail": json.dumps(
+                            list(order.get_todo_order(id=result["_id"]))[0]
+                        ),
+                    },
+                    push.TOPIC_ADMIN,
+                )
+            return "", 200
     else:
         return "", 404
 
