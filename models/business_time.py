@@ -1,13 +1,8 @@
-from config import URL
-
-from pymongo import MongoClient
-
-
-COLLECTION = MongoClient(URL)["loveat2"]["businessTime"]
+from models import db
 
 
 def get():
-    data = COLLECTION.find_one({}, {"_id": 0})
+    data = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
     return data
 
 
@@ -21,4 +16,4 @@ def update(data):
             "end": data[day]["end"],
         }
     # start update
-    COLLECTION.update_one({}, {"$set": update_data})
+    db.BUSINESS_COLLECTION.update_one({}, {"$set": update_data})

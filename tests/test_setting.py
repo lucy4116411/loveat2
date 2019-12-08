@@ -1,5 +1,8 @@
 import json
 
+from models import db
+
+
 URL_PREFIX = "/api/setting"
 
 
@@ -54,9 +57,7 @@ class TestSetting(object):
 
     def test_update_business_time_by_customer(self, client, customer):
         # check original business time json
-        cur_business_time = client.application.config["db"][
-            "BUSINESS_TIME_COLLECTION"
-        ].find_one({}, {"_id": 0})
+        cur_business_time = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
         assert cur_business_time == self.original_business_time
         # check update business time api
         url = URL_PREFIX + "/business-time"
@@ -67,16 +68,12 @@ class TestSetting(object):
         )
         assert rv.status_code == 403
         # check if business time is original business time
-        cur_business_time = client.application.config["db"][
-            "BUSINESS_TIME_COLLECTION"
-        ].find_one({}, {"_id": 0})
+        cur_business_time = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
         assert cur_business_time == self.original_business_time
 
     def test_update_business_time_unauthorized(self, client):
         # check original business time json
-        cur_business_time = client.application.config["db"][
-            "BUSINESS_TIME_COLLECTION"
-        ].find_one({}, {"_id": 0})
+        cur_business_time = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
         assert cur_business_time == self.original_business_time
         # check update business time api
         url = URL_PREFIX + "/business-time"
@@ -87,16 +84,12 @@ class TestSetting(object):
         )
         assert rv.status_code == 403
         # check if business time is original business time
-        cur_business_time = client.application.config["db"][
-            "BUSINESS_TIME_COLLECTION"
-        ].find_one({}, {"_id": 0})
+        cur_business_time = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
         assert cur_business_time == self.original_business_time
 
     def test_update_business_time_success(self, client, admin):
         # check original business time json
-        cur_business_time = client.application.config["db"][
-            "BUSINESS_TIME_COLLECTION"
-        ].find_one({}, {"_id": 0})
+        cur_business_time = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
         assert cur_business_time == self.original_business_time
         # check update business time api
         url = URL_PREFIX + "/business-time"
@@ -107,16 +100,12 @@ class TestSetting(object):
         )
         assert rv.status_code == 200
         # check if update business time success
-        cur_business_time = client.application.config["db"][
-            "BUSINESS_TIME_COLLECTION"
-        ].find_one({}, {"_id": 0})
+        cur_business_time = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
         assert cur_business_time == self.new_business_time
 
     def test_update_business_time_wrong_format(self, client, admin):
         # check original business time json
-        cur_business_time = client.application.config["db"][
-            "BUSINESS_TIME_COLLECTION"
-        ].find_one({}, {"_id": 0})
+        cur_business_time = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
         assert cur_business_time == self.original_business_time
         # check update business time api
         url = URL_PREFIX + "/business-time"
@@ -128,7 +117,5 @@ class TestSetting(object):
             )
             assert rv.status_code == 400
         # check if update token of cutomer_name success
-        cur_business_time = client.application.config["db"][
-            "BUSINESS_TIME_COLLECTION"
-        ].find_one({}, {"_id": 0})
+        cur_business_time = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
         assert cur_business_time == self.original_business_time

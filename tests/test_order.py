@@ -2,6 +2,9 @@ import json
 
 from bson.objectid import ObjectId
 
+from models import db
+
+
 URL_PREFIX = "/api/order"
 
 
@@ -45,7 +48,7 @@ class TestOrder(object):
         assert rv.status_code == 200
     """
 
-    def test_add_unauthorized(self, client, mock_item):
+    def test_add_unauthorized(self, client):
         # test add api
         url = URL_PREFIX + "/new"
         rv = client.post(
@@ -78,11 +81,9 @@ class TestOrder(object):
                 content_type="application/json",
             )
             assert rv.status_code == 200
-            cur_state = client.application.config["db"][
-                "ORDER_COLLECTION"
-            ].find_one({"_id": ObjectId(self.update_order_id)}, {"state": 1})[
-                "state"
-            ]
+            cur_state = db.ORDER_COLLECTION.find_one(
+                {"_id": ObjectId(self.update_order_id)}, {"state": 1}
+            )["state"]
             assert cur_state == state
     """
 
@@ -96,11 +97,9 @@ class TestOrder(object):
         )
         assert rv.status_code == 403
         # test if order update state
-        cur_state = client.application.config["db"][
-            "ORDER_COLLECTION"
-        ].find_one({"_id": ObjectId(self.update_order_id)}, {"state": 1})[
-            "state"
-        ]
+        cur_state = db.ORDER_COLLECTION.find_one(
+            {"_id": ObjectId(self.update_order_id)}, {"state": 1}
+        )["state"]
         assert cur_state == "unknown"
 
     def test_update_by_customer(self, client, customer):
@@ -113,11 +112,9 @@ class TestOrder(object):
         )
         assert rv.status_code == 403
         # test if order update state
-        cur_state = client.application.config["db"][
-            "ORDER_COLLECTION"
-        ].find_one({"_id": ObjectId(self.update_order_id)}, {"state": 1})[
-            "state"
-        ]
+        cur_state = db.ORDER_COLLECTION.find_one(
+            {"_id": ObjectId(self.update_order_id)}, {"state": 1}
+        )["state"]
         assert cur_state == "unknown"
 
     def test_update_nonexist_order(self, client, admin):

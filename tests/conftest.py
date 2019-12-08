@@ -5,8 +5,6 @@ from bson.json_util import loads
 
 import main
 
-from models import business_time, menu, order, user
-
 import mongomock
 
 import pytest
@@ -66,27 +64,16 @@ def establish_type():
 
 
 @pytest.fixture(scope="function")
-def client():
-    main.app.config["db"] = {
-        "USER_COLLECTION": establish_user(),
-        "TYPE_COLLECTION": establish_type(),
-        "BUSINESS_TIME_COLLECTION": establish_business_time(),
-        "ORDER_COLLECTION": establish_order(),
-    }
-    user.USER_COLLECTION = main.app.config["db"]["USER_COLLECTION"]
-    menu.TYPE_COLLECTION = main.app.config["db"]["TYPE_COLLECTION"]
-    order.ORDER_COLLECTION = main.app.config["db"]["ORDER_COLLECTION"]
-    business_time.COLLECTION = main.app.config["db"][
-        "BUSINESS_TIME_COLLECTION"
-    ]
+def client(monkeypatch):
+    monkeypatch.setattr("models.db.USER_COLLECTION", establish_user())
+    monkeypatch.setattr("models.db.ORDER_COLLECTION", establish_order())
+    monkeypatch.setattr("models.db.ITEM_COLLECTION", establish_item())
+    monkeypatch.setattr("models.db.TYPE_COLLECTION", establish_type())
+    monkeypatch.setattr(
+        "models.db.BUSINESS_COLLECTION", establish_business_time()
+    )
 
     return main.app.test_client()
-
-
-@pytest.fixture(scope="function")
-def mock_item(client):
-    client.application.config["db"]["ITEM_COLLECTION"] = establish_item()
-    menu.ITEM_COLLECTION = main.app.config["db"]["ITEM_COLLECTION"]
 
 
 @pytest.fixture(scope="function")
