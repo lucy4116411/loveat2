@@ -117,7 +117,7 @@ def get_analysis_data(start, end):
                 }
             result["itemAnalysis"][content["name"]][data["user"]["gender"]][
                 index
-            ] += 1
+            ] += content["quantity"]
     # sum
     for genderAnalysis in result["genderAnalysis"]:
         genderAnalysis["total"] = (
