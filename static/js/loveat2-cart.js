@@ -1,3 +1,4 @@
+
 /* eslint-disable no-unused-vars */
 /* global Cart, $, FetchData */
 /* eslint no-underscore-dangle: ["error", {"allow":["_id"]}] */
@@ -29,8 +30,17 @@ function updateSum(id) {
 }
 
 function changeQuantity(e) {
-  const newQuantity = parseInt(e.target.value, 10);
+  let newQuantity = parseInt(e.target.value, 10);
   const id = e.target.id.substr(9);
+
+  if (newQuantity <= 0 || newQuantity === undefined) {
+    document.getElementById('hint-content').innerHTML = '輸入錯誤';
+    document.getElementById('bussiness_data').style.display = 'none';
+    $('#order-send-hint-modal').modal('show');
+    newQuantity = 1;
+    e.target.value = newQuantity;
+  }
+
   myCart.updateQuantity(id, newQuantity);
   updateSum(id);
   orderTotal();
@@ -71,30 +81,37 @@ function toState() {
   window.location = '/order/state';
 }
 
-function checkStatus(state) {
-  if (state === 200) {
+function checkStatus(status) {
+  const order = myCart.get();
+  if (status === 200) {
     document.getElementById('close-modal').addEventListener('click', toState);
     document.getElementById('hint-content').innerHTML = '下單成功';
-    $('#order-send-hint-modal').modal('show');
+    document.getElementById('bussiness_data').style.display = 'none';
     clearOrder();
-  } else if (state === 401) {
+  } else if (status === 401) {
     document.getElementById('hint-content').innerHTML = '您尚未登入';
-    $('#order-send-hint-modal').modal('show');
+    document.getElementById('bussiness_data').style.display = 'none';
   } else {
     document.getElementById('hint-content').innerHTML = '訂單錯誤或預定取餐時間未營業';
-    $('#order-send-hint-modal').modal('show');
   }
+  $('#order-send-hint-modal').modal('show');
 }
 
 async function sendOrder() {
-  const order = {};
-  const total = document.getElementById('total').innerHTML;
-  order.takenAt = document.getElementById('order-take-time').value;
-  order.notes = orderDescription();
-  order.total = parseInt(total, 10);
-  order.content = orderContent();
-  const response = await FetchData.post('/api/order/new', order);
-  checkStatus(response.status);
+  const takenTime = document.getElementById('order-take-time').value;
+  if (takenTime === null || Date.parse(takenTime).valueOf() < Date.now()) {
+    document.getElementById('hint-content').innerHTML = '訂單錯誤或預定取餐時間未營業';
+    $('#order-send-hint-modal').modal('show');
+  } else {
+    const order = {};
+    const total = document.getElementById('total').innerHTML;
+    order.takenAt = takenTime;
+    order.notes = orderDescription();
+    order.total = parseInt(total, 10);
+    order.content = orderContent();
+    const response = await FetchData.post('/api/order/new', order);
+    checkStatus(response.status);
+  }
 }
 
 function drawItem(data) {
