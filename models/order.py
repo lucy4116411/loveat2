@@ -195,7 +195,7 @@ def add_order(data):
     if MAX_ORDERID == -1:
         MAX_ORDERID = get_max_orderid()
 
-    # check if takenAt is in business time insterval
+    # convert data to correct type
     taken_at = datetime.strptime(data["takenAt"], "%Y-%m-%dT%H:%M")
     business_time = list(
         db.BUSINESS_COLLECTION.find_one({}, {"_id": 0}).values()
@@ -204,7 +204,12 @@ def add_order(data):
     start = build_business_time(business_time["start"])
     end = build_business_time(business_time["end"])
 
-    if start <= taken_at <= end:
+    # check if content is empty, takenAt is > now and in business interval
+    if (
+        start <= taken_at <= end
+        and len(data["content"]) > 0
+        and taken_at > datetime.now()
+    ):
         MAX_ORDERID += 1
         for meal in data["content"]:
             meal["id"] = ObjectId(meal["id"])
