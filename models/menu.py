@@ -60,29 +60,49 @@ def get_all():
     return item_result + combo_result
 
 
-def get_item_by_id(data):
+def get_item_by_id(data, detail=False):
     id = [ObjectId(i) for i in data]
-    result = list(
-        db.ITEM_COLLECTION.aggregate(
-            [
-                {"$match": {"_id": {"$in": id}}},
-                {"$addFields": {"_id": {"$toString": "$_id"}}},
-                {"$project": {"name": 1, "price": 1}},
-            ]
-        )
-    )
+    pipeline = [
+        {"$match": {"_id": {"$in": id}}},
+        {
+            "$addFields": {
+                "_id": {"$toString": "$_id"},
+                "type": {"$toString": "$type"},
+            }
+        },
+    ]
+    if detail is False:
+        pipeline.append({"$project": {"name": 1, "price": 1}})
+    result = list(db.ITEM_COLLECTION.aggregate(pipeline))
     return result
 
 
-def get_combo_by_id(data):
+def get_combo_by_id(data, detail=False):
     id = [ObjectId(i) for i in data]
-    result = db.COMBO_COLLECTION.aggregate(
-        [
-            {"$match": {"_id": {"$in": id}}},
-            {"$addFields": {"_id": {"$toString": "$_id"}}},
-            {"$project": {"name": 1, "price": 1}},
-        ]
-    )
+    pipeline = [
+        {"$match": {"_id": {"$in": id}}},
+        {
+            "$addFields": {
+                "_id": {"$toString": "$_id"},
+                "type": {"$toString": "$type"},
+                "content": {
+                    "$map": {
+                        "input": "$content",
+                        "as": "t",
+                        "in": {
+                            "id": {"$toString": "$$t.id"},
+                            "quantity": "$$t.quantity",
+                            "name": "$$t.name",
+                        },
+                    }
+                },
+            }
+        },
+    ]
+    if detail is False:
+        pipeline.append({"$project": {"name": 1, "price": 1}})
+
+    result = db.COMBO_COLLECTION.aggregate(pipeline)
     return list(result)
 
 
