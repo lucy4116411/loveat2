@@ -19,6 +19,8 @@ async function update(state, id) {
 }
 
 messaging.onMessage((payload) => {
+  console.log(payload);
+  /*
   const detail = JSON.parse(payload.data.detail);
   const table = document.querySelector('#pending-table tbody');
 
@@ -38,4 +40,5 @@ messaging.onMessage((payload) => {
     </tr>
   `;
   table.innerHTML += result;
+  */
 });
