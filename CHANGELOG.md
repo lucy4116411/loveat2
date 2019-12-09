@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/creek0810/loveat2/compare/v1.0.0...v1.1.0) (2019-12-09)
+
+
+### Features
+
+* **order-api:** push to admin when order state update to doing ([ed528bb](https://github.com/creek0810/loveat2/commit/ed528bbd638c7e8f6940349ba8515845ab6c99e0))
+* extend projection mode to get item, combo by id ([1b71865](https://github.com/creek0810/loveat2/commit/1b71865050826dcd386b6a4b22cb42be737b217d))
+* finish order pending layout and forground push ([ba56231](https://github.com/creek0810/loveat2/commit/ba562318aa9b953dba64ff4b302947564ccacea3))
+* finish order state layout ([9865a01](https://github.com/creek0810/loveat2/commit/9865a0157ab34d02dd5518002efb31358cf90e72))
+* finish todo feature ([1d0f4ae](https://github.com/creek0810/loveat2/commit/1d0f4aef2fe9216a43ec1e32b3bdd4c29bab62f9))
+
+
+### Bug Fixes
+
+* change order projection to fit correct format ([e703fdc](https://github.com/creek0810/loveat2/commit/e703fdc9367910ca3b1bd9e8b555e98a862c7c48))
+* fix admin topic subscribe and update token only when login ([e5aa2d7](https://github.com/creek0810/loveat2/commit/e5aa2d703a773f14d40d39fd827fbe68b3a2f87b))
+* **cart-page:** fix cart type of quantity in local storage ([485a510](https://github.com/creek0810/loveat2/commit/485a5104c576f899cf754599dde893e8fc16c8bd)), closes [#56](https://github.com/creek0810/loveat2/issues/56)
+* **menu-api:** fix inconsistent combo data when delete or update item ([8db9e2d](https://github.com/creek0810/loveat2/commit/8db9e2dbc08d1ca7baafdd851f10a769e0cb448d)), closes [#38](https://github.com/creek0810/loveat2/issues/38)
+* fix incorrect analysis order data ([e979646](https://github.com/creek0810/loveat2/commit/e979646ab70e818c7d8fd1fe99aab6638cac3a54))
+* fix quantity error, incompleted taken time, show bussiness time ([ccf47c1](https://github.com/creek0810/loveat2/commit/ccf47c189c4b38a18e932cc5fbdbdfb47410f4d0))
+* takenAt < now or content empty order will not add success ([cf14b81](https://github.com/creek0810/loveat2/commit/cf14b817729e3a6547edcac9c6f1c686db5e7e3a))
+
 ## 1.0.0 (2019-12-07)
 
 
