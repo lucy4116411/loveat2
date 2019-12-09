@@ -6,15 +6,35 @@ from flask_login import current_user, login_required
 
 from lib.auth import admin_required
 
-from models import order
+from models import business_time, order
 
 order_web = Blueprint("order_web", __name__)
 
 
 @order_web.route("/new", methods=["GET"])
 def cart():
+    # ----deal time----#
+    WEEK = {
+        "mon": "星期一",
+        "tue": "星期二",
+        "wed": "星期三",
+        "thu": "星期四",
+        "fri": "星期五",
+        "sat": "星期六",
+        "sun": "星期日",
+    }
+    raw_time = business_time.get()
+    bussiness_time = {}
+    for i in raw_time:
+        bussiness_time[WEEK[i]] = (
+            raw_time[i]["start"] + " - " + raw_time[i]["end"]
+        )
+
     return render_template(
-        "cart.html", auth=current_user.role, name=current_user.name
+        "cart.html",
+        auth=current_user.role,
+        name=current_user.name,
+        bussiness_data=bussiness_time,
     )
 
 

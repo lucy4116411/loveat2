@@ -55,6 +55,12 @@
                 <p id="hint-content">
                     <!-- hint content -->
                 </p>
+                <p id="bussiness_data">
+                    可點餐時段<br>
+                    {% for time in bussiness_data %}
+                        {{time}}&nbsp&nbsp{{bussiness_data[time]}}<br>
+                    {% endfor %}
+                </p>
             </div>
             <div class="modal-footer">
                 <button type="button" id="close-modal" class="btn btn-secondary" href="" data-dismiss="modal">Close</button>
