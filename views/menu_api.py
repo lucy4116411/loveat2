@@ -60,6 +60,7 @@ def add_item():
 
     try:
         menu.add_item(request.form, pic)
+        return "", 200
     except duplicateError:
         return "", 409
 

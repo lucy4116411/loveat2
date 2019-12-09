@@ -41,3 +41,7 @@ img {
     max-width: 120px;
     height: auto;
 }
+
+.hidden {
+    display: none;
+}

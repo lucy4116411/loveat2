@@ -1,35 +1,37 @@
-/* global FetchData */
+/* global FetchData, $ */
+/* eslint no-underscore-dangle: 0 */
 
-const menuEditAPI = {
-  all: '/api/menu',
-  newItem: '/api/menu/item/new',
-};
+const newItemAPI = '/api/menu/item/new';
 
-async function typeSelectionInit() { // 等小河的API出來，應該還會再改
-  const selection = document.getElementById('type');
-  const result = await FetchData.get(menuEditAPI.all).then((res) => res.json());
-  result.forEach((Eachresult, index) => {
-    if (Eachresult.category === 'item') {
-      const option = document.createElement('option');
-      option.text = Eachresult.type;
-      option.value = index;
-      selection.options.add(option);
-    }
-  });
+function clearContent() {
+  document.getElementById('name').value = '';
+  document.getElementById('type-list').options[0].selected = true;
+  document.getElementById('price').value = '';
+  document.getElementById('picture').value = '';
+  document.getElementById('picture-show').setAttribute('src', '');
+  document.getElementById('description').value = '';
 }
 
-function upload() {
+async function upload() {
   if (document.forms['item-form'].reportValidity()) {
-  // 不確定下巴要textarea船到資料庫是要\n還是<br>?
-    // let description = document.getElementById('description').value;
-    // document.getElementById('description').value = description.replace(/\n/g, '<br />');
+    const selection = document.getElementById('type-list');
+    const index = selection.selectedIndex;
     const myForm = document.getElementById('item-form');
     const formData = new FormData(myForm);
-    const option = {
-      method: 'POST',
-      body: formData,
-    };
-    fetch(menuEditAPI.newItem, option);
+    formData.append('type', selection.options[index].id.substring(5));
+    const result = await FetchData.postForm(newItemAPI, formData);
+    if (result.status === 403) {
+      document.getElementById('alert-title').innerHTML = '發生錯誤！';
+      document.getElementById('alert-body').innerHTML = '權限錯誤！請登入後再執行。';
+    } else if (result.status === 409) {
+      document.getElementById('alert-title').innerHTML = '發生錯誤！';
+      document.getElementById('alert-body').innerHTML = '此種類已存在，請更改種類名！。';
+    } else {
+      document.getElementById('alert-title').innerHTML = '新增成功！';
+      document.getElementById('alert-body').innerHTML = '單品新增成功！繼續新增下一筆菜單';
+      clearContent();
+    }
+    $('#alert-modal').modal('show');
   }
 }
 
@@ -56,8 +58,9 @@ function readURL(input) {
   }
 }
 
+
 function init() {
-  typeSelectionInit();
+  document.getElementById('clear').addEventListener('click', clearContent);
   document.getElementById('submit').addEventListener('click', upload);
   document.getElementById('name').addEventListener('blur', display);
   document.getElementById('price').addEventListener('blur', display);
