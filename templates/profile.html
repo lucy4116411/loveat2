@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+{% set url = "customer" %}
+
+{% block header %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="full-container">
+        <div class="propic-container">
+            <form name="user-propic-form">
+            <img src="/img/{{user['avatar']}}" alt="喔喔，可能是還沒有新增照片喔~" id="picture-show">
+            {% if name == user["userName"] %}
+            <input type="file" id="changePhoto" accept="image/*" class="form-control-file"/>
+            {% endif %}
+            </form>
+        </div>
+        <div class="detail-container">
+            <form name="user-info-form">
+            <div class="form-group">
+                <label for="user-name">User Name:</label>
+                <input type="text" class="form-control" id="user-name" value="{{ user['userName'] }}" disabled>
+            </div>
+            {% if name == user["userName"] %}
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#update-password-modal" id="change-password">修改</button>
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="age">Age:</label>
+                {% if name == user["userName"] %}
+                <input type="number" class="form-control" id="age" value="{{user['birth']}}" min="1">
+                {% else %}
+                <input type="number" class="form-control" id="age" value="{{user['birth']}}" disabled>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                {% if name == user["userName"] %}
+                <select id="gender" class="form-control">
+                {% else %}
+                <select id="gender" class="form-control" disabled>
+                {% endif %}
+                    <option value="0" selected>{{user["gender"]}}</option>
+                    {% if user["gender"]== "male" %}
+                    <option value="1">female</option>
+                    {% else %}
+                    <option value="1">male</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                {% if name == user["userName"] %}
+                <input type="tel" class="form-control" id="phone" value="{{user['phone']}}">
+                {% else %}
+                <input type="tel" class="form-control" id="phone" value="{{user['phone']}}" disabled>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                {% if name == user["userName"] %}
+                <input type="email" class="form-control" id="email" value="{{user['email']}}">
+                {% else %}
+                <input type="email" class="form-control" id="email" value="{{user['email']}}" disabled>
+                {% endif %}
+            </div>
+        </form>
+            {% if name == user["userName"] %}
+            <div class="save-container">
+                <button class="btn btn-primary" id="updateUserInfo">Save</button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if name == user["userName"] %}
+    <div class="modal fade" id="update-password-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">修改密碼</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="update-password-form">
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">請輸入原本密碼:</label>
+                    <input type="password" class="form-control" id="oldPassword">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">請輸入新密碼:</label>
+                    <input type="password" class="form-control" id="newPassword">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">再輸入一次新密碼:</label>
+                    <input type="password" class="form-control" id="comfirmNewPassword">
+                </div>
+                <small id="update-password-wrong" class="form-text wrong-msg"></small>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="updatePassword">OK</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if name == user["userName"] %}
+    <div class="modal fade" id="update-success-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">更新資料</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    更新成功
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                    id="updatePassword">OK</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
