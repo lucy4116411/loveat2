@@ -33,7 +33,7 @@ function changeQuantity(e) {
   let newQuantity = parseInt(e.target.value, 10);
   const id = e.target.id.substr(9);
 
-  if (newQuantity <= 0 || newQuantity === undefined) {
+  if (newQuantity <= 0 || Number.isNaN(newQuantity)) {
     document.getElementById('hint-content').innerHTML = '輸入錯誤';
     document.getElementById('bussiness_data').style.display = 'none';
     $('#order-send-hint-modal').modal('show');
