@@ -1,4 +1,4 @@
-/* global FetchData, drawChart */
+/* global FetchData, HistoryChart */
 const APIHistory = {
   rawHistory: '/api/order/history?',
   analysisHistory: '/api/order/analysis-data?',
@@ -11,6 +11,35 @@ const month = new Map([
 ]);
 
 let result = '';
+let chart = '';
+let tableItem = true;
+let tableGender = true;
+
+function toggleItem() {
+  if (tableItem) {
+    document.getElementById('item-analysis-btn').innerHTML = '切換詳細資料';
+    document.getElementById('item-analysis-table').classList.add('hidden');
+    document.getElementById('item-analysis-chart').classList.remove('hidden');
+  } else {
+    document.getElementById('item-analysis-btn').innerHTML = '切換圖表';
+    document.getElementById('item-analysis-table').classList.remove('hidden');
+    document.getElementById('item-analysis-chart').classList.add('hidden');
+  }
+  tableItem = !tableItem;
+}
+
+function toggleGender() {
+  if (tableGender) {
+    document.getElementById('gender-analysis-btn').innerHTML = '切換詳細資料';
+    document.getElementById('gender-analysis-table').classList.add('hidden');
+    document.getElementById('gender-analysis-chart').classList.remove('hidden');
+  } else {
+    document.getElementById('gender-analysis-btn').innerHTML = '切換圖表';
+    document.getElementById('gender-analysis-table').classList.remove('hidden');
+    document.getElementById('gender-analysis-chart').classList.add('hidden');
+  }
+  tableGender = !tableGender;
+}
 
 function updateHistoryUI() {
   let tmpBody = '';
@@ -111,17 +140,21 @@ async function getData() {
   } else {
     updateProfileUI();
     updateContactUI();
-    drawChart(result);
+    chart.updateChart(result);
   }
 }
 
 function initHistory() {
+  // init all chart
+  chart = new HistoryChart();
   // initial page
   getData();
   // add event listener
   document.getElementById('history-time-send').addEventListener('click', getData);
   document.getElementById('gender-check').addEventListener('change', updateContactUI);
   document.getElementById('age-check').addEventListener('change', updateContactUI);
+  document.getElementById('item-analysis-btn').addEventListener('click', toggleItem);
+  document.getElementById('gender-analysis-btn').addEventListener('click', toggleGender);
 }
 
 window.addEventListener('load', initHistory);
