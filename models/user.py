@@ -11,7 +11,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 def add(data):
     if db.USER_COLLECTION.find_one({"userName": data["userName"]}) is None:
         pic_id = str(uuid.uuid4())
-        db.USER_COLLECTION.insert_one(
+        new_user = db.USER_COLLECTION.insert_one(
             {
                 "userName": data["userName"],
                 "password": generate_password_hash(data["password"]),
@@ -26,7 +26,7 @@ def add(data):
         db.IMAGE_COLLECTION.insert_one(
             {"uuid": pic_id, "picture": Binary(b"")}
         )
-        return True
+        return new_user.inserted_id
     else:
         return False
 

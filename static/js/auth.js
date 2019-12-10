@@ -1,4 +1,4 @@
-/* global FetchData, $ */
+/* global FetchData */
 const API = {
   login: '/api/user/login',
   register: '/api/user/register',
@@ -47,8 +47,8 @@ async function register() {
     if (result.status === 409) {
       document.getElementById('register-wrong').innerText = '此帳號已經有人使用';
     } else if (result.status === 200) {
-      $('#register-modal').modal('hide');
-      $('#register-success-modal').modal('show');
+      // refresh page
+      window.location.reload();
     }
   }
 }

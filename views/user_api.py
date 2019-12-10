@@ -36,7 +36,9 @@ def register():
         data = request.get_json()
         data["birth"] = datetime.now() - relativedelta(years=data["age"])
         data["role"] = "customer"
-        if user.add(data):
+        id = user.add(data)
+        if id:
+            login_user(User(id))
             return "", 200
         else:
             return "", 409
