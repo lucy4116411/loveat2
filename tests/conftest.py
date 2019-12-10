@@ -63,12 +63,23 @@ def establish_type():
     return None
 
 
+def establish_image():
+    dir = os.path.join(FILE_DIR, "data/image.json")
+    with open(dir, "r", encoding="utf-8") as file:
+        data = loads(file.read())
+        colletion = mongomock.MongoClient().db.collection
+        colletion.insert_many(data)
+        return colletion
+    return None
+
+
 @pytest.fixture(scope="function")
 def client(monkeypatch):
     monkeypatch.setattr("models.db.USER_COLLECTION", establish_user())
     monkeypatch.setattr("models.db.ORDER_COLLECTION", establish_order())
     monkeypatch.setattr("models.db.ITEM_COLLECTION", establish_item())
     monkeypatch.setattr("models.db.TYPE_COLLECTION", establish_type())
+    monkeypatch.setattr("models.db.IMAGE_COLLECTION", establish_image())
     monkeypatch.setattr(
         "models.db.BUSINESS_COLLECTION", establish_business_time()
     )

@@ -14,12 +14,7 @@
             }
         },
         "role": "admin",
-        "avatar": {
-            "$binary": {
-                "base64": "MA==",
-                "subType": "00"
-            }
-        },
+        "avatar": "64c4638b-b6ae-4335-80ec-1441e346b4e9",
         "token": ""
     },
     {
@@ -37,12 +32,7 @@
             }
         },
         "role": "customer",
-        "avatar": {
-            "$binary": {
-                "base64": "",
-                "subType": "00"
-            }
-        },
+        "avatar": "5e3967a2-eaa2-431c-9974-056b6d1fcadb",
         "token": ""
     }
 ]

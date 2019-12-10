@@ -1,0 +1,24 @@
+[{
+    "_id": {
+        "$oid": "5de1f3edc24f6830c5978dff"
+    },
+    "uuid": "64c4638b-b6ae-4335-80ec-1441e346b4e9",
+    "picture": {
+        "$binary": {
+            "base64": "",
+            "subType": "00"
+        }
+    }
+},
+{
+    "_id": {
+        "$oid": "5de1f409c24f6830c5978e0d"
+    },
+    "uuid": "5e3967a2-eaa2-431c-9974-056b6d1fcadb",
+    "picture": {
+        "$binary": {
+            "base64": "",
+            "subType": "00"
+        }
+    }
+}]
