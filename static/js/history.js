@@ -116,6 +116,7 @@ function updateContactUI() {
       tmpBody += '</tr>';
     });
   }
+  tmpBody = tmpBody.replace(/<td>0/g,"<td>-");
   document.getElementById('contact-thead').innerHTML = tmpHead;
   document.getElementById('contact-tbody').innerHTML = tmpBody;
 }
