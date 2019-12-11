@@ -29,8 +29,11 @@ def add_type():
 @admin_required
 def update_type():
     data = request.get_json()
-    menu.update_type(data)
-    return "", 200
+    try:
+        menu.update_type(data)
+        return "", 200
+    except duplicateError:
+        return "", 409
 
 
 @menu_api.route("/type/delete", methods=["POST"])

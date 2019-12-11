@@ -287,6 +287,9 @@ def update_combo(data, pic):
 
 
 def update_type(data):
-    db.TYPE_COLLECTION.update_one(
-        {"_id": ObjectId(data["id"])}, {"$set": {"name": data["type"]}}
-    )
+    if db.TYPE_COLLECTION.find_one({"name": data["type"]}):
+        raise duplicateError
+    else:
+        db.TYPE_COLLECTION.update_one(
+            {"_id": ObjectId(data["id"])}, {"$set": {"name": data["type"]}}
+        )
