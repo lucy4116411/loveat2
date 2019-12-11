@@ -18,4 +18,5 @@ def business_time():
         work_time=everyday_work_time,
         auth=current_user.role,
         name=current_user.name,
+        id=current_user.id,
     )

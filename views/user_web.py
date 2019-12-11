@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from config import SECRET_KEY
 
 from flask import Blueprint, redirect, render_template, url_for
@@ -5,6 +7,8 @@ from flask import Blueprint, redirect, render_template, url_for
 from flask_login import current_user, logout_user
 
 from itsdangerous import SignatureExpired, TimedJSONWebSignatureSerializer
+
+from models import user as User
 
 user_web = Blueprint("user_web", __name__)
 
@@ -35,6 +39,7 @@ def reset_password(token):
             "signature-expired.html",
             auth=current_user.role,
             name=current_user.name,
+            id=current_user.id,
         )
 
 
@@ -44,10 +49,21 @@ def forget_password():
         return redirect(url_for("menu_web.menu"))
 
     return render_template(
-        "forget-password.html", auth=current_user.role, name=current_user.name
+        "forget-password.html",
+        auth=current_user.role,
+        name=current_user.name,
+        id=current_user.id,
     )
 
 
 @user_web.route("/profile/<id>", methods=["GET"])
 def profile(id):
-    return "profile"
+    user_data = list(User.get_user_info(id))[0]
+    user_data['birth'] = datetime.now().year - user_data['birth'].year
+    return render_template(
+        "profile.html",
+        auth=current_user.role,
+        name=current_user.name,
+        user=user_data,
+        id=current_user.id,
+    )

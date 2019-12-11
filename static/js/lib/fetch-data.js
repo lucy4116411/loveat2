@@ -30,4 +30,16 @@ class FetchData {
       referrer: 'no-referrer',
     });
   }
+
+  static postForm(url, data) {
+    return fetch(url, {
+      body: data,
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      method: 'POST',
+      mode: 'cors',
+      redirect: 'follow',
+      referrer: 'no-referrer',
+    });
+  }
 }

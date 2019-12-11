@@ -33,6 +33,7 @@ def menu():
         bussiness_data=bussiness_time,
         auth=current_user.role,
         name=current_user.name,
+        id=current_user.id,
     )
 
 

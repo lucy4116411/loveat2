@@ -35,6 +35,7 @@ def cart():
         auth=current_user.role,
         name=current_user.name,
         bussiness_data=bussiness_time,
+        id=current_user.id,
     )
 
 
@@ -50,6 +51,7 @@ def history():
         name=current_user.name,
         begin=begin,
         end=end,
+        id=current_user.id,
     )  # noqa
 
 
@@ -62,6 +64,7 @@ def pending():
         auth=current_user.role,
         name=current_user.name,
         unknown_order=temp,
+        id=current_user.id,
     )
 
 
@@ -88,4 +91,5 @@ def state():
         auth=current_user.role,
         name=current_user.name,
         order=temp,
+        id=current_user.id,
     )
