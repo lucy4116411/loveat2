@@ -1,15 +1,21 @@
+<<<<<<< HEAD
 import io
 import json
 
 from bson.binary import Binary
 from bson.objectid import ObjectId
 
+=======
+import json
+
+>>>>>>> test: add some api test:order item combo
 from models import db
 
 URL_PREFIX = "/api/menu/combo"
 
 
 class TestCombo(object):
+<<<<<<< HEAD
     update_combo = {
         "id": "5dda567d09d84aa89699121c",
         "type": "5dd681c44a608a104f89914e",
@@ -166,3 +172,49 @@ class TestCombo(object):
             "type": ObjectId("5dd681c44a608a104f89914e"),
         }
         assert cur_image == Binary(b"6742")
+=======
+    def test_delete_anonymous(self, client):
+        # test there is a combo named 兒童套餐 in collection
+        exist_combo = db.COMBO_COLLECTION.find_one({"name": "兒童套餐"})
+        assert exist_combo is not None
+        # test delete the exist combo anonymons
+        url = URL_PREFIX + "/delete"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "id": str(exist_combo["_id"])
+            }),
+            content_type="application/json",
+        )
+        assert rv.status_code == 403
+
+    def test_delete_by_customer(self, client, customer):
+        # test there is a combo named 兒童套餐 in collection
+        exist_combo = db.COMBO_COLLECTION.find_one({"name": "兒童套餐"})
+        assert exist_combo is not None
+        # test delete the exist combo by customer
+        url = URL_PREFIX + "/delete"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "id": str(exist_combo["_id"])
+            }),
+            content_type="application/json",
+        )
+        assert rv.status_code == 403
+
+    def test_delete_by_admin(self, client, admin):
+        # test there is a combo named 兒童套餐 in collection
+        exist_combo = db.COMBO_COLLECTION.find_one({"name": "兒童套餐"})
+        assert exist_combo is not None
+        # test delete the exist combo by boss
+        url = URL_PREFIX + "/delete"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "id": str(exist_combo["_id"])
+            }),
+            content_type="application/json",
+        )
+        assert rv.status_code == 200
+>>>>>>> test: add some api test:order item combo

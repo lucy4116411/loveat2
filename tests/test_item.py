@@ -117,3 +117,48 @@ class TestItem(object):
         assert cur_item["description"] == self.update_item["description"]
         print(cur_img["picture"])
         assert cur_img["picture"] == Binary(b"6742")
+
+    def test_delete_anonymous(self, client):
+        # test there is an item named 奶茶 in collection
+        exist_item = db.ITEM_COLLECTION.find_one({"name": "奶茶"})
+        assert exist_item is not None
+        # test delete the exist item anonymons
+        url = URL_PREFIX + "/delete"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "id": str(exist_item["_id"])
+            }),
+            content_type="application/json",
+        )
+        assert rv.status_code == 403
+
+    def test_delete_by_customer(self, client, customer):
+        # test there is an item named 奶茶 in collection
+        exist_item = db.ITEM_COLLECTION.find_one({"name": "奶茶"})
+        assert exist_item is not None
+        # test delete the exist item by customer
+        url = URL_PREFIX + "/delete"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "id": str(exist_item["_id"])
+            }),
+            content_type="application/json",
+        )
+        assert rv.status_code == 403
+
+    def test_delete_by_admin(self, client, admin):
+        # test there is an item named 奶茶 in collection
+        exist_item = db.ITEM_COLLECTION.find_one({"name": "奶茶"})
+        assert exist_item is not None
+        # test delete the exist item by boss
+        url = URL_PREFIX + "/delete"
+        rv = client.post(
+            url,
+            data=json.dumps({
+                "id": str(exist_item["_id"])
+            }),
+            content_type="application/json",
+        )
+        assert rv.status_code == 200
