@@ -57,7 +57,7 @@
 
 
 
-                        <td >{{eachOrder['notes']}}</td>
+                        <td >{{eachOrder['notes'] | replace(";", "<br/>") | safe}}</td>
                     </tr>
                 {%endfor%}
             </tbody>

@@ -61,6 +61,7 @@ class Cart {
       this.content[data._id] = {
         category: data.category,
         quantity: data.quantity,
+        description: '',
       };
     }
     this.updateLocalStorage();

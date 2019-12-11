@@ -5,7 +5,6 @@
 
 let myCart = null;
 
-
 function orderTotal() {
   let total = 0;
   const dataSet = myCart.get();
@@ -50,9 +49,9 @@ function orderDescription() {
   const description = [];
   const dataSet = myCart.get();
   Object.keys(dataSet).forEach((key) => {
-    const text = document.getElementById(`description-${key}`).value;
+    const text = dataSet[key].description;
     if (text !== '') {
-      description.push(`${dataSet[key].name}:${text}`);
+      description.push(`${dataSet[key].name}: ${text}`);
     }
   });
   return description.join(';');
@@ -114,6 +113,16 @@ async function sendOrder() {
   }
 }
 
+function setDiscription(e) {
+  const description = e.target.value;
+  const data = myCart.get();
+  const desId = e.target.id.substr(12);
+  if (desId in data) {
+    data[desId].description = description;
+  }
+  myCart.updateLocalStorage();
+}
+
 function drawItem(data) {
   const result = Object.keys(data).reduce((acc, key) => `${acc} <tr id="${key}">
               <td>${data[key].name}</td>
@@ -122,7 +131,7 @@ function drawItem(data) {
               </td>
               <td>${data[key].price}</td>
               <td>
-                <input class="form-control" type="text" id="description-${key}">
+                <input id="description-${key}" class="form-control description-input" type="text" value="${data[key].description}">
               </td>
               <td id="item-sum-${key}" >${data[key].price * data[key].quantity}</td>
               <td>
@@ -141,8 +150,12 @@ function drawItem(data) {
   [...deleteBtn].forEach((cur) => {
     cur.addEventListener('click', deleteItem);
   });
-}
 
+  const descriptionTxt = document.getElementsByClassName('description-input');
+  [...descriptionTxt].forEach((cur) => {
+    cur.addEventListener('change', setDiscription);
+  });
+}
 
 async function init() {
   myCart = await new Cart();

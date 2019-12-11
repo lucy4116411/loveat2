@@ -33,7 +33,7 @@
                     {%endfor%}
                 </td>
                 <td>
-                    {{eachOrder['notes']}}
+                    {{eachOrder['notes'] | replace(";", "<br/>") | safe}}
                 </td>
                 <td>
                     <button class="btn btn-primary" onclick="update('doing','{{eachOrder['_id']}}')">接受</button>
