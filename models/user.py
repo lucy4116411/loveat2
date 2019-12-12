@@ -98,10 +98,5 @@ def get_token_by_username(user_name):
 
 def get_user_info(id):
     return db.USER_COLLECTION.find(
-        {"_id": ObjectId(id)},
-        {
-            "password": 0,
-            "role": 0,
-            "token": 0,
-        },
+        {"_id": ObjectId(id)}, {"password": 0, "role": 0, "token": 0}
     )

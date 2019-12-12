@@ -59,7 +59,7 @@ def forget_password():
 @user_web.route("/profile/<id>", methods=["GET"])
 def profile(id):
     user_data = list(User.get_user_info(id))[0]
-    user_data['birth'] = datetime.now().year - user_data['birth'].year
+    user_data["birth"] = datetime.now().year - user_data["birth"].year
     return render_template(
         "profile.html",
         auth=current_user.role,
