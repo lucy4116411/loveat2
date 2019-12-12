@@ -2,6 +2,8 @@ from flask import Blueprint, render_template
 
 from flask_login import current_user
 
+from lib.auth import admin_required
+
 from models import business_time, menu as Menu
 
 
@@ -38,6 +40,7 @@ def menu():
 
 
 @menu_web.route("/edit", methods=["GET"])
+@admin_required
 def edit_menu():
     return render_template(
         "menu-edit.html",
@@ -50,6 +53,7 @@ def edit_menu():
 
 
 @menu_web.route("/item/new", methods=["GET"])
+@admin_required
 def new_item():
     return render_template(
         "edit-add-item.html",
@@ -62,6 +66,7 @@ def new_item():
 
 
 @menu_web.route("/item/<id>/edit", methods=["GET"])
+@admin_required
 def edit_item(id):
     return render_template(
         "edit-add-item.html",
@@ -74,6 +79,7 @@ def edit_item(id):
 
 
 @menu_web.route("/combo/new", methods=["GET"])
+@admin_required
 def new_combo():
     return render_template(
         "edit-add-combo.html",
@@ -87,5 +93,6 @@ def new_combo():
 
 
 @menu_web.route("/combo/<id>/edit", methods=["GET"])
+@admin_required
 def edit_combo(id):
     return "edit combo"

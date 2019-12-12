@@ -3,6 +3,7 @@
 {% set url = "boss" %}
 
 {% block header %}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/menu-edit.css') }}">
 <script src="{{ url_for('static', filename='js/menu-edit.js') }}"></script>
 {% endblock %}
@@ -128,7 +129,7 @@
                                             {{item["name"]}}
                                         {% endif %}
                                     </td>
-                                    <td><img src="/img/{{item['picture']}}" alt="沒有圖片"></td>
+                                    <td><img data-src="/img/{{item['picture']}}" alt="沒有圖片" class="lozad"></td>
                                     <td name='description'>{{item["description"]}}</td>
                                     <td><button class="btn btn-primary">
                                             <a href="/item/{{item['_id']}}/edit">修改</a>

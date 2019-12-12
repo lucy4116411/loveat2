@@ -6,36 +6,71 @@ const menuEditAPI = {
   newCombo: '/api/menu/combo/new',
 };
 
+const itemsObj = {};
+
 function display() {
   const detail = document.getElementById('detail');
   let description = document.getElementById('description').value;
   description = description.replace(/\n/g, '<br />');
+
+  const itemTbodyRows = document.querySelectorAll('#item-table tbody tr');
+  let items = '';
+  Array.from(itemTbodyRows).forEach((eachItem) => {
+    items += `<br>&nbsp;&nbsp;&nbsp;&nbsp;${eachItem.cells[1].innerHTML} * ${eachItem.cells[0].innerHTML}`;
+  });
+
   detail.innerHTML = `名稱：${document.getElementById('name').value} <br>
                     價格：${document.getElementById('price').value} <br>
-                    品項：<br>
+                    品項：${items}<br>
                     說明：${description}`;
 }
 
+
 function clearContent() {
-  document.getElementById('name').value = '';
-  document.getElementById('type-list').options[0].selected = true;
-  document.getElementById('price').value = '';
-  document.getElementById('picture').value = '';
+  const idName = ['name', 'price', 'picture', 'description'];
+  idName.forEach((id) => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('type-list').options[0].selected = true; // select no.1 option
   document.getElementById('picture-show').setAttribute('src', '');
-  document.getElementById('description').value = '';
-
-  document.getElementById('item-type').options[0].selected = true; // 選擇第一個
-  // document.getElementById('item').options[0].selected=true; // 選擇第一個
+  document.getElementById('item-type').options[0].selected = true; // select no.1 option
   document.getElementById('item-quantity').value = 1;
-
-
-  document.getElementById('item-tbody').innerHTML = '';
+  document.querySelector('#item-table tbody').innerHTML = '';
+  Object.keys(itemsObj).forEach((item) => {
+    delete itemsObj[item];
+  });
   display();
 }
 
+function checkStatus(status) {
+  const statusResult = {
+    403: {
+      title: '發生錯誤',
+      body: '權限錯誤！請登入後再執行。',
+    },
+    409: {
+      title: '發生錯誤',
+      body: '此名稱已存在，請更改名字！。',
+    },
+    200: {
+      title: '單品新增成功',
+      body: '單品新增成功！繼續新增下一筆菜單',
+    },
+  };
+
+  if (status === 200) clearContent();
+  document.getElementById('alert-title').innerHTML = statusResult[status].title;
+  document.getElementById('alert-body').innerHTML = statusResult[status].body;
+  $('#alert-modal').modal('show');
+}
+
+// display on board instantly
+
+
 async function itemBytypeInit() {
   document.getElementById('item').options.length = 0;
-  const result = await FetchData.get(menuEditAPI.all).then((res) => res.json());
+  const res = await FetchData.get(menuEditAPI.all);
+  const result = await res.json();
   result.forEach((items) => {
     if (items.type === document.getElementById('item-type').value) {
       items.content.forEach((item) => {
@@ -46,76 +81,85 @@ async function itemBytypeInit() {
       });
     }
   });
-  document.getElementById('item').options[0].selected = true; // 選擇第一個
+  // select no.1 option
+  document.getElementById('item').options[0].selected = true;
 }
 
 function deleteItem(e) {
   // delete row
   const i = e.parentNode.parentNode.rowIndex;
-  document.getElementById('item-table').deleteRow(i);
+  const itemsTable = document.getElementById('item-table');
+  const deleteItemRow = [...itemsTable.rows][i];
+  const itemId = deleteItemRow.id;
+
+  itemsTable.deleteRow(i);
+  delete itemsObj[itemId];
+  display();
 }
 
 function addItem() {
   document.getElementById('txt').innerText = '';
-  if (document.getElementById('item-quantity').value === '') {
-    document.getElementById('txt').innerText = '請填入大於0的數字！';
-  } else {
-    const itemTbody = document.getElementById('item-tbody');
+  if (document.getElementById('item-quantity').value > 0) {
+    const itemTbody = document.querySelector('#item-table tbody');
     const item = document.getElementById('item');
-    const tmp = `<tr id="${item.options[item.selectedIndex].id}"><td>${item.value}</td>
-            <td>${document.getElementById('item-quantity').value}</td>
-            <td><button type="button" class="btn btn-primary" onclick="deleteItem(this)">刪除</button></td></tr>`;
-    itemTbody.innerHTML += tmp;
+    const itemId = item.options[item.selectedIndex].id.substring(5);
+    const itemQuantity = document.getElementById('item-quantity').value;
+    if (itemId in itemsObj) {
+      itemsObj[itemId].quantity += parseInt(itemQuantity, 10);
+      document.getElementById(`quantity-${itemId}`).innerHTML = itemsObj[itemId].quantity;
+    } else {
+      itemsObj[itemId] = {
+        name: item.value,
+        quantity: parseInt(itemQuantity, 10),
+      };
+      const tmp = `<tr id="${itemId}"><td>${itemsObj[itemId].name}</td>
+            <td id ="quantity-${itemId}">${itemsObj[itemId].quantity}</td>
+            <td><button type="button" id="delete-${itemId}" class="btn btn-primary delete-btn" onclick="deleteItem(this)">刪除</button></td></tr>`;
+      itemTbody.insertAdjacentHTML('beforeend', tmp);
+    }
     // to initialize form table
     document.getElementById('item-type').options[0].selected = true; // 選擇第一個
     itemBytypeInit();
     document.getElementById('item-quantity').value = 1;
+  } else {
+    document.getElementById('txt').innerText = '請填入大於0的數字！';
   }
+  display();
 }
 
 async function upload() {
   if (document.forms['combo-form'].reportValidity()) {
-    const selection = document.getElementById('type-list');
-    const index = selection.selectedIndex;
-
-    // 尚未檢查，等model出來
-    let content = '[';
-    const rows = document.getElementById('item-table').getElementsByTagName('tr');
-    const len = rows.length - 1;
-    Array.from(rows).forEach((itemRow, i) => {
-      if (itemRow.id.match('item-')) {
-        content += `{"id":"${itemRow.id.substring(5)}","quantity":${itemRow.cells[1].innerHTML}}`;
-      }
-      if (i !== 0 && i < len) content += ',';
-    });
-    content += ']';
-    const myForm = document.getElementById('combo-form');
-    const formData = new FormData(myForm);
-
-
-    formData.append('type', selection.options[index].id.substring(5));
-    formData.append('price', document.getElementById('price').value);
-    formData.append('content', content);
-
-    const result = await FetchData.postForm(menuEditAPI.newCombo, formData);
-
-    if (result.status === 403) {
-      document.getElementById('alert-title').innerHTML = '發生錯誤！';
-      document.getElementById('alert-body').innerHTML = '權限錯誤！請登入後再執行。';
-    } else if (result.status === 409) {
-      document.getElementById('alert-title').innerHTML = '發生錯誤！';
-      document.getElementById('alert-body').innerHTML = '此種類已存在，請更改種類名！。';
+    if (document.querySelector('#item-table tbody').innerHTML === '') {
+      document.getElementById('txt').innerText = '請至少加入一項！';
     } else {
-      document.getElementById('alert-title').innerHTML = '新增成功！';
-      document.getElementById('alert-body').innerHTML = '單品新增成功！繼續新增下一筆菜單';
-      // to initialized all
-      clearContent();
+      const selection = document.getElementById('type-list');
+      const index = selection.selectedIndex;
+
+      let content = [];
+      const rows = document.getElementById('item-table').getElementsByTagName('tr');
+      Array.from(rows).forEach((itemRow) => {
+        if (itemRow.id.match('item-')) {
+          content.push({
+            id: itemRow.id.substring(5),
+            quantity: itemRow.cells[1].innerHTML,
+          });
+        }
+      });
+      content = JSON.stringify(content);
+      const myForm = document.getElementById('combo-form');
+      const formData = new FormData(myForm);
+
+
+      formData.append('type', selection.options[index].id.substring(5));
+      formData.append('price', document.getElementById('price').value);
+      formData.append('content', content);
+
+      const result = await FetchData.postForm(menuEditAPI.newCombo, formData);
+      checkStatus(result.status);
     }
-    $('#alert-modal').modal('show');
   }
 }
 
-// display on board instantly
 
 // let picture can show instantly
 function readURL(input) {
@@ -134,9 +178,10 @@ function init() {
   document.getElementById('clear').addEventListener('click', clearContent);
   document.getElementById('submit').addEventListener('click', upload);
   document.getElementById('add-item-btn').addEventListener('click', addItem);
-  document.getElementById('name').addEventListener('blur', display);
-  document.getElementById('price').addEventListener('blur', display);
-  document.getElementById('description').addEventListener('blur', display);
+  document.getElementById('name').addEventListener('change', display);
+  document.getElementById('price').addEventListener('change', display);
+  document.getElementById('price').addEventListener('keyup', display);
+  document.getElementById('description').addEventListener('change', display);
   document.getElementById('picture').addEventListener('change', function read() { readURL(this); });
   document.getElementById('item-type').addEventListener('change', itemBytypeInit);
 }
