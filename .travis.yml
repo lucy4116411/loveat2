@@ -23,12 +23,12 @@ jobs:
     script:
     - pytest
   - name: js test
-    node_js: '12'
-    install:
-    - npm install -D
+    language: node_js
+    node_js: lts/*
     script:
     - npm run test
-  - stage: deploy
+  - stage: release
+    name: deploy to gae
     if: branch = master AND repo = creek0810/loveat2 AND fork = false
     python: 3.7
     script: echo "Deploying to gae ..."
@@ -46,3 +46,8 @@ jobs:
       project: loveat2
       on:
         branch: master
+  - name: release to github
+    language: node_js
+    node_js: lts/*
+    script:
+    - npm run semantic-release
