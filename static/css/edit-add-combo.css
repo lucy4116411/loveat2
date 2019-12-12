@@ -14,8 +14,11 @@ th {
     justify-content: space-between;
 }
 .category-container {
+    border-style: solid;
+    border-width: 5px;
     border-radius: 5px;
-    background: royalblue;
+    border-color: rgba(0, 127, 255, 0.5);
+    background: rgba(100, 196, 237, 0.5);
     width: calc(50% - 5px);
     height: 100%;
 }
@@ -23,7 +26,13 @@ th {
     width: calc(50% - 5px);
 }
 .preview-container {
-    background: royalblue;
+    border-style: solid;
+    border-width: 5px;
+    border-radius: 5px;
+    border-color: rgba(0, 127, 255, 0.5);
+    background: rgba(100, 196, 237, 0.5);
+    box-shadow: 1px 1px 1px #465881;
+    margin-bottom: 5px;
 }
 .menu-item {
     height: 100%;
@@ -47,4 +56,9 @@ img {
 }
 .number-container {
     margin-left: 5px;
+}
+#add-item-btn{
+    margin-right: 5px;
+    margin-bottom: 5px;
+    float:right;
 }
