@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+{% set active_page = "menu-edit" %}
+{% set url = "boss" %}
+
+{% block header %}
+    <script src="{{ url_for('static', filename='js/edit-add-combo.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit-add-combo.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="full-container">
+    {% if add %}
+        <h2>套餐新增</h2>
+    {% else %}
+        <h2>套餐修改</h2>
+    {% endif %}
+    <form id="combo-form">
+        <div class="form-group form-inline">
+            <label for="name">名稱</label>
+            <input type="text" name="name" id="name" class="form-control mx-sm-3" required>
+        </div>
+        <div class="form-group form-inline">
+            <label for="type-list">種類</label>
+            <select id="type-list" class="form-control mx-sm-3">
+                {% for Eachtype in comboType %}
+                    <option id="type-{{Eachtype['_id']}}">{{Eachtype['name']}}</option>
+                {% endfor %}
+            </select>
+            
+        </div>
+        <div class="form-group form-inline">
+            <label for="price">單價</label>
+            <input type="number" id="price" class="form-control mx-sm-3" min="1" required>
+        </div>
+        <div class="form-group">
+            <label for="picture">照片</label>
+            <input type="file" name="picture" id="picture" accept="image/*" class="form-control-file">
+        </div>
+        <div class="form-group">
+            <label for="description">說明</label>
+            <textarea name="description" id="description" cols="30" rows="2" class="form-control"></textarea>
+        </div>
+        <div>品項添加</div>
+        <div class="add-item-container form-group">
+            <div class="category-container">
+                    <div class="form-group form-inline">
+                        <label for="item-type">選擇種類</label>
+                        <select id="item-type" class="form-control mx-sm-3">
+                            {% for Eachtype in itemType %}
+                                <option id="type-{{Eachtype['_id']}}">{{Eachtype['name']}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="item">品項選擇</label>
+                        <select id="item" class="form-control mx-sm-3">
+                        </select>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="quantity">數量選擇</label>
+                        <input id="item-quantity" type="number" class="form-control mx-sm-3" min="1" value="1">
+                    </div>
+                    <p id="txt" class="form-text wrong-msg"></p>
+                    <button type="button" id="add-item-btn"class="btn btn-primary">添加</button>
+            </div>
+            <div class="table-container">
+                <table id = "item-table" class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>名稱</th>
+                            <th>數量</th>
+                            <th>其他</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="form-group ml-auto">
+            <button type="button" id="clear" class="btn btn-primary">清空</button>
+            {% if add %}
+            <button type="button" id="submit" class="btn btn-primary">品項添加</button>
+            {% else %}
+            <button type="button" id="submit" class="btn btn-primary">確認修改</button>
+            {% endif %}
+        </div>
+    </form>
+
+    <div class="preview-container">
+        <div class="menu-item">
+            <div class="item-img-container">
+                <img src="" id="picture-show" class="item-img">
+            </div>
+            <div id="detail" class="detail-info-container">
+                名稱:<br>
+                價格:<br>
+                品項:<br>
+                說明:<br>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--alert pop-up window-->
+<div class="modal" id="alert-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="alert-title" class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="alert-body"></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
