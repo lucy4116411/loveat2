@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/creek0810/loveat2/compare/v1.1.0...v1.2.0) (2019-12-12)
+
+
+### Features
+
+* finish profile feature ([2d64375](https://github.com/creek0810/loveat2/commit/2d64375319977bd18b044df4f2a4e87031cff87c))
+* **edit-menu:** finish edit-menu, fix menu_api's add_item and update fetch-data ([d4c20e7](https://github.com/creek0810/loveat2/commit/d4c20e72e89914c01894efb0f00b5aa8c9d9281a))
+* **edit-menu:** finish menu-edit's menu(all type), new type, delete item/combo, and edit-add-item/combo ui layout ([2c83fdf](https://github.com/creek0810/loveat2/commit/2c83fdf8e4af785dc70511f4092881562e56c306))
+* **menu-api:** return code 409 when the name of update type is duplicate ([d7d87ee](https://github.com/creek0810/loveat2/commit/d7d87eee48f7a689f19c237e84aadac81361a296)), closes [#76](https://github.com/creek0810/loveat2/issues/76)
+* **register:** auto login after user register success ([c7f4889](https://github.com/creek0810/loveat2/commit/c7f4889f7a61383db23321db8fcdace4ed691318)), closes [#69](https://github.com/creek0810/loveat2/issues/69)
+
+
+### Bug Fixes
+
+* correct the quantity input string problem ([4efc3e2](https://github.com/creek0810/loveat2/commit/4efc3e22b05f533a6e2b21c0d35c52edf373f51c))
+* fix chart refresh bug ([7be8112](https://github.com/creek0810/loveat2/commit/7be81126488f8f7e8510db264e30d896f61fa163)), closes [#65](https://github.com/creek0810/loveat2/issues/65) [#71](https://github.com/creek0810/loveat2/issues/71)
+* store item discription input by users, and enhancement discription style ([11e29d2](https://github.com/creek0810/loveat2/commit/11e29d29e0910e8399209edc8735733771210d60))
+
 ## [1.1.0](https://github.com/creek0810/loveat2/compare/v1.0.0...v1.1.0) (2019-12-09)
 
 
@@ -43,7 +61,7 @@ Before:
 	{
 		"takenAt": "2019-10-31T12:00",
 		"notes": "不要加番茄",
-		"userName": "loveateat'
+		"userName": "loveateat",
 		"total": "500",
 		"content": [
 			{
