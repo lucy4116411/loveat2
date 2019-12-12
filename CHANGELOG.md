@@ -33,11 +33,13 @@ All notable changes to this project will be documented in this file. See [standa
 
 Before:
     get_all_type()
+
 After:
     get_type(item=True, combo=True)
 * change the post format of new order api
 
-	Before:
+Before:
+```json
 	{
 		"takenAt": "2019-10-31T12:00",
 		"notes": "不要加番茄",
@@ -55,9 +57,13 @@ After:
 				"quantity": 1
 			}
 		]
-	}
-	After:
-	{
+    }
+```
+
+After:
+
+```json
+    {
 		"takenAt": "2019-10-31T12:00",
 		"notes": "不要加番茄",
 		"total": "500",
@@ -74,7 +80,7 @@ After:
 			}
 		]
 	}
-
+```
 ### Features
 
 * add default pic and favicon ([a93b494](https://github.com/creek0810/loveat2/commit/a93b4945a3f78136bacbbbcbcfcddd3d5aa8f2c1))

@@ -6,7 +6,7 @@
 
 ## Built With
 - [Bootstrap](https://getbootstrap.com/)
-- [zolad](https://apoorv.pro/lozad.js/)
+- [lozad.js](https://apoorv.pro/lozad.js/)
 
 ## Authors
 
