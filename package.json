@@ -25,6 +25,7 @@
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
+    "husky": "^3.1.0",
     "semantic-release": "^15.13.31"
   },
   "release": {
@@ -35,5 +36,10 @@
       "@semantic-release/release-notes-generator",
       "@semantic-release/github"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test -- --fix && pipenv run black . -l 79 && pipenv run flake8 && pipenv run pytest && git add ."
+    }
   }
 }
