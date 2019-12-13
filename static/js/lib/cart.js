@@ -97,6 +97,13 @@ class Cart {
     localStorage.removeItem(this.prefix);
   }
 
+  /**
+   *@description update item quantity
+   *
+   * @param {*} id
+   * @param {*} quantity
+   * @memberof Cart
+   */
   updateQuantity(id, quantity) {
     this.content[id].quantity = quantity;
     this.updateLocalStorage();

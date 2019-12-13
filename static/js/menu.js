@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* global Cart, $, FetchData, lozad */
 /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
 
@@ -6,11 +7,23 @@ const ID_TO_NAME = {}; // {"_id1":"name1"}
 const TYPE_DATA = {}; // {type1:{"id":[], "category":"item"}}
 let myCart = null;
 
+/* ---- show the nothing message to users ---- */
+function showNothing(mode) { // mode: true or false
+  const showNothingDiv = document.getElementById('show-nothing');
+  if (mode === true) {
+    showNothingDiv.innerHTML = '找不到東西~<br>可能是關鍵字錯誤或是老闆還沒有新增東西喔~';
+    showNothingDiv.classList.remove('hidden');
+  } else {
+    showNothingDiv.classList.add('hidden');
+  }
+}
 
 /* ---- 點選type 將其他type相關之餐點class設為hidden----*/
 function searchByType(event) {
   const tarType = event.target.id;
   const tarTypeId = TYPE_DATA[tarType].id;
+  const showNothingFlag = (tarTypeId.length === 0); // true : display show nothing
+  showNothing(showNothingFlag);
   tarTypeId.forEach((id) => {
     document.getElementById(id).classList.remove('hidden');
   });
@@ -25,15 +38,18 @@ function searchByType(event) {
 
 /* ---- search by name ---- */
 function searchByName(event) {
+  let showNothingFlag = true; // true : display show nothing
   if (event.which === 13) { // enter key
     const itemName = document.getElementById('search').value;
     Object.keys(ID_TO_NAME).forEach((id) => {
       if (ID_TO_NAME[id].includes(itemName)) {
         document.getElementById(id).classList.remove('hidden');
+        showNothingFlag = false;
       } else {
         document.getElementById(id).classList.add('hidden');
       }
     });
+    showNothing(showNothingFlag);
   }
 }
 
@@ -41,6 +57,7 @@ function searchByName(event) {
 function addContent(event) {
   const itemId = event.target.id.replace('submit_', '');
   const itemQuantity = parseInt(document.getElementById(`input_${itemId}`).value, 10);
+  const orderHintModal = document.getElementById('orderHintContent');
   let itemCategory = '';
 
   Object.keys(TYPE_DATA).forEach((type) => {
@@ -54,14 +71,25 @@ function addContent(event) {
     category: itemCategory,
     quantity: itemQuantity,
   };
+
   if (data.quantity >= 1 && data.quantity <= 99) {
+    const itemInCart = myCart.get()[itemId];
+    if (itemInCart) {
+      if (itemInCart.quantity + data.quantity > 99) {
+        data.quantity = 99;
+        orderHintModal.innerHTML = `單品總數量最高上限99<br>此商品目前總數為${data.quantity}`;
+      } else {
+        orderHintModal.innerHTML = `新增成功~<br>祝您吃的開心~<br>此商品目前總數為${itemInCart.quantity + data.quantity}`;
+      }
+    } else {
+      orderHintModal.innerHTML = `新增成功~<br>祝您吃的開心~<br>此商品目前總數為${data.quantity}`;
+    }
     myCart.add(data);
-    document.getElementById('orderHintContent').innerHTML = '新增成功~<br>祝您吃的開心~';
-    $('#orderHintModal').modal('show');
   } else {
-    document.getElementById('orderHintContent').innerHTML = '新增失敗~<br>請再確認一次訂單資訊喔~';
-    $('#orderHintModal').modal('show');
+    orderHintModal.innerHTML = '新增失敗~<br>請再確認一次訂單資訊喔~';
   }
+  $('#orderHintModal').modal('show');
+  document.getElementById(`input_${itemId}`).value = 1;// clear the input field value to 1
 }
 
 async function init() {
