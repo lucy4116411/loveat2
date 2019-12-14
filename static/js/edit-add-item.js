@@ -2,6 +2,10 @@
 /* eslint no-underscore-dangle: 0 */
 
 const newItemAPI = '/api/menu/item/new';
+const updateItemAPI = '/api/menu/item/update';
+const ADD = 0;
+const UPDATE = 1;
+let page;
 
 // display on board instantly
 function display() {
@@ -23,7 +27,9 @@ function clearContent() {
   display();
 }
 
-function checkStatus(status) {
+const successfulMsg = ['新增', '修改'];
+const successfulMsgBody = ['繼續新增下一筆菜單', ''];
+function checkStatus(status, actionNum) {
   const statusResult = {
     403: {
       title: '發生錯誤',
@@ -34,16 +40,17 @@ function checkStatus(status) {
       body: '此名稱已存在，請更改名字！。',
     },
     200: {
-      title: '單品新增成功',
-      body: '單品新增成功！繼續新增下一筆菜單',
+      title: `單品${successfulMsg[actionNum]}成功`,
+      body: `單品${successfulMsg[actionNum]}成功！${successfulMsgBody[actionNum]}`,
     },
   };
-  if (status === 200) clearContent();
+  if (status === 200) {
+    if (actionNum === ADD) clearContent();
+  }
   document.getElementById('alert-title').innerHTML = statusResult[status].title;
   document.getElementById('alert-body').innerHTML = statusResult[status].body;
   $('#alert-modal').modal('show');
 }
-
 
 async function upload() {
   if (document.forms['item-form'].reportValidity()) {
@@ -52,8 +59,14 @@ async function upload() {
     const myForm = document.getElementById('item-form');
     const formData = new FormData(myForm);
     formData.append('type', selection.options[index].id.substring(5));
-    const result = await FetchData.postForm(newItemAPI, formData);
-    checkStatus(result.status);
+    if (page === ADD) {
+      const result = await FetchData.postForm(newItemAPI, formData);
+      checkStatus(result.status, ADD);
+    } else {
+      formData.append('id', document.getElementsByClassName('item-id')[0].id.substring(3));
+      const result = await FetchData.postForm(updateItemAPI, formData);
+      checkStatus(result.status, UPDATE);
+    }
   }
 }
 
@@ -71,8 +84,18 @@ function readURL(input) {
   }
 }
 
+function displayInitType() {
+  const typeId = document.getElementsByClassName('item-type')[0].id.substring(5);
+  const typeSection = document.getElementById('type-list');
+  const result = [...typeSection.options].find((Eachtype) => Eachtype.id.substring(5) === typeId);
+  result.selected = true;
+}
 
 function init() {
+  if (document.getElementById('name').value !== '') {
+    page = UPDATE;
+    displayInitType();
+  } else page = ADD;
   document.getElementById('clear').addEventListener('click', clearContent);
   document.getElementById('submit').addEventListener('click', upload);
   document.getElementById('name').addEventListener('change', display);
@@ -80,6 +103,7 @@ function init() {
   document.getElementById('price').addEventListener('keyup', display);
   document.getElementById('description').addEventListener('change', display);
   document.getElementById('picture').addEventListener('change', function read() { readURL(this); });
+  display();
 }
 
 window.addEventListener('load', init);

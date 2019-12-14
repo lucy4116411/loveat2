@@ -1,11 +1,14 @@
 /* global FetchData, $ */
 /* eslint no-underscore-dangle: 0 */
-/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "deleteItem" }] */
+
 const menuEditAPI = {
   all: '/api/menu',
   newCombo: '/api/menu/combo/new',
+  updateCombo: '/api/menu/combo/update',
 };
-
+const ADD = 0;
+const UPDATE = 1;
+let page;
 const itemsObj = {};
 
 function display() {
@@ -16,7 +19,8 @@ function display() {
   const itemTbodyRows = document.querySelectorAll('#item-table tbody tr');
   let items = '';
   Array.from(itemTbodyRows).forEach((eachItem) => {
-    items += `<br>&nbsp;&nbsp;&nbsp;&nbsp;${eachItem.cells[1].innerHTML} * ${eachItem.cells[0].innerHTML}`;
+    const quantityInput = eachItem.cells[1].getElementsByTagName('input')[0];
+    items += `<br>&nbsp;&nbsp;&nbsp;&nbsp;${quantityInput.value} * ${eachItem.cells[0].innerHTML}`;
   });
 
   detail.innerHTML = `名稱：${document.getElementById('name').value} <br>
@@ -41,8 +45,9 @@ function clearContent() {
   });
   display();
 }
-
-function checkStatus(status) {
+const successfulMsg = ['新增', '修改'];
+const successfulMsgBody = ['繼續新增下一筆菜單', ''];
+function checkStatus(status, actionNum) {
   const statusResult = {
     403: {
       title: '發生錯誤',
@@ -53,12 +58,12 @@ function checkStatus(status) {
       body: '此名稱已存在，請更改名字！。',
     },
     200: {
-      title: '單品新增成功',
-      body: '單品新增成功！繼續新增下一筆菜單',
+      title: `套餐${successfulMsg[actionNum]}成功`,
+      body: `套餐${successfulMsg[actionNum]}成功！${successfulMsgBody[actionNum]}`,
     },
   };
 
-  if (status === 200) clearContent();
+  if (status === 200 && actionNum === ADD) clearContent();
   document.getElementById('alert-title').innerHTML = statusResult[status].title;
   document.getElementById('alert-body').innerHTML = statusResult[status].body;
   $('#alert-modal').modal('show');
@@ -85,15 +90,23 @@ async function itemBytypeInit() {
   document.getElementById('item').options[0].selected = true;
 }
 
+// eslint-disable-next-line no-unused-vars
 function deleteItem(e) {
   // delete row
   const i = e.parentNode.parentNode.rowIndex;
   const itemsTable = document.getElementById('item-table');
   const deleteItemRow = [...itemsTable.rows][i];
-  const itemId = deleteItemRow.id;
+  const itemId = deleteItemRow.id.substring(8);
 
   itemsTable.deleteRow(i);
   delete itemsObj[itemId];
+  display();
+}
+
+// eslint-disable-next-line no-unused-vars
+function changeQuantity(e) {
+  const itemId = e.id.substring(9);
+  itemsObj[itemId].quantity = parseInt(e.value, 10);
   display();
 }
 
@@ -106,18 +119,19 @@ function addItem() {
     const itemQuantity = document.getElementById('item-quantity').value;
     if (itemId in itemsObj) {
       itemsObj[itemId].quantity += parseInt(itemQuantity, 10);
-      document.getElementById(`quantity-${itemId}`).innerHTML = itemsObj[itemId].quantity;
+      document.getElementById(`quantity-${itemId}`).value = itemsObj[itemId].quantity;
     } else {
       itemsObj[itemId] = {
         name: item.value,
         quantity: parseInt(itemQuantity, 10),
       };
-      const tmp = `<tr id="${itemId}"><td>${itemsObj[itemId].name}</td>
-            <td id ="quantity-${itemId}">${itemsObj[itemId].quantity}</td>
+      const tmp = `<tr id="item-id-${itemId}"><td>${itemsObj[itemId].name}</td>
+            <td><input id ="quantity-${itemId}" type="number" class="form-control mx-sm-3" min="1" value="${itemsObj[itemId].quantity}" onkeyup="changeQuantity(this)"></td>
             <td><button type="button" id="delete-${itemId}" class="btn btn-primary delete-btn" onclick="deleteItem(this)">刪除</button></td></tr>`;
       itemTbody.insertAdjacentHTML('beforeend', tmp);
     }
     // to initialize form table
+    // document.getElementById()
     document.getElementById('item-type').options[0].selected = true; // 選擇第一個
     itemBytypeInit();
     document.getElementById('item-quantity').value = 1;
@@ -136,14 +150,11 @@ async function upload() {
       const index = selection.selectedIndex;
 
       let content = [];
-      const rows = document.getElementById('item-table').getElementsByTagName('tr');
-      Array.from(rows).forEach((itemRow) => {
-        if (itemRow.id.match('item-')) {
-          content.push({
-            id: itemRow.id.substring(5),
-            quantity: itemRow.cells[1].innerHTML,
-          });
-        }
+      Object.keys(itemsObj).forEach((eachItem) => {
+        content.push({
+          id: eachItem,
+          quantity: itemsObj[eachItem].quantity,
+        });
       });
       content = JSON.stringify(content);
       const myForm = document.getElementById('combo-form');
@@ -153,9 +164,14 @@ async function upload() {
       formData.append('type', selection.options[index].id.substring(5));
       formData.append('price', document.getElementById('price').value);
       formData.append('content', content);
-
-      const result = await FetchData.postForm(menuEditAPI.newCombo, formData);
-      checkStatus(result.status);
+      if (page === ADD) {
+        const result = await FetchData.postForm(menuEditAPI.newCombo, formData);
+        checkStatus(result.status, ADD);
+      } else {
+        formData.append('id', document.getElementsByClassName('combo-id')[0].id.substring(3));
+        const result = await FetchData.postForm(menuEditAPI.updateCombo, formData);
+        checkStatus(result.status, UPDATE);
+      }
     }
   }
 }
@@ -172,18 +188,43 @@ function readURL(input) {
   }
 }
 
+function displayInitType() {
+  const typeId = document.getElementsByClassName('combo-type')[0].id.substring(5);
+  const typeSection = document.getElementById('type-list');
+  const result = [...typeSection.options].find((Eachtype) => Eachtype.id.substring(5) === typeId);
+  result.selected = true;
+}
+
+function itemsObjInit() {
+  const rows = document.getElementById('item-table').getElementsByTagName('tr');
+  Array.from(rows).forEach((itemRow) => {
+    if (itemRow.id.match('item-id-')) {
+      const quantityInput = itemRow.cells[1].getElementsByTagName('input')[0];
+      itemsObj[itemRow.id.substring(8)] = {
+        name: itemRow.cells[0].innerHTML,
+        quantity: parseInt(quantityInput.value, 10),
+      };
+    }
+  });
+}
 
 function init() {
+  if (document.getElementById('name').value !== '') {
+    page = UPDATE;
+    displayInitType();
+    itemsObjInit();
+  } else page = ADD;
   itemBytypeInit();
   document.getElementById('clear').addEventListener('click', clearContent);
   document.getElementById('submit').addEventListener('click', upload);
   document.getElementById('add-item-btn').addEventListener('click', addItem);
-  document.getElementById('name').addEventListener('change', display);
-  document.getElementById('price').addEventListener('change', display);
+  document.getElementById('name').addEventListener('keyup', display);
   document.getElementById('price').addEventListener('keyup', display);
-  document.getElementById('description').addEventListener('change', display);
+  document.getElementById('price').addEventListener('change', display);
+  document.getElementById('description').addEventListener('keyup', display);
   document.getElementById('picture').addEventListener('change', function read() { readURL(this); });
   document.getElementById('item-type').addEventListener('change', itemBytypeInit);
+  display();
 }
 
 window.addEventListener('load', init);

@@ -17,20 +17,21 @@
     <form id="item-form">
         <div class="form-group">
             <label for="name">名稱</label>
-            <input type="text" name="name" id="name" class="form-control" required>
+            <input type="text" name="name" id="name" class="form-control" value="{{itemData['name']}}"required>
+            <div id="id-{{itemData['_id']}}" class="item-id"></div>
         </div>
         <div class="form-group">
             <label for="type-list">種類</label>
             <select id="type-list" class="form-control">
-                {% for Eachtype in type %}
-                    <option id="type-{{Eachtype['_id']}}">{{Eachtype['name']}}</option>
+                {% for eachType in type %}
+                    <option id="type-{{eachType['_id']}}">{{eachType['name']}}</option>
                 {% endfor %}
             </select>
-            <div name="type" id="type-id"></div>
+            <div id="type-{{itemData['type']}}" class="item-type"></div>
         </div>
         <div class="form-group">
             <label for="price">單價</label>
-            <input type="number" name="price" id="price" class="form-control" min="1" required>
+            <input type="number" name="price" id="price" class="form-control" min="1" value="{{itemData['price']}}" required>
         </div>
         <div class="form-group">
             <label for="picture">照片</label>
@@ -38,7 +39,7 @@
         </div>
         <div class="form-group">
             <label for="description">說明</label>
-            <textarea name="description" id="description" cols="30" rows="5" class="form-control"></textarea>
+            <textarea name="description" id="description" cols="30" rows="5" class="form-control">{{itemData['description']}}</textarea>
         </div>
         <div class="form-group ml-auto">
             <button type="button" id="clear" class="btn btn-primary">清空</button>
@@ -54,7 +55,11 @@
     <div class="preview-container">
         <div class="menu-item">
             <div class="item-img-container">
-                <img src="" id="picture-show" class="item-img">
+            {% if add %}
+                <img id="picture-show" class="item-img" src="">
+            {% else %}
+                <img id="picture-show" class="item-img" src="/img/{{itemData['picture']}}">
+            {% endif %}
             </div>
             <div id="detail" class="detail-info-container">
                 名稱：<br>

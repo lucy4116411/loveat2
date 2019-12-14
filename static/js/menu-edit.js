@@ -112,7 +112,7 @@ async function updateType() {
     const selection = document.getElementById('update-type-list');
     const index = selection.selectedIndex;
     const result = await FetchData.post(menuEditAPI.updateType, {
-      id: selection.options[index].id.substring(5),
+      id: selection.options[index].id.substring(12),
       type: document.getElementById('update-type').value,
     });
 
@@ -125,7 +125,7 @@ async function deleteType() {
   const selection = document.getElementById('delete-type-list');
   const index = selection.selectedIndex;
   const result = await FetchData.post(menuEditAPI.deleteType, {
-    id: selection.options[index].id.substring(5),
+    id: selection.options[index].id.substring(12),
   });
 
   checkStatus(result.status, ACTION_NUM.DELETE);

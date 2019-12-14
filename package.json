@@ -49,9 +49,9 @@
       "git add"
     ],
     "*.py": [
-        "pipenv run black -l 79",
-        "pipenv run flake8",
-        "git add"
+      "pipenv run black -l 79",
+      "pipenv run flake8",
+      "git add"
     ]
   }
 }
