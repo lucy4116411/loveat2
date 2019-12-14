@@ -49,14 +49,33 @@ class Cart {
   }
 
   /**
+   *@description check item quantity if it is not over 99
+   *
+   * @param {*} data
+   * @returns
+   * @memberof Cart
+   */
+  checkAndSetQuantity(dataId, quantity) {
+    const nowQuantity = this.content[dataId].quantity;
+    const totalQuantity = nowQuantity + quantity;
+    if (totalQuantity <= 99) {
+      this.content[dataId].quantity = totalQuantity;
+      return true;
+    }
+    this.content[dataId].quantity = 99;
+    return false;
+  }
+
+  /**
    * @description add the item quantity which key is loveat2-cart
    *
    * @param {*} data
    * @memberof Cart
    */
   add(data) {
+    let addResult = true;
     if (data._id in this.content) {
-      this.content[data._id].quantity += data.quantity;
+      addResult = this.checkAndSetQuantity(data._id, data.quantity);
     } else {
       this.content[data._id] = {
         category: data.category,
@@ -65,6 +84,7 @@ class Cart {
       };
     }
     this.updateLocalStorage();
+    return addResult;
   }
 
   /**

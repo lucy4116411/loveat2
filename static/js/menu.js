@@ -73,18 +73,12 @@ function addContent(event) {
   };
 
   if (data.quantity >= 1 && data.quantity <= 99) {
-    const itemInCart = myCart.get()[itemId];
-    if (itemInCart) {
-      if (itemInCart.quantity + data.quantity > 99) {
-        data.quantity = 99;
-        orderHintModal.innerHTML = `單品總數量最高上限99<br>此商品目前總數為${data.quantity}`;
-      } else {
-        orderHintModal.innerHTML = `新增成功~<br>祝您吃的開心~<br>此商品目前總數為${itemInCart.quantity + data.quantity}`;
-      }
+    const addResult = myCart.add(data);
+    if (addResult) {
+      orderHintModal.innerHTML = `新增成功~<br>祝您吃的開心~<br>此商品目前總數為${myCart.get()[data._id].quantity}`;
     } else {
-      orderHintModal.innerHTML = `新增成功~<br>祝您吃的開心~<br>此商品目前總數為${data.quantity}`;
+      orderHintModal.innerHTML = `單品總數量最高上限99<br>此商品目前總數為${myCart.get()[data._id].quantity}`;
     }
-    myCart.add(data);
   } else {
     orderHintModal.innerHTML = '新增失敗~<br>請再確認一次訂單資訊喔~';
   }
