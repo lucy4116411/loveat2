@@ -31,12 +31,13 @@ function updateSum(id) {
 function changeQuantity(e) {
   let newQuantity = parseInt(e.target.value, 10);
   const id = e.target.id.substr(9);
+  const originQuantity = myCart.get()[id].quantity;
 
-  if (newQuantity <= 0 || Number.isNaN(newQuantity)) {
+  if ((newQuantity <= 0 || newQuantity > 99) || Number.isNaN(newQuantity)) {
     document.getElementById('hint-content').innerHTML = '輸入錯誤';
     document.getElementById('bussiness_data').style.display = 'none';
     $('#order-send-hint-modal').modal('show');
-    newQuantity = 1;
+    newQuantity = originQuantity;
     e.target.value = newQuantity;
   }
 
