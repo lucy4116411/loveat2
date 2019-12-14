@@ -64,8 +64,11 @@ def add_item():
 @menu_api.route("/item/update", methods=["POST"])
 @admin_required
 def update_item():
-    menu.update_item(request.form, request.files["picture"].read())
-    return "", 200
+    try:
+        menu.update_item(request.form, request.files["picture"].read())
+        return "", 200
+    except duplicateError:
+        return "", 409
 
 
 @menu_api.route("/item/delete", methods=["POST"])
@@ -96,8 +99,11 @@ def add_combo():
 @menu_api.route("/combo/update", methods=["POST"])
 @admin_required
 def update_combo():
-    menu.update_combo(request.form, request.files["picture"].read())
-    return "", 200
+    try:
+        menu.update_combo(request.form, request.files["picture"].read())
+        return "", 200
+    except duplicateError:
+        return "", 409
 
 
 @menu_api.route("/combo/delete", methods=["POST"])
