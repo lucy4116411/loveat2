@@ -1,7 +1,6 @@
 import json
 import uuid
 
-from bson.binary import Binary
 from bson.objectid import ObjectId
 
 from lib.custom_except import duplicateError
@@ -139,12 +138,7 @@ def add_item(data, pic):
                 "description": data.get("description"),
             }
         )
-        if pic is None:
-            db.IMAGE_COLLECTION.insert_one(
-                {"uuid": pic_id, "picture": Binary(b"")}
-            )
-        else:
-            db.IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+        db.IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
 
 
 def add_combo(data, pic):
@@ -171,12 +165,7 @@ def add_combo(data, pic):
                 "content": content,
             }
         )
-        if pic is None:
-            db.IMAGE_COLLECTION.insert_one(
-                {"uuid": pic_id, "picture": Binary(b"")}
-            )
-        else:
-            db.IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+        db.IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
 
 
 def add_type(data):
@@ -250,7 +239,7 @@ def update_item(data, pic):
         {"$set": {"content.$.name": data.get("name")}},
     )
     # update pic
-    if pic is not None:
+    if pic != b"":
         db.IMAGE_COLLECTION.update_one(
             {"uuid": pic_id}, {"$set": {"picture": pic}}
         )
@@ -280,7 +269,7 @@ def update_combo(data, pic):
             }
         },
     )
-    if pic is not None:
+    if pic != b"":
         db.IMAGE_COLLECTION.update_one(
             {"uuid": pic_id}, {"$set": {"picture": pic}}
         )

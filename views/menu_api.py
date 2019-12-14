@@ -53,11 +53,7 @@ def get_item():
 @menu_api.route("/item/new", methods=["POST"])
 @admin_required
 def add_item():
-    try:
-        pic = request.files["picture"].read()
-    except KeyError:
-        pic = None
-
+    pic = request.files["picture"].read()
     try:
         menu.add_item(request.form, pic)
         return "", 200
@@ -68,10 +64,7 @@ def add_item():
 @menu_api.route("/item/update", methods=["POST"])
 @admin_required
 def update_item():
-    try:
-        menu.update_item(request.form, request.files["picture"].read())
-    except KeyError:
-        menu.update_item(request.form, None)
+    menu.update_item(request.form, request.files["picture"].read())
     return "", 200
 
 
@@ -92,11 +85,7 @@ def get_combo():
 @menu_api.route("/combo/new", methods=["POST"])
 @admin_required
 def add_combo():
-    try:
-        pic = request.files["picture"].read()
-    except KeyError:
-        pic = None
-
+    pic = request.files["picture"].read()
     try:
         menu.add_combo(request.form, pic)
         return "", 200
@@ -107,10 +96,7 @@ def add_combo():
 @menu_api.route("/combo/update", methods=["POST"])
 @admin_required
 def update_combo():
-    try:
-        menu.update_combo(request.form, request.files["picture"].read())
-    except KeyError:
-        menu.update_combo(request.form, None)
+    menu.update_combo(request.form, request.files["picture"].read())
     return "", 200
 
 
