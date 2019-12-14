@@ -21,4 +21,18 @@
             "subType": "00"
         }
     }
-}]
+},
+{
+    "_id": {
+        "$oid": "5de1f409c24f6830c5978e0c"
+    },
+    "uuid": "6a9843d0-7789-4a7b-ab5b-3c79ccad4310",
+    "picture": {
+        "$binary": {
+            "base64": "",
+            "subType": "00"
+        }
+    }
+}
+
+]
