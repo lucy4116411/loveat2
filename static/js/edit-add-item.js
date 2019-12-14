@@ -98,7 +98,7 @@ function init() {
   } else page = ADD;
   document.getElementById('clear').addEventListener('click', clearContent);
   document.getElementById('submit').addEventListener('click', upload);
-  document.getElementById('name').addEventListener('change', display);
+  document.getElementById('name').addEventListener('keyup', display);
   document.getElementById('price').addEventListener('change', display);
   document.getElementById('price').addEventListener('keyup', display);
   document.getElementById('description').addEventListener('change', display);
