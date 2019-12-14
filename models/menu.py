@@ -1,7 +1,6 @@
 import json
 import uuid
 
-from bson.binary import Binary
 from bson.objectid import ObjectId
 
 from lib.custom_except import duplicateError
@@ -139,12 +138,7 @@ def add_item(data, pic):
                 "description": data.get("description"),
             }
         )
-        if pic is None:
-            db.IMAGE_COLLECTION.insert_one(
-                {"uuid": pic_id, "picture": Binary(b"")}
-            )
-        else:
-            db.IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+        db.IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
 
 
 def add_combo(data, pic):
@@ -171,12 +165,7 @@ def add_combo(data, pic):
                 "content": content,
             }
         )
-        if pic is None:
-            db.IMAGE_COLLECTION.insert_one(
-                {"uuid": pic_id, "picture": Binary(b"")}
-            )
-        else:
-            db.IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
+        db.IMAGE_COLLECTION.insert_one({"uuid": pic_id, "picture": pic})
 
 
 def add_type(data):
@@ -229,61 +218,67 @@ def delete_type(id):
 
 
 def update_item(data, pic):
-    pic_id = db.ITEM_COLLECTION.find_one(
-        {"_id": ObjectId(data.get("id"))}, {"picture": 1}
-    )["picture"]
-    # update item
-    db.ITEM_COLLECTION.update_one(
-        {"_id": ObjectId(data.get("id"))},
-        {
-            "$set": {
-                "type": ObjectId(data.get("type")),
-                "name": data.get("name"),
-                "price": int(data.get("price")),
-                "description": data.get("description"),
-            }
-        },
-    )
-    # update item name in combo
-    db.COMBO_COLLECTION.update_many(
-        {"content.id": ObjectId(data.get("id"))},
-        {"$set": {"content.$.name": data.get("name")}},
-    )
-    # update pic
-    if pic is not None:
-        db.IMAGE_COLLECTION.update_one(
-            {"uuid": pic_id}, {"$set": {"picture": pic}}
+    if db.ITEM_COLLECTION.find_one({"name": data["name"]}):
+        raise duplicateError
+    else:
+        pic_id = db.ITEM_COLLECTION.find_one(
+            {"_id": ObjectId(data.get("id"))}, {"picture": 1}
+        )["picture"]
+        # update item
+        db.ITEM_COLLECTION.update_one(
+            {"_id": ObjectId(data.get("id"))},
+            {
+                "$set": {
+                    "type": ObjectId(data.get("type")),
+                    "name": data.get("name"),
+                    "price": int(data.get("price")),
+                    "description": data.get("description"),
+                }
+            },
         )
+        # update item name in combo
+        db.COMBO_COLLECTION.update_many(
+            {"content.id": ObjectId(data.get("id"))},
+            {"$set": {"content.$.name": data.get("name")}},
+        )
+        # update pic
+        if pic != b"":
+            db.IMAGE_COLLECTION.update_one(
+                {"uuid": pic_id}, {"$set": {"picture": pic}}
+            )
 
 
 def update_combo(data, pic):
-    pic_id = db.COMBO_COLLECTION.find_one(
-        {"_id": ObjectId(data.get("id"))}, {"picture": 1}
-    )["picture"]
-    # pre processing content field
-    content = json.loads(data.get("content"))
-    for item in content:
-        item["id"] = ObjectId(item["id"])
-        item["name"] = db.ITEM_COLLECTION.find_one(
-            {"_id": item["id"]}, {"name": 1}
-        )["name"]
-    # start update
-    db.COMBO_COLLECTION.update_one(
-        {"_id": ObjectId(data.get("id"))},
-        {
-            "$set": {
-                "type": ObjectId(data.get("type")),
-                "name": data.get("name"),
-                "price": int(data.get("price")),
-                "description": data.get("description"),
-                "content": content,
-            }
-        },
-    )
-    if pic is not None:
-        db.IMAGE_COLLECTION.update_one(
-            {"uuid": pic_id}, {"$set": {"picture": pic}}
+    if db.COMBO_COLLECTION.find_one({"name": data["name"]}):
+        raise duplicateError
+    else:
+        pic_id = db.COMBO_COLLECTION.find_one(
+            {"_id": ObjectId(data.get("id"))}, {"picture": 1}
+        )["picture"]
+        # pre processing content field
+        content = json.loads(data.get("content"))
+        for item in content:
+            item["id"] = ObjectId(item["id"])
+            item["name"] = db.ITEM_COLLECTION.find_one(
+                {"_id": item["id"]}, {"name": 1}
+            )["name"]
+        # start update
+        db.COMBO_COLLECTION.update_one(
+            {"_id": ObjectId(data.get("id"))},
+            {
+                "$set": {
+                    "type": ObjectId(data.get("type")),
+                    "name": data.get("name"),
+                    "price": int(data.get("price")),
+                    "description": data.get("description"),
+                    "content": content,
+                }
+            },
         )
+        if pic != b"":
+            db.IMAGE_COLLECTION.update_one(
+                {"uuid": pic_id}, {"$set": {"picture": pic}}
+            )
 
 
 def update_type(data):

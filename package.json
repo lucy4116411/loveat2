@@ -26,6 +26,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
     "semantic-release": "^15.13.31"
   },
   "release": {
@@ -39,7 +40,18 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test -- --fix && pipenv run black . -l 79 && pipenv run flake8 && pipenv run pytest && git add ."
+      "pre-commit": "lint-staged && pipenv run pytest"
     }
+  },
+  "lint-staged": {
+    "*.js": [
+      "./node_modules/.bin/eslint --fix",
+      "git add"
+    ],
+    "*.py": [
+        "pipenv run black -l 79",
+        "pipenv run flake8",
+        "git add"
+    ]
   }
 }
