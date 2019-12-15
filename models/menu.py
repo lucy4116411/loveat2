@@ -218,7 +218,9 @@ def delete_type(id):
 
 
 def update_item(data, pic):
-    if db.ITEM_COLLECTION.find_one({"name": data["name"]}):
+    if db.ITEM_COLLECTION.find_one(
+        {"_id": {"$ne": ObjectId(data["id"])}, "name": data["name"]}
+    ):
         raise duplicateError
     else:
         pic_id = db.ITEM_COLLECTION.find_one(
@@ -249,7 +251,9 @@ def update_item(data, pic):
 
 
 def update_combo(data, pic):
-    if db.COMBO_COLLECTION.find_one({"name": data["name"]}):
+    if db.COMBO_COLLECTION.find_one(
+        {"_id": {"$ne": ObjectId(data["id"])}, "name": data["name"]}
+    ):
         raise duplicateError
     else:
         pic_id = db.COMBO_COLLECTION.find_one(
