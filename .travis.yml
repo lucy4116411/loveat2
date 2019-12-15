@@ -47,6 +47,7 @@ jobs:
       on:
         branch: master
   - name: release to github
+    if: branch = master AND repo = creek0810/loveat2 AND fork = false AND commit_message =~ /chore\(release\)/
     language: node_js
     node_js: lts/*
     script:
