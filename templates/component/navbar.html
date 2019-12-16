@@ -49,7 +49,7 @@
             <a class="nav-link dropdown-toggle" href="#" id="settingDropDown" role="button" data-toggle="dropdown">
                 你好 {{name}}
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="{{ url_for('user_web.profile', id=id) }}">個人資料</a>
                 {% if auth == "admin" %}
                     <a class="dropdown-item" href="{{ url_for('order_web.pending') }}">管理頁面</a>
