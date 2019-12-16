@@ -27,6 +27,10 @@ function clearContent() {
   display();
 }
 
+function delayURL(url, time) {
+  setTimeout(() => { window.location.href = `${url}`; }, time);
+}
+
 const successfulMsg = ['新增', '修改'];
 const successfulMsgBody = ['繼續新增下一筆菜單', ''];
 function checkStatus(status, actionNum) {
@@ -44,12 +48,13 @@ function checkStatus(status, actionNum) {
       body: `單品${successfulMsg[actionNum]}成功！${successfulMsgBody[actionNum]}`,
     },
   };
-  if (status === 200) {
-    if (actionNum === ADD) clearContent();
-  }
   document.getElementById('alert-title').innerHTML = statusResult[status].title;
   document.getElementById('alert-body').innerHTML = statusResult[status].body;
   $('#alert-modal').modal('show');
+  if (status === 200) {
+    if (actionNum === ADD) clearContent();
+    else delayURL('/menu/edit', 1800);
+  }
 }
 
 async function upload() {

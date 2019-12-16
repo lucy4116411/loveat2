@@ -95,15 +95,20 @@ async function menuInit() {
 
 async function addType() {
   if (document.forms['add-type-form'].reportValidity()) {
-    // resolve category's value
-    const selection = document.getElementById('item-or-combo-type');
-    const category = selection.options[selection.selectedIndex];
-    // start post
-    const result = await FetchData.post(menuEditAPI.newType, {
-      type: document.getElementById('add-type').value,
-      category: category.value,
-    });
-    checkStatus(result.status, ACTION_NUM.ADD);
+    const type = document.getElementById('add-type').value;
+    if (type === '未分類(套餐)' || type === '未分類(單品)') {
+      checkStatus(409, ACTION_NUM.ADD);
+    } else {
+      // resolve category's value
+      const selection = document.getElementById('item-or-combo-type');
+      const category = selection.options[selection.selectedIndex];
+      // start post
+      const result = await FetchData.post(menuEditAPI.newType, {
+        type: document.getElementById('add-type').value,
+        category: category.value,
+      });
+      checkStatus(result.status, ACTION_NUM.ADD);
+    }
   }
 }
 

@@ -29,6 +29,9 @@ function display() {
                     說明：${description}`;
 }
 
+function delayURL(url, time) {
+  setTimeout(() => { window.location.href = `${url}`; }, time);
+}
 
 function clearContent() {
   const idName = ['name', 'price', 'picture', 'description'];
@@ -63,10 +66,13 @@ function checkStatus(status, actionNum) {
     },
   };
 
-  if (status === 200 && actionNum === ADD) clearContent();
   document.getElementById('alert-title').innerHTML = statusResult[status].title;
   document.getElementById('alert-body').innerHTML = statusResult[status].body;
   $('#alert-modal').modal('show');
+  if (status === 200) {
+    if (actionNum === ADD) clearContent();
+    else delayURL('/menu/edit', 1800);
+  }
 }
 
 // display on board instantly
@@ -106,6 +112,9 @@ function deleteItem(e) {
 // eslint-disable-next-line no-unused-vars
 function changeQuantity(e) {
   const itemId = e.id.substring(9);
+  if (e.value === '') {
+    e.value = itemsObj[itemId].quantity;
+  }
   itemsObj[itemId].quantity = parseInt(e.value, 10);
   display();
 }
@@ -213,7 +222,10 @@ function init() {
     page = UPDATE;
     displayInitType();
     itemsObjInit();
-  } else page = ADD;
+  } else {
+    page = ADD;
+    clearContent();
+  }
   itemBytypeInit();
   document.getElementById('clear').addEventListener('click', clearContent);
   document.getElementById('submit').addEventListener('click', upload);
