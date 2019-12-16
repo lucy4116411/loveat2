@@ -41,5 +41,39 @@
                 "name": "紅茶"
             }
         ]
+    },
+    {
+        "_id": {
+            "$oid": "5dda567d09d84aa89699121a"
+        },
+        "type": {
+            "$oid": "5dd681c44a608a104f899151"
+        },
+        "name": "鐵板麵套餐(無熱狗)",
+        "picture": "a9e7793c-02c4-4697-a14f-0f4c8a6d175a",
+        "price": {
+            "$numberInt": "70"
+        },
+        "description": "",
+        "content": [
+            {
+                "id": {
+                    "$oid": "5dd69031ceb84293a14ec3dd"
+                },
+                "quantity": {
+                    "$numberInt": "1"
+                },
+                "name": "黑胡椒鐵板麵"
+            },
+            {
+                "id": {
+                    "$oid": "5dd67f098f0f6afb3ebc1b68"
+                },
+                "quantity": {
+                    "$numberInt": "1"
+                },
+                "name": "紅茶"
+            }
+        ]
     }
 ]
