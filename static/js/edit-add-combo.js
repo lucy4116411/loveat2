@@ -106,6 +106,9 @@ function deleteItem(e) {
 
   itemsTable.deleteRow(i);
   delete itemsObj[itemId];
+  if (Object.keys(itemsObj).length === 0) {
+    document.querySelector('#item-table tbody').innerHTML = '';
+  }
   display();
 }
 
@@ -224,7 +227,7 @@ function init() {
     itemsObjInit();
   } else {
     page = ADD;
-    clearContent();
+    document.querySelector('#item-table tbody').innerHTML = '';
   }
   itemBytypeInit();
   document.getElementById('clear').addEventListener('click', clearContent);
