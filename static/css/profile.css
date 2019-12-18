@@ -1,8 +1,6 @@
-.full-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: row;
+.padding-5 {
+    padding: 5px;
+
 }
 .propic-container {
     padding: 5px;

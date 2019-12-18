@@ -8,73 +8,76 @@
 
 
 {% block content %}
-    <div class="full-container">
-        <div class="propic-container">
-            <form name="user-propic-form">
-            <img src="/img/{{user['avatar']}}" alt="喔喔，可能是還沒有新增照片喔~" id="picture-show">
-            {% if name == user["userName"] %}
-            <input type="file" id="changePhoto" accept="image/*" class="form-control-file"/>
-            {% endif %}
-            </form>
-        </div>
-        <div class="detail-container">
-            <form name="user-info-form">
-            <div class="form-group">
-                <label for="user-name">User Name:</label>
-                <input type="text" class="form-control" id="user-name" value="{{ user['userName'] }}" disabled>
-            </div>
-            {% if name == user["userName"] %}
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#update-password-modal" id="change-password">修改</button>
-                </div>
-            {% endif %}
-            <div class="form-group">
-                <label for="age">Age:</label>
-                {% if name == user["userName"] %}
-                <input type="number" class="form-control" id="age" value="{{user['birth']}}" min="1">
-                {% else %}
-                <input type="number" class="form-control" id="age" value="{{user['birth']}}" disabled>
-                {% endif %}
-            </div>
-            <div class="form-group">
-                <label for="gender">Gender:</label>
-                {% if name == user["userName"] %}
-                <select id="gender" class="form-control">
-                {% else %}
-                <select id="gender" class="form-control" disabled>
-                {% endif %}
-                    <option value="0" selected>{{user["gender"]}}</option>
-                    {% if user["gender"]== "male" %}
-                    <option value="1">female</option>
-                    {% else %}
-                    <option value="1">male</option>
+    <div class="container-fluid h-100">
+        <div class="row padding-5">
+            <div class="propic-container col-12 col-lg-3 d-flex flex-row justify-content-center">
+                <form name="user-propic-form">
+                    <img src="/img/{{user['avatar']}}" alt="喔喔，可能是還沒有新增照片喔~" id="picture-show">
+                    {% if name == user["userName"] %}
+                    <input type="file" id="changePhoto" accept="image/*" class="form-control-file"/>
                     {% endif %}
-                </select>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="phone">Phone:</label>
+            <div class="detail-container col-12 col-lg-9">
+                <form name="user-info-form">
+                <div class="form-group">
+                    <label for="user-name">User Name:</label>
+                    <input type="text" class="form-control" id="user-name" value="{{ user['userName'] }}" disabled>
+                </div>
                 {% if name == user["userName"] %}
-                <input type="tel" class="form-control" id="phone" value="{{user['phone']}}">
-                {% else %}
-                <input type="tel" class="form-control" id="phone" value="{{user['phone']}}" disabled>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#update-password-modal" id="change-password">修改</button>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    {% if name == user["userName"] %}
+                    <input type="number" class="form-control" id="age" value="{{user['birth']}}" min="1">
+                    {% else %}
+                    <input type="number" class="form-control" id="age" value="{{user['birth']}}" disabled>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender:</label>
+                    {% if name == user["userName"] %}
+                    <select id="gender" class="form-control">
+                    {% else %}
+                    <select id="gender" class="form-control" disabled>
+                    {% endif %}
+                        <option value="0" selected>{{user["gender"]}}</option>
+                        {% if user["gender"]== "male" %}
+                        <option value="1">female</option>
+                        {% else %}
+                        <option value="1">male</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    {% if name == user["userName"] %}
+                    <input type="tel" class="form-control" id="phone" value="{{user['phone']}}">
+                    {% else %}
+                    <input type="tel" class="form-control" id="phone" value="{{user['phone']}}" disabled>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    {% if name == user["userName"] %}
+                    <input type="email" class="form-control" id="email" value="{{user['email']}}">
+                    {% else %}
+                    <input type="email" class="form-control" id="email" value="{{user['email']}}" disabled>
+                    {% endif %}
+                </div>
+            </form>
+                {% if name == user["userName"] %}
+                <div class="save-container">
+                    <button class="btn btn-primary" id="updateUserInfo">Save</button>
+                </div>
                 {% endif %}
             </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                {% if name == user["userName"] %}
-                <input type="email" class="form-control" id="email" value="{{user['email']}}">
-                {% else %}
-                <input type="email" class="form-control" id="email" value="{{user['email']}}" disabled>
-                {% endif %}
-            </div>
-        </form>
-            {% if name == user["userName"] %}
-            <div class="save-container">
-                <button class="btn btn-primary" id="updateUserInfo">Save</button>
-            </div>
-            {% endif %}
         </div>
+        
     </div>
     {% if name == user["userName"] %}
     <div class="modal fade" id="update-password-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
