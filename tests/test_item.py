@@ -16,6 +16,13 @@ class TestItem(object):
         "price": 6742,
         "description": "new description",
     }
+    update_item_duplicate_name = {
+        "id": "5dd67f098f0f6afb3ebc1b69",
+        "type": "5dd678b95f19051c7c4f0bb3",
+        "name": "紅茶",
+        "price": 6742,
+        "description": "new description",
+    }
     """ can't run, because mongomock doesn't support addfields
     def test_get_item_success(self, client):
         # check get item api
@@ -53,12 +60,19 @@ class TestItem(object):
         rv = client.post(url, content_type="multipart/form-data", data=data)
         assert rv.status_code == 403
 
-    def test_update_item_bu_customer(self, client, customer):
+    def test_update_item_by_customer(self, client, customer):
         url = URL_PREFIX + "/update"
         data = self.update_item.copy()
         data["picture"] = (io.BytesIO(b"6742"), "test.jpg")
         rv = client.post(url, content_type="multipart/form-data", data=data)
         assert rv.status_code == 403
+
+    def test_update_item_duplicate_name(self, client, admin):
+        url = URL_PREFIX + "/update"
+        data = self.update_item_duplicate_name.copy()
+        data["picture"] = (io.BytesIO(b"6742"), "test.jpg")
+        rv = client.post(url, content_type="multipart/form-data", data=data)
+        assert rv.status_code == 409
 
     def test_update_item_with_pic(self, client, admin):
         url = URL_PREFIX + "/update"

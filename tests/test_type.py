@@ -82,6 +82,22 @@ class TestType(object):
         assert len(new_type) == 1
 
     # update operation
+    def test_update_duplicate_name(self, client, admin):
+        # test if testType exists and newTestType not exists
+        old_type = db.TYPE_COLLECTION.find_one({"name": "testType"})
+        assert old_type is not None
+        # test update type api
+        url = URL_PREFIX + "/update"
+        rv = client.post(
+            url,
+            data=json.dumps({"id": str(old_type["_id"]), "type": "鐵板麵套餐"}),
+            content_type="application/json",
+        )
+        assert rv.status_code == 409
+        # test if testType isn't be update
+        old_type = db.TYPE_COLLECTION.find_one({"name": "testType"})
+        assert old_type is not None
+
     def test_update_success(self, client, admin):
         # test if testType exists and newTestType not exists
         old_type = db.TYPE_COLLECTION.find_one({"name": "testType"})
