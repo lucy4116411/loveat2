@@ -1,4 +1,5 @@
 import smtplib
+import socket
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -26,7 +27,8 @@ def send_forget_password_email(email, link):
     )
     msg.attach(MIMEText(body, "plain"))
 
-    server = smtplib.SMTP("smtp.gmail.com", 587)
+    host = socket.gethostbyname("smtp.gmail.com")
+    server = smtplib.SMTP(host, 587)
     server.starttls()
     server.login(EMAIL["name"], EMAIL["password"])
     text = msg.as_string()
