@@ -42,8 +42,12 @@
                             <div class="form-group">
                                 <label for="update-type-list">修改種類</label>
                                 <select id="update-type-list" class="form-control mx-sm-3">
-                                    {% for Eachtype in type %}
-                                    <option id="type-{{Eachtype['_id']}}">{{Eachtype['name']}}</option>
+                                    {% for eachType in type %}
+                                        {% if eachType['name'] != "未分類(套餐)"%}
+                                            {% if eachType['name'] != "未分類(單品)" %}
+                                    <option id="update-type-{{eachType['_id']}}">{{eachType['name']}}</option>
+                                            {% endif %}
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                                 <input type="text" id="update-type" class="form-control mx-sm-3" required>
@@ -59,8 +63,12 @@
                             <div class="form-group">
                                 <label for="delete-type-list">刪除種類</label>
                                 <select id="delete-type-list" class="form-control mx-sm-3">
-                                    {% for Eachtype in type %}
-                                    <option id="type-{{Eachtype['_id']}}">{{Eachtype['name']}}</option>
+                                    {% for eachType in type %}
+                                        {% if eachType['name'] != "未分類(套餐)"%}
+                                            {% if eachType['name'] != "未分類(單品)" %}
+                                                <option id="delete-type-{{eachType['_id']}}">{{eachType['name']}}</option>
+                                            {% endif %}
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                                 <button type="button" class="btn btn-primary" id="delete-type-btn">刪除</button>
@@ -132,10 +140,14 @@
                                     <td><img data-src="/img/{{item['picture']}}" alt="沒有圖片" class="lozad"></td>
                                     <td name='description'>{{item["description"]}}</td>
                                     <td><button class="btn btn-primary">
-                                            <a href="/item/{{item['_id']}}/edit">修改</a>
+                                            {% if type["category"] == "combo" %}
+                                                <a href="{{ url_for('menu_web.edit_combo', id=item['_id']) }}">修改</a>
+                                            {% else %}
+                                                <a href="{{ url_for('menu_web.edit_item', id=item['_id']) }}">修改</a>
+                                            {% endif %}
                                             </button>
                                             <button id="delete-{{type['category']}}-{{item['_id']}}"class="btn btn-primary"onclick="deleteItemOrCombo(this)">刪除</button></td></td>
-                                </tr>
+                                    </tr>
                             {% endfor %}
                         {% endfor %}
                     </tbody>

@@ -17,20 +17,22 @@
     <form id="combo-form">
         <div class="form-group form-inline">
             <label for="name">名稱</label>
-            <input type="text" name="name" id="name" class="form-control mx-sm-3" required>
+            <input type="text" name="name" id="name" class="form-control mx-sm-3" value="{{comboData['name']}}" required>
+            <div id="id-{{comboData['_id']}}" class="combo-id"></div>
         </div>
         <div class="form-group form-inline">
             <label for="type-list">種類</label>
             <select id="type-list" class="form-control mx-sm-3">
-                {% for Eachtype in comboType %}
-                    <option id="type-{{Eachtype['_id']}}">{{Eachtype['name']}}</option>
+                {% for eachType in comboType %}
+                    <option id="type-{{eachType['_id']}}">{{eachType['name']}}</option>
                 {% endfor %}
             </select>
+            <div id="type-{{comboData['type']}}" class="combo-type"></div>
             
         </div>
         <div class="form-group form-inline">
             <label for="price">單價</label>
-            <input type="number" id="price" class="form-control mx-sm-3" min="1" required>
+            <input type="number" id="price" class="form-control mx-sm-3" min="1" value="{{comboData['price']}}"  required>
         </div>
         <div class="form-group">
             <label for="picture">照片</label>
@@ -38,7 +40,7 @@
         </div>
         <div class="form-group">
             <label for="description">說明</label>
-            <textarea name="description" id="description" cols="30" rows="2" class="form-control"></textarea>
+            <textarea name="description" id="description" cols="30" rows="2" class="form-control">{{comboData['description']}}</textarea>
         </div>
         <div>品項添加</div>
         <div class="add-item-container form-group">
@@ -46,8 +48,8 @@
                     <div class="form-group form-inline">
                         <label for="item-type">選擇種類</label>
                         <select id="item-type" class="form-control mx-sm-3">
-                            {% for Eachtype in itemType %}
-                                <option id="type-{{Eachtype['_id']}}">{{Eachtype['name']}}</option>
+                            {% for eachType in itemType %}
+                                <option id="type-{{eachType['_id']}}">{{eachType['name']}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -72,7 +74,13 @@
                             <th>其他</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        {% for eachItem in comboData['content'] %}
+                        <tr id="item-id-{{eachItem['id']}}"><td>{{eachItem['name']}}</td>
+                            <td ><input id ="quantity-{{eachItem['id']}}" type="number" class="form-control mx-sm-3" min="1" value="{{eachItem['quantity']}}" onchange="changeQuantity(this)"></td>
+                            <td><button type="button" id="delete-{{eachItem['id']}}" class="btn btn-primary delete-btn" onclick="deleteItem(this)">刪除</button></td></tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -89,7 +97,11 @@
     <div class="preview-container">
         <div class="menu-item">
             <div class="item-img-container">
-                <img src="" id="picture-show" class="item-img">
+                {% if add %}
+                    <img id="picture-show" class="item-img" src="">
+                {% else %}
+                    <img id="picture-show" class="item-img" src="/img/{{comboData['picture']}}">
+                {% endif %}
             </div>
             <div id="detail" class="detail-info-container">
                 名稱:<br>

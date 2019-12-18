@@ -57,6 +57,7 @@ def edit_menu():
 def new_item():
     return render_template(
         "edit-add-item.html",
+        itemData={},
         type=Menu.get_type(item=True),
         auth=current_user.role,
         name=current_user.name,
@@ -65,11 +66,12 @@ def new_item():
     )
 
 
-@menu_web.route("/item/<id>/edit", methods=["GET"])
+@menu_web.route("/item/edit/<id>", methods=["GET"])
 @admin_required
 def edit_item(id):
     return render_template(
         "edit-add-item.html",
+        itemData=Menu.get_item_by_id([id], detail=True)[0],
         type=Menu.get_type(item=True),
         auth=current_user.role,
         name=current_user.name,
@@ -83,6 +85,7 @@ def edit_item(id):
 def new_combo():
     return render_template(
         "edit-add-combo.html",
+        comboData={},
         comboType=Menu.get_type(combo=True),
         itemType=Menu.get_type(item=True),
         auth=current_user.role,
@@ -92,7 +95,16 @@ def new_combo():
     )
 
 
-@menu_web.route("/combo/<id>/edit", methods=["GET"])
+@menu_web.route("/combo/edit/<id>", methods=["GET"])
 @admin_required
 def edit_combo(id):
-    return "edit combo"
+    return render_template(
+        "edit-add-combo.html",
+        comboData=Menu.get_combo_by_id([id], detail=True)[0],
+        comboType=Menu.get_type(combo=True),
+        itemType=Menu.get_type(item=True),
+        auth=current_user.role,
+        name=current_user.name,
+        add=False,
+        id=current_user.id,
+    )
