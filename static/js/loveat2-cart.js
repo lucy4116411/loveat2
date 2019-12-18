@@ -1,4 +1,3 @@
-
 /* eslint-disable no-unused-vars */
 /* global Cart, $, FetchData */
 /* eslint no-underscore-dangle: ["error", {"allow":["_id"]}] */

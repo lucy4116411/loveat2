@@ -25,16 +25,34 @@ th {
 .price-container {
     display: flex;
     justify-content: flex-end;
-    padding: 5px;
 }
 
 .op-container {
-    display: flex;
+    display: inline-flex;
     justify-content: space-between;
     padding: 5px;
+}
+
+@media (max-width: 575px) {
+    .op-container {
+        display: inline;
+        justify-content: flex-start;
+    }
 }
 
 .td-container {
     min-height: 0;
     overflow: auto;
+}
+
+.quantity-input, .description-input {
+    width: auto;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+.btn-container {
+    display: inline-flex;
+    justify-content: flex-end;
 }
