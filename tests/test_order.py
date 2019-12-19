@@ -86,7 +86,7 @@ class TestOrder(object):
             )["state"]
             assert cur_state == state
     """
-
+    # update order state
     def test_update_unauthorized(self, client):
         # test update api
         url = URL_PREFIX + "/update"
@@ -128,3 +128,22 @@ class TestOrder(object):
             content_type="application/json",
         )
         assert rv.status_code == 404
+
+    # get todo order
+    def test_get_todo_unauthorized(self, client):
+        url = URL_PREFIX + "/todo"
+        rv = client.get(url)
+        assert rv.status_code == 403
+
+    def test_get_todo_by_customer(self, client, customer):
+        url = URL_PREFIX + "/todo"
+        rv = client.get(url)
+        assert rv.status_code == 403
+
+    """ can't execute, because mongomock doesn't support toInt operation
+    def test_get_todo_success(self, client, admin):
+        url = URL_PREFIX + "/todo"
+        rv = client.get(url)
+        assert rv.status_code == 200
+        assert json.loads(rv.data) == None
+    """
