@@ -25,11 +25,10 @@ th {
 .price-container {
     display: flex;
     justify-content: flex-end;
-    padding: 5px;
 }
 
 .op-container {
-    display: flex;
+    display: inline-flex;
     justify-content: space-between;
     padding: 5px;
 }
@@ -37,4 +36,71 @@ th {
 .td-container {
     min-height: 0;
     overflow: auto;
+}
+
+.quantity-input, .description-input {
+    width: auto;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+.btn-container {
+    display: inline-flex;
+    justify-content: flex-end;
+}
+
+#test2 {
+    display: none;
+}
+
+@media (max-width: 575px) {
+    .op-container {
+        display: inline;
+        justify-content: flex-start;
+    }
+
+    #item-table td {
+        display: table-cell;
+        padding: 0.5em 0.5em;
+    }
+
+    #test1 {
+        display: none;
+    }
+
+    #test2 {
+        display: table-cell;
+    }
+
+    #test2 > th {
+        display: table-cell;
+        width: 700px;
+    }
+
+    .item-container > table > #item-table {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column;
+    }
+    
+    tbody > tr {
+        display: inline-flex;
+        flex-direction: column;
+        border: 5px;
+        border-style: solid;
+        border-color: rgba(0, 127, 255, 0.5);
+        margin: 1px;
+        
+    }
+
+    .delete-item {
+        float: right;
+    }
+
+    tbody td:before{ 
+        display: inline;
+        font-weight: bold;
+        content: attr(data-th);
+    }    
 }

@@ -14,7 +14,7 @@
         <div class="item-container">
             <table class="table" id="cart-table">
                 <thead class="thead-dark">
-                    <tr>
+                    <tr id="test1">
                         <th scope="col">名稱</th>
                         <th scope="col">數量</th>
                         <th scope="col">價格</th>
@@ -22,23 +22,28 @@
                         <th scope="col">總共</th>
                         <th scope="col">其他</th>
                     </tr>
-                </thead>
+                    <tr id="test2">
+                        <th scope="col">品項</th>
+                    </tr>
+                    </thead>
                 <tbody id="item-table"> 
                     <!-- input order from localstorage-->
                 </tbody>
             </table>
         </div>
-        <div class="price-container">
-            價格: <span id="total">0</span>元
-        </div>
+        
         <div class="op-container">
             <div class="form-inline">
                 預定取餐時間 :<input type="datetime-local" id="order-take-time" class="form-control">
             </div>
-            <div class="btn-container">
-                <button id="clear-order" class="btn btn-primary">Clear</button>
-                <button id="send-order" class="btn btn-primary" type="button">Send</button>
+            <div class="price-container">
+                價格: <span id="total">0</span>元
             </div>
+        </div>
+        <div class="btn-container">
+            <button id="clear-order" class="btn btn-primary">Clear</button>
+            &nbsp;&nbsp;
+            <button id="send-order" class="btn btn-primary" type="button">Send</button>
         </div>
     </div>
 
@@ -46,7 +51,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="hint-title">Hint!</h5>
+                <h5 class="modal-title" id="hint-title">Hint</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
