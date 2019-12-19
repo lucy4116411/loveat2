@@ -125,15 +125,15 @@ function setDiscription(e) {
 
 function drawItem(data) {
   const result = Object.keys(data).reduce((acc, key) => `${acc} <tr id="${key}">
-              <td>${data[key].name}</td>
-              <td>
+              <td data-th="名稱 : ">${data[key].name}</td>
+              <td data-th="數量 : ">
                 <input type="number" id="quantity-${key}" min="1" value="${data[key].quantity}" class="quantity-input form-control">
               </td>
-              <td>${data[key].price}</td>
-              <td>
+              <td data-th="價格 : ">${data[key].price}</td>
+              <td data-th="備註 : ">
                 <input id="description-${key}" class="form-control description-input" type="text" value="${data[key].description}">
               </td>
-              <td id="item-sum-${key}" >${data[key].price * data[key].quantity}</td>
+              <td data-th="總共 : " id="item-sum-${key}" >${data[key].price * data[key].quantity}</td>
               <td>
                 <button id="delete-${key}" class="btn btn-primary delete-item" type="button">Delete</button>
               </td>
