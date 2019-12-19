@@ -1,3 +1,4 @@
+
 th {
     position: sticky;
     top: 0;
@@ -61,4 +62,17 @@ img {
     margin-right: 5px;
     margin-bottom: 5px;
     float:right;
+}
+
+@media only screen and (min-width: 0px) and (max-width: 410px){
+    .add-item-container {
+        flex-direction: column;
+    }
+    .category-container{
+        width: 100%;
+    }
+    .table-container {
+        width: 100%;
+        padding: 10px 0px;
+    }
 }

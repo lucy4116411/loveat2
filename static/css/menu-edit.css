@@ -45,3 +45,58 @@ img {
 .hidden {
     display: none;
 }
+
+input {
+    width: 80px;
+}
+
+
+@media (min-width: 576px){
+    #add-type, #update-type {
+        width: 130px;
+    }
+}
+
+@media only screen and (min-width: 0px) and (max-width: 575px){
+    .table td:before{
+        display: inline;
+        font-weight: bold;
+        content: attr(data-th) "";
+    }
+
+    #menu-table {
+        display: table-cell;
+        padding: 0.5rem 0.5rem;
+        width: 575px;
+    }
+
+    #menu-title {
+        display: none;
+    }
+
+    .table-container > table > #menu {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column;
+    }
+
+    tbody > tr {
+        display: inline-flex;
+        flex-direction: column;
+        border: 5px;
+        border-style: solid;
+        border-color: rgba(0, 127, 255, 0.5);
+        border-radius:10px;
+        margin: 1px;
+    }
+    .op-container {
+        padding: 5px;
+        display: initial;
+    }
+    #type-list {
+        width: calc(50% - 5px);
+    }
+    .add-op-container {
+        margin-top: 5px;
+    }
+}

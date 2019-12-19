@@ -106,7 +106,7 @@ function init() {
   document.getElementById('name').addEventListener('keyup', display);
   document.getElementById('price').addEventListener('change', display);
   document.getElementById('price').addEventListener('keyup', display);
-  document.getElementById('description').addEventListener('change', display);
+  document.getElementById('description').addEventListener('keyup', display);
   document.getElementById('picture').addEventListener('change', function read() { readURL(this); });
   display();
 }
