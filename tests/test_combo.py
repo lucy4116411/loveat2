@@ -1,27 +1,26 @@
-<<<<<<< HEAD
 import io
 import json
 
 from bson.binary import Binary
 from bson.objectid import ObjectId
 
-=======
-import json
-
->>>>>>> test: add some api test:order item combo
 from models import db
 
 URL_PREFIX = "/api/menu/combo"
 
 
 class TestCombo(object):
-<<<<<<< HEAD
     update_combo = {
         "id": "5dda567d09d84aa89699121c",
         "type": "5dd681c44a608a104f89914e",
         "name": "new combo name",
         "price": 6742,
         "description": "new description",
+    new_combo = {
+        "type": "5dd681c44a608a104f899151",
+        "name": "好哦謝謝",
+        "price": 70,
+        "description": "",
         "content": json.dumps(
             [
                 {"id": "5de35fc5fdb6b28d6100d776", "quantity": 10},
@@ -35,6 +34,13 @@ class TestCombo(object):
         "name": "鐵板麵套餐(無熱狗)",
         "price": 6742,
         "description": "new description",
+        )
+    }
+    exist_combo = {
+        "type": "5dd681c44a608a104f89914e",
+        "name": "鐵板麵套餐",
+        "price": 6742,
+        "description": "yoyoyo",
         "content": json.dumps(
             [
                 {"id": "5de35fc5fdb6b28d6100d776", "quantity": 10},
@@ -172,49 +178,58 @@ class TestCombo(object):
             "type": ObjectId("5dd681c44a608a104f89914e"),
         }
         assert cur_image == Binary(b"6742")
-=======
-    def test_delete_anonymous(self, client):
-        # test there is a combo named 兒童套餐 in collection
-        exist_combo = db.COMBO_COLLECTION.find_one({"name": "兒童套餐"})
-        assert exist_combo is not None
         # test delete the exist combo anonymons
         url = URL_PREFIX + "/delete"
         rv = client.post(
             url,
             data=json.dumps({
-                "id": str(exist_combo["_id"])
+                "id": str(tmp_combo["_id"])
             }),
             content_type="application/json",
         )
         assert rv.status_code == 403
+        # test there is a combo in collection
+        tmp_combo = db.COMBO_COLLECTION.find_one({
+            "name": self.exist_combo["name"]
+            })
+        assert tmp_combo is not None
 
     def test_delete_by_customer(self, client, customer):
-        # test there is a combo named 兒童套餐 in collection
-        exist_combo = db.COMBO_COLLECTION.find_one({"name": "兒童套餐"})
-        assert exist_combo is not None
+        # test there is a combo in collection
+        tmp_combo = db.COMBO_COLLECTION.find_one({
+            "name": self.exist_combo["name"]
+            })
+        assert tmp_combo is not None
         # test delete the exist combo by customer
         url = URL_PREFIX + "/delete"
         rv = client.post(
             url,
             data=json.dumps({
-                "id": str(exist_combo["_id"])
+                "id": str(tmp_combo["_id"])
             }),
             content_type="application/json",
         )
         assert rv.status_code == 403
+        # test there is a combo in collection
+        tmp_combo = db.COMBO_COLLECTION.find_one({
+            "name": self.exist_combo["name"]
+            })
+        assert tmp_combo is not None
 
     def test_delete_by_admin(self, client, admin):
-        # test there is a combo named 兒童套餐 in collection
-        exist_combo = db.COMBO_COLLECTION.find_one({"name": "兒童套餐"})
-        assert exist_combo is not None
+        # test there is a combo in collection
+        tmp_combo = db.COMBO_COLLECTION.find_one({
+            "name": self.exist_combo["name"]
+            })
+        assert tmp_combo is not None
         # test delete the exist combo by boss
         url = URL_PREFIX + "/delete"
         rv = client.post(
             url,
             data=json.dumps({
-                "id": str(exist_combo["_id"])
+                "id": str(tmp_combo["_id"])
             }),
             content_type="application/json",
         )
         assert rv.status_code == 200
->>>>>>> test: add some api test:order item combo
+
