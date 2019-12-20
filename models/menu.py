@@ -134,7 +134,7 @@ def add_item(data, pic):
                 "type": ObjectId(data.get("type")),
                 "name": data.get("name"),
                 "picture": pic_id,
-                "price": int((data.get("price"))),
+                "price": int(data.get("price")),
                 "description": data.get("description"),
             }
         )
