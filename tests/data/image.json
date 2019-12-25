@@ -1,0 +1,49 @@
+[{
+    "_id": {
+        "$oid": "5de1f3edc24f6830c5978dff"
+    },
+    "uuid": "64c4638b-b6ae-4335-80ec-1441e346b4e9",
+    "picture": {
+        "$binary": {
+            "base64": "",
+            "subType": "00"
+        }
+    }
+},
+{
+    "_id": {
+        "$oid": "5de1f409c24f6830c5978e0d"
+    },
+    "uuid": "5e3967a2-eaa2-431c-9974-056b6d1fcadb",
+    "picture": {
+        "$binary": {
+            "base64": "",
+            "subType": "00"
+        }
+    }
+},
+{
+    "_id": {
+        "$oid": "5de1f409c24f6830c5978e0c"
+    },
+    "uuid": "6a9843d0-7789-4a7b-ab5b-3c79ccad4310",
+    "picture": {
+        "$binary": {
+            "base64": "",
+            "subType": "00"
+        }
+    }
+},
+{
+    "_id": {
+        "$oid": "5de1f9d4c24f6830c59794be"
+    },
+    "uuid": "06dcc1d4-90aa-4ba9-8758-6de813bc5fa4",
+    "picture": {
+        "$binary": {
+            "base64": "",
+            "subType": "00"
+        }
+    }
+}
+]
