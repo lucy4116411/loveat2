@@ -11,7 +11,7 @@
 {% block content %}
 <!--edit-menu pop-up window-->
 <div class="modal fade" id="edit-type" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="edit-type-title">編輯種類</h5>
@@ -25,7 +25,7 @@
                         <div class="form-inline padding5">
                             <div class="form-group">
                                 <label for="add-type">新增種類</label>
-                                <input type="text" id="add-type" class="form-control mx-sm-3" required>
+                                <input type="text" id="add-type" class="form-control mx-sm-3"  required>
                                 <select id="item-or-combo-type" class="form-control mx-sm-3">
                                     <option value="item">單品</option>
                                     <option value="combo">套餐</option>
@@ -113,7 +113,7 @@
             <div class="table-container">
                 <table id="menu-table"class="table">
                     <thead class="thead-dark">
-                        <tr>
+                        <tr id="menu-title">
                             <th>名稱</th>
                             <th>價格</th>
                             <th>內容</th>
@@ -126,9 +126,9 @@
                         {% for type in menu %}
                             {% for item in type["content"] %}
                                 <tr id="{{item['_id']}}">
-                                    <td>{{item["name"]}}</td>
-                                    <td>{{item["price"]}}</td>
-                                    <td>
+                                    <td data-th="名稱：">{{item["name"]}}</td>
+                                    <td data-th="價格：">{{item["price"]}}</td>
+                                    <td data-th="內容：">
                                         {% if type["category"] == "combo" %}
                                             {% for combo_item in item["content"] %}
                                                 {{combo_item["quantity"]}} * {{combo_item["name"]}} <br>
@@ -137,8 +137,8 @@
                                             {{item["name"]}}
                                         {% endif %}
                                     </td>
-                                    <td><img data-src="/img/{{item['picture']}}" alt="沒有圖片" class="lozad"></td>
-                                    <td name='description'>{{item["description"]}}</td>
+                                    <td data-th="照片："><img data-src="/img/{{item['picture']}}" alt="沒有圖片" class="lozad"></td>
+                                    <td data-th="說明：" name='description'>{{item["description"]}}</td>
                                     <td><button class="btn btn-primary">
                                             {% if type["category"] == "combo" %}
                                                 <a href="{{ url_for('menu_web.edit_combo', id=item['_id']) }}">修改</a>

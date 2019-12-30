@@ -50,7 +50,7 @@ th {
     justify-content: flex-end;
 }
 
-#test2 {
+#replace-title {
     display: none;
 }
 
@@ -65,15 +65,15 @@ th {
         padding: 0.5em 0.5em;
     }
 
-    #test1 {
+    #cart-title {
         display: none;
     }
 
-    #test2 {
+    #replace-title {
         display: table-cell;
     }
 
-    #test2 > th {
+    #replace-title > th {
         display: table-cell;
         width: 700px;
     }
