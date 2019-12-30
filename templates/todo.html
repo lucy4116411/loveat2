@@ -44,11 +44,10 @@
                             </td>
                             <td>
                                 {% if order["state"] == "finish" %}
-                                    <button class="btn btn-primary" id="{{order['_id']}}_finish" disabled>製作完成</button>
+                                    <button class="btn btn-primary" id="{{order['_id']}}_state" value="end">已取餐</button>
                                 {% else %}
-                                    <button class="btn btn-primary" id="{{order['_id']}}_finish">製作完成</button>
+                                    <button class="btn btn-primary" id="{{order['_id']}}_state" value="finish">製作完成</button>
                                 {% endif %}
-                                <button class="btn btn-primary" id="{{order['_id']}}_end">已取餐</button>
                             </td>
                         </tr>
                     {% endfor %}

@@ -85,48 +85,36 @@ function sortByTakenAt() {
   TAKEN_ORDER = (TAKEN_ORDER === -1) ? 1 : -1;
 }
 
-/* ----order finish deal---- */
-async function orderFinish(event) {
-  const tarId = event.target.id.replace('_finish', '');
 
-  document.getElementById(`${tarId}_finish`).disabled = true;
-  const result = await FetchData.post(TODO_API.update, {
-    id: tarId,
-    state: 'finish',
-  });
-
-  if (result.status === 403) { // permision denyied
-    document.getElementById(`${tarId}_finish`).disabled = false;
-    console.log('該帳號沒有此權限。');
-  } else if (result.status === 404) { // order not found
-    document.getElementById('orderHintContent').innerHTML = '該訂單不存在，更新失敗。';
-    document.getElementById(`${tarId}_finish`).disabled = false;
-    $('#orderHintModal').modal('show');
-  } else { // successful
-    // 推播
-    document.getElementById(`${tarId}_order`).classList.add('finish');
-  }
-}
-
-/* ----order end deal---- */
-async function orderEnd(event) {
-  const tarId = event.target.id.replace('_end', '');
+async function updateOrderState(event) {
+  const btn = event.target;
+  const tarId = btn.id.replace('_state', '');
+  const nextState = btn.value;
   const tarOrder = document.getElementById(`${tarId}_order`);
 
   const result = await FetchData.post(TODO_API.update, {
     id: tarId,
-    state: 'end',
+    state: nextState,
   });
 
-  if (result.status === 403) { // permision denyied
+  if (result.status === 403) { // permission denied
     console.log('該帳號沒有此權限。');
   } else if (result.status === 404) { // order not found
     document.getElementById('orderHintContent').innerHTML = '該訂單不存在，更新失敗。';
     $('#orderHintModal').modal('show');
-  } else { // successful
-    tarOrder.parentNode.removeChild(tarOrder);
+  } else if (result.status === 200) { // successful
+    // update ui
+    if (nextState === 'end') {
+      tarOrder.parentNode.removeChild(tarOrder);
+    } else if (nextState === 'finish') {
+      document.getElementById(`${tarId}_order`).classList.add('finish');
+      // update btn info
+      btn.innerText = '已取餐';
+      btn.value = 'end';
+    }
   }
 }
+
 
 async function init() {
   const res = await FetchData.get(TODO_API.todo);
@@ -136,13 +124,9 @@ async function init() {
   document.getElementById('orderID').addEventListener('click', sortByOrderID);
   /* ----listener for takenAt---- */
   document.getElementById('myTakenAt').addEventListener('click', sortByTakenAt);
-  /* ----listener for order finish ----*/
+  /* ----listener for updating order btn ----*/
   TODO.forEach((element) => {
-    document.getElementById(`${element._id}_finish`).addEventListener('click', orderFinish);
-  });
-  /* ----listener for order end ----*/
-  TODO.forEach((element) => {
-    document.getElementById(`${element._id}_end`).addEventListener('click', orderEnd);
+    document.getElementById(`${element._id}_state`).addEventListener('click', updateOrderState);
   });
 }
 
