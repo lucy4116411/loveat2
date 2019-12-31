@@ -6,9 +6,13 @@ CRED = "loveat2-push.json"
 TOPIC_ADMIN = "admin"
 
 
-def send_to_customer(token, data):
-    message = messaging.Message(data=data, token=token)
-    messaging.send(message)
+def send_to_customer(token_set, data):
+    for token in token_set:
+        try:
+            message = messaging.Message(data=data, token=token)
+            messaging.send(message)
+        except (ValueError, firebase_admin._messaging_utils.UnregisteredError):
+            print("token value error: {}".format(token))
 
 
 def send_to_topic(data, topic):

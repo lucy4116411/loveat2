@@ -9,13 +9,24 @@ import models.business_time
 setting_web = Blueprint("setting_web", __name__)
 
 
-@setting_web.route("/business-time/", methods=["GET"])
+@setting_web.route("/business-time", methods=["GET"])
 @admin_required
 def business_time():
     everyday_work_time = models.business_time.get()
     return render_template(
         "business_time.html",
         work_time=everyday_work_time,
+        auth=current_user.role,
+        name=current_user.name,
+        id=current_user.id,
+    )
+
+
+@setting_web.route("/news", methods=["GET"])
+@admin_required
+def news():
+    return render_template(
+        "news-push.html",
         auth=current_user.role,
         name=current_user.name,
         id=current_user.id,
