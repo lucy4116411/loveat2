@@ -21,6 +21,7 @@ def add(data):
                 "birth": data["birth"],
                 "role": data["role"],
                 "avatar": pic_id,
+                "state": "activate",
             }
         )
         db.IMAGE_COLLECTION.insert_one(

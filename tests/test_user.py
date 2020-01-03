@@ -26,6 +26,13 @@ class TestUser(object):
         "email": "new@gmail.com",
         "phone": "0900000000",
     }
+    new_user_profile = {
+        "password": "123456789",
+        "gender": "female",
+        "phone": "0920198409",
+        "email": "customer@gmail.com",
+        "age": 20,
+    }
 
     # login
     def test_login_success(self, client):
@@ -60,75 +67,70 @@ class TestUser(object):
         assert rv.status_code == 401
 
     # register
+    @freeze_time("2020-01-03 10:00:00")
     def test_register_success(self, client):
         # check if there is no customer_name2 in user collection
         new_user = db.USER_COLLECTION.find_one({"userName": "customer_name2"})
         assert new_user is None
         # test register api
         url = URL_PREFIX + "/register"
+        reg_user = self.new_user_profile.copy()
+        reg_user["userName"] = "customer_name2"
         rv = client.post(
-            url,
-            data=json.dumps(
-                {
-                    "userName": "customer_name2",
-                    "password": "123456789",
-                    "gender": "female",
-                    "phone": "0920198409",
-                    "email": "customer@gmail.com",
-                    "age": 20,
-                }
-            ),
-            content_type="application/json",
+            url, data=json.dumps(reg_user), content_type="application/json"
         )
         assert rv.status_code == 200
         # check if insert customer_name2 success
-        new_user = db.USER_COLLECTION.find_one({"userName": "customer_name2"})
-        assert new_user is not None
+        new_user = db.USER_COLLECTION.find_one(
+            {"userName": "customer_name2"},
+            {"_id": 0, "avatar": 0, "password": 0},
+        )
+        new_user_password = db.USER_COLLECTION.find_one(
+            {"userName": "customer_name2"}, {"_id": 0, "password": 1}
+        )
+        assert new_user == {
+            "birth": datetime(2000, 1, 3, 10, 0),
+            "email": "customer@gmail.com",
+            "gender": "female",
+            "phone": "0920198409",
+            "role": "customer",
+            "state": "activate",
+            "userName": "customer_name2",
+        }
+        assert (
+            check_password_hash(new_user_password["password"], "123456789")
+            is True
+        )
 
+    @freeze_time("2020-01-03 10:00:00")
     def test_register_duplicate_account(self, client):
         # check if there is only one customer_name in user collection
         new_user = list(db.USER_COLLECTION.find({"userName": "customer_name"}))
         assert len(new_user) == 1
         # test register api
         url = URL_PREFIX + "/register"
+        reg_user = self.new_user_profile.copy()
+        reg_user["userName"] = "customer_name"
         rv = client.post(
-            url,
-            data=json.dumps(
-                {
-                    "userName": "customer_name",
-                    "password": "123456789",
-                    "gender": "female",
-                    "phone": "0920198409",
-                    "email": "customer@gmail.com",
-                    "age": 20,
-                }
-            ),
-            content_type="application/json",
+            url, data=json.dumps(reg_user), content_type="application/json"
         )
         assert rv.status_code == 409
         # check if there is only one customer_name in user collection
         new_user = list(db.USER_COLLECTION.find({"userName": "customer_name"}))
         assert len(new_user) == 1
 
+    @freeze_time("2020-01-03 10:00:00")
     def test_register_wrong_fomat(self, client):
         # check if there is no customer_name3 in user collection
         new_user = db.USER_COLLECTION.find_one({"userName": "customer_name3"})
         assert new_user is None
         # test register api
         url = URL_PREFIX + "/register"
+        reg_user = self.new_user_profile.copy()
+        # wrong field, name => userName
+        reg_user["name"] = "customer_name3"
         rv = client.post(
-            url,
-            data=json.dumps(
-                {
-                    "userName": "customer_name3",
-                    "password": "123456789",
-                    "wrong-fild": "female",
-                    "phone": "0920198409",
-                    "email": "customer@gmail.com",
-                    "age": 20,
-                }
-            ),
-            content_type="application/json",
+            url, data=json.dumps(reg_user), content_type="application/json"
         )
         assert rv.status_code == 400
         # check if there is no customer_name3 in user collection
