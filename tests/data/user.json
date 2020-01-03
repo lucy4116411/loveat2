@@ -15,7 +15,8 @@
         },
         "role": "admin",
         "avatar": "64c4638b-b6ae-4335-80ec-1441e346b4e9",
-        "token": ""
+        "token": "",
+        "state": "activate"
     },
     {
         "_id": {
@@ -33,6 +34,7 @@
         },
         "role": "customer",
         "avatar": "5e3967a2-eaa2-431c-9974-056b6d1fcadb",
-        "token": ""
+        "token": "",
+        "state": "activate"
     }
 ]

@@ -54,6 +54,19 @@ def update_profile(id, data, pic, birth):
         )
 
 
+def update_state(id, state):
+    default_state = ["activate", "frozen"]
+    if state in default_state:
+        result = db.USER_COLLECTION.update_one(
+            {"_id": ObjectId(id)}, {"$set": {"state": state}}
+        )
+        if result.matched_count == 1:
+            return True
+        return False
+    else:
+        raise ValueError
+
+
 def find(id, profile=False):
     if profile:
         projection = {"password": 0, "role": 0, "token": 0}

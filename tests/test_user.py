@@ -33,6 +33,10 @@ class TestUser(object):
         "email": "customer@gmail.com",
         "age": 20,
     }
+    update_state = {
+        "id": "5dde223874fbccb7319f4cb8",
+        "state": ["frozen", "activate"],
+    }
 
     # login
     def test_login_success(self, client):
@@ -351,3 +355,73 @@ class TestUser(object):
         assert user_info["email"] == self.new_profile["email"]
         assert user_info["phone"] == self.new_profile["phone"]
         assert image["picture"] == Binary(b"1234")
+
+    # update state
+    def test_update_state_unauthorized(self, client):
+        url = URL_PREFIX + "/update/state"
+        for cur_state in self.update_state["state"]:
+            rv = client.post(
+                url,
+                data=json.dumps(
+                    {"id": self.update_state["id"], "state": cur_state}
+                ),
+                content_type="application/json",
+            )
+            assert rv.status_code == 403
+
+    def test_update_state_by_customer(self, client, customer):
+        url = URL_PREFIX + "/update/state"
+        for cur_state in self.update_state["state"]:
+            rv = client.post(
+                url,
+                data=json.dumps(
+                    {"id": self.update_state["id"], "state": cur_state}
+                ),
+                content_type="application/json",
+            )
+            assert rv.status_code == 403
+
+    def test_update_state_wrong_foramt(self, client, admin):
+        url = URL_PREFIX + "/update/state"
+        wrong_data = [
+            # wrong field, _id => id
+            {"_id": "5dd752c0ccce596d624d9a9d", "state": "frozen"},
+            # nonexist state
+            {"id": "5dd752c0ccce596d624d9a9d", "state": "wrong state"},
+        ]
+
+        for data in wrong_data:
+            # nonexist user id: 5dd752c0ccce596d624d9a9d
+            rv = client.post(
+                url, data=json.dumps(data), content_type="application/json"
+            )
+            assert rv.status_code == 400
+
+    def test_update_state_nonexist(self, client, admin):
+        url = URL_PREFIX + "/update/state"
+        for cur_state in self.update_state["state"]:
+            # nonexist user id: 5dd752c0ccce596d624d9a9d
+            rv = client.post(
+                url,
+                data=json.dumps(
+                    {"id": "5dd752c0ccce596d624d9a9d", "state": cur_state}
+                ),
+                content_type="application/json",
+            )
+            assert rv.status_code == 404
+
+    def test_update_state_success(self, client, admin):
+        url = URL_PREFIX + "/update/state"
+        for cur_state in self.update_state["state"]:
+            rv = client.post(
+                url,
+                data=json.dumps(
+                    {"id": self.update_state["id"], "state": cur_state}
+                ),
+                content_type="application/json",
+            )
+            assert rv.status_code == 200
+            cur_user = db.USER_COLLECTION.find_one(
+                {"_id": ObjectId(self.update_state["id"]), "state": cur_state}
+            )
+            assert cur_user is not None
