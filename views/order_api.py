@@ -41,6 +41,8 @@ def analysis_data():
 def add_order():
     data = request.get_json()
     data["userName"] = current_user.name
+    if user.get_state(current_user.id) == "frozen":
+        return "", 403
     try:
         cur_order = order.add_order(data)
         if cur_order:

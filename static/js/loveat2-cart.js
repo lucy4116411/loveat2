@@ -90,6 +90,8 @@ function checkStatus(status) {
   } else if (status === 401) {
     document.getElementById('hint-content').innerHTML = '您尚未登入';
     document.getElementById('bussiness_data').style.display = 'none';
+  } else if (status === 403) {
+    document.getElementById('hint-content').innerHTML = '您的帳號已被凍結，無法下單';
   } else {
     document.getElementById('hint-content').innerHTML = '訂單錯誤或預定取餐時間未營業';
   }

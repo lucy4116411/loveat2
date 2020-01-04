@@ -8,7 +8,8 @@ pytest = "*"
 flake8 = "*"
 flake8-import-order = "*"
 black = "==19.3b0"
-mongomock = "*"
+freezegun = "*"
+mongomock = {git = "https://github.com/mongomock/mongomock.git",ref = "develop"}
 
 [packages]
 flask = "*"
@@ -17,8 +18,6 @@ flask-login = "*"
 pymongo = "*"
 python-dateutil = "*"
 flask-cors = "*"
-freezegun = "*"
-mongomock = "*"
 
 [requires]
 python_version = "3.7"
