@@ -1,4 +1,4 @@
-/* global FetchData */
+/* global FetchData, $ */
 const API = {
   login: '/api/user/login',
   register: '/api/user/register',
@@ -24,8 +24,14 @@ async function login() {
       // show wrong msg
       document.getElementById('login-wrong').innerText = '帳號或密碼錯誤';
     } else {
-      // refresh page
-      window.location.reload();
+      const state = await result.json();
+      if (state.state === 'frozen') {
+        $('#login-modal').modal('hide');
+        $('#login-frozen-modal').modal('show');
+      } else {
+        // refresh page
+        window.location.reload();
+      }
     }
   }
 }
@@ -47,8 +53,8 @@ async function register() {
     if (result.status === 409) {
       document.getElementById('register-wrong').innerText = '此帳號已經有人使用';
     } else if (result.status === 200) {
-      // refresh page
-      window.location.reload();
+      $('#register-modal').modal('hide');
+      $('#register-success-modal').modal('show');
     }
   }
 }
@@ -56,6 +62,10 @@ function authInit() {
   // add event listener
   document.getElementById('login').addEventListener('click', login);
   document.getElementById('register').addEventListener('click', register);
+  // reload after closing register-success-modal, login-frozen-modal
+  $('#register-success-modal, #login-frozen-modal').on('hide.bs.modal', () => {
+    window.location.reload();
+  });
   // validate password when password or confirm password change
   document.getElementById('register-password').addEventListener('keyup', validatePassword);
   document.getElementById('register-confirm-password').addEventListener('keyup', validatePassword);

@@ -4,7 +4,7 @@ from config import SECRET_KEY
 
 from dateutil.relativedelta import relativedelta
 
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request
 
 from flask_login import current_user, login_required, login_user
 
@@ -25,7 +25,7 @@ def login():
     id = user.validate_user(data, password=True)
     if id:
         login_user(User(id))
-        return "", 200
+        return jsonify({"state": user.get_state(id)})
     else:
         return "", 401
 

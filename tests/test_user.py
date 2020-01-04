@@ -41,14 +41,27 @@ class TestUser(object):
     # login
     def test_login_success(self, client):
         url = URL_PREFIX + "/login"
-        rv = client.post(
-            url,
-            data=json.dumps(
-                {"userName": "admin_name", "password": "123456789"}
-            ),
-            content_type="application/json",
-        )
-        assert rv.status_code == 200
+        data = [
+            {
+                "account": {"userName": "admin_name", "password": "123456789"},
+                "state": "activate",
+            },
+            {
+                "account": {
+                    "userName": "frozen_account",
+                    "password": "123456789",
+                },
+                "state": "frozen",
+            },
+        ]
+        for cur_account in data:
+            rv = client.post(
+                url,
+                data=json.dumps(cur_account["account"]),
+                content_type="application/json",
+            )
+            assert rv.status_code == 200
+            assert json.loads(rv.data) == {"state": cur_account["state"]}
 
     def test_login_nonexist_user(self, client):
         url = URL_PREFIX + "/login"
