@@ -82,7 +82,7 @@ def update_order_state():
                         "detail": json.dumps(result),
                     }
                 )
-                push.send_to_customer(token, message[data["state"]])
+                push.send_to_customer([token], message[data["state"]])
         except (ValueError, messaging.UnregisteredError):
             pass
         finally:

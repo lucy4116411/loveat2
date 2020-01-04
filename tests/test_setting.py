@@ -54,7 +54,9 @@ class TestSetting(object):
             "sun": {"start": "08:00", "edd": "16:00"},
         },
     ]
+    news_info = {"title": "this is title", "content": "this is content"}
 
+    # update bnusiness time
     def test_update_business_time_by_customer(self, client, customer):
         # check original business time json
         cur_business_time = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
@@ -119,3 +121,31 @@ class TestSetting(object):
         # check if update token of cutomer_name success
         cur_business_time = db.BUSINESS_COLLECTION.find_one({}, {"_id": 0})
         assert cur_business_time == self.original_business_time
+
+    # push news
+    def test_push_news_by_customer(self, client, customer):
+        url = URL_PREFIX + "/news"
+        rv = client.post(
+            url,
+            data=json.dumps(self.news_info),
+            content_type="application/json",
+        )
+        assert rv.status_code == 403
+
+    def test_push_news_by_unauthorized(self, client):
+        url = URL_PREFIX + "/news"
+        rv = client.post(
+            url,
+            data=json.dumps(self.news_info),
+            content_type="application/json",
+        )
+        assert rv.status_code == 403
+
+    def test_push_news_success(self, client, admin):
+        url = URL_PREFIX + "/news"
+        rv = client.post(
+            url,
+            data=json.dumps(self.news_info),
+            content_type="application/json",
+        )
+        assert rv.status_code == 200

@@ -100,3 +100,12 @@ def get_user_info(id):
     return db.USER_COLLECTION.find(
         {"_id": ObjectId(id)}, {"password": 0, "role": 0, "token": 0}
     )
+
+
+def get_all_customer_token():
+    return db.USER_COLLECTION.aggregate(
+        [
+            {"$match": {"role": "customer"}},
+            {"$group": {"_id": "$role", "token_set": {"$addToSet": "$token"}}},
+        ]
+    )
