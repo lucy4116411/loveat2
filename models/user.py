@@ -8,6 +8,15 @@ from models import db
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
+def get_all_user():
+    return db.USER_COLLECTION.find({})
+
+
+def get_state(id):
+    result = db.USER_COLLECTION.find_one({"_id": ObjectId(id)}, {"state": 1})
+    return result["state"]
+
+
 def add(data):
     if db.USER_COLLECTION.find_one({"userName": data["userName"]}) is None:
         pic_id = str(uuid.uuid4())
@@ -21,6 +30,7 @@ def add(data):
                 "birth": data["birth"],
                 "role": data["role"],
                 "avatar": pic_id,
+                "state": "activate",
             }
         )
         db.IMAGE_COLLECTION.insert_one(
@@ -51,6 +61,19 @@ def update_profile(id, data, pic, birth):
         db.IMAGE_COLLECTION.update_one(
             {"uuid": pic_id}, {"$set": {"picture": pic}}
         )
+
+
+def update_state(id, state):
+    default_state = ["activate", "frozen"]
+    if state in default_state:
+        result = db.USER_COLLECTION.update_one(
+            {"_id": ObjectId(id)}, {"$set": {"state": state}}
+        )
+        if result.matched_count == 1:
+            return True
+        return False
+    else:
+        raise ValueError
 
 
 def find(id, profile=False):

@@ -4,14 +4,14 @@ from config import SECRET_KEY
 
 from dateutil.relativedelta import relativedelta
 
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request
 
 from flask_login import current_user, login_required, login_user
 
 from itsdangerous import SignatureExpired, TimedJSONWebSignatureSerializer
 
 from lib import push, send_email
-from lib.auth import User
+from lib.auth import User, admin_required
 
 from models import user
 
@@ -25,7 +25,7 @@ def login():
     id = user.validate_user(data, password=True)
     if id:
         login_user(User(id))
-        return "", 200
+        return jsonify({"state": user.get_state(id)})
     else:
         return "", 401
 
@@ -116,4 +116,17 @@ def update_profile():
         user.update_profile(current_user.id, data, pic, birth)
         return "", 200
     except KeyError:
+        return "", 400
+
+
+@user_api.route("/update/state", methods=["POST"])
+@admin_required
+def update_state():
+    data = request.get_json()
+    try:
+        result = user.update_state(data["id"], data["state"])
+        if result:
+            return "", 200
+        return "", 404
+    except (KeyError, ValueError):
         return "", 400

@@ -8,6 +8,8 @@ from flask_login import current_user, logout_user
 
 from itsdangerous import SignatureExpired, TimedJSONWebSignatureSerializer
 
+from lib.auth import admin_required
+
 from models import user as User
 
 user_web = Blueprint("user_web", __name__)
@@ -66,4 +68,17 @@ def profile(id):
         name=current_user.name,
         user=user_data,
         id=current_user.id,
+    )
+
+
+@user_web.route("/manage", methods=["GET"])
+@admin_required
+def manage():
+    users = User.get_all_user()
+    return render_template(
+        "user.html",
+        auth=current_user.role,
+        name=current_user.name,
+        id=current_user.id,
+        users=users,
     )

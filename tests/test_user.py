@@ -26,18 +26,42 @@ class TestUser(object):
         "email": "new@gmail.com",
         "phone": "0900000000",
     }
+    new_user_profile = {
+        "password": "123456789",
+        "gender": "female",
+        "phone": "0920198409",
+        "email": "customer@gmail.com",
+        "age": 20,
+    }
+    update_state = {
+        "id": "5dde223874fbccb7319f4cb8",
+        "state": ["frozen", "activate"],
+    }
 
     # login
     def test_login_success(self, client):
         url = URL_PREFIX + "/login"
-        rv = client.post(
-            url,
-            data=json.dumps(
-                {"userName": "admin_name", "password": "123456789"}
-            ),
-            content_type="application/json",
-        )
-        assert rv.status_code == 200
+        data = [
+            {
+                "account": {"userName": "admin_name", "password": "123456789"},
+                "state": "activate",
+            },
+            {
+                "account": {
+                    "userName": "frozen_account",
+                    "password": "123456789",
+                },
+                "state": "frozen",
+            },
+        ]
+        for cur_account in data:
+            rv = client.post(
+                url,
+                data=json.dumps(cur_account["account"]),
+                content_type="application/json",
+            )
+            assert rv.status_code == 200
+            assert json.loads(rv.data) == {"state": cur_account["state"]}
 
     def test_login_nonexist_user(self, client):
         url = URL_PREFIX + "/login"
@@ -60,75 +84,70 @@ class TestUser(object):
         assert rv.status_code == 401
 
     # register
+    @freeze_time("2020-01-03 10:00:00")
     def test_register_success(self, client):
         # check if there is no customer_name2 in user collection
         new_user = db.USER_COLLECTION.find_one({"userName": "customer_name2"})
         assert new_user is None
         # test register api
         url = URL_PREFIX + "/register"
+        reg_user = self.new_user_profile.copy()
+        reg_user["userName"] = "customer_name2"
         rv = client.post(
-            url,
-            data=json.dumps(
-                {
-                    "userName": "customer_name2",
-                    "password": "123456789",
-                    "gender": "female",
-                    "phone": "0920198409",
-                    "email": "customer@gmail.com",
-                    "age": 20,
-                }
-            ),
-            content_type="application/json",
+            url, data=json.dumps(reg_user), content_type="application/json"
         )
         assert rv.status_code == 200
         # check if insert customer_name2 success
-        new_user = db.USER_COLLECTION.find_one({"userName": "customer_name2"})
-        assert new_user is not None
+        new_user = db.USER_COLLECTION.find_one(
+            {"userName": "customer_name2"},
+            {"_id": 0, "avatar": 0, "password": 0},
+        )
+        new_user_password = db.USER_COLLECTION.find_one(
+            {"userName": "customer_name2"}, {"_id": 0, "password": 1}
+        )
+        assert new_user == {
+            "birth": datetime(2000, 1, 3, 10, 0),
+            "email": "customer@gmail.com",
+            "gender": "female",
+            "phone": "0920198409",
+            "role": "customer",
+            "state": "activate",
+            "userName": "customer_name2",
+        }
+        assert (
+            check_password_hash(new_user_password["password"], "123456789")
+            is True
+        )
 
+    @freeze_time("2020-01-03 10:00:00")
     def test_register_duplicate_account(self, client):
         # check if there is only one customer_name in user collection
         new_user = list(db.USER_COLLECTION.find({"userName": "customer_name"}))
         assert len(new_user) == 1
         # test register api
         url = URL_PREFIX + "/register"
+        reg_user = self.new_user_profile.copy()
+        reg_user["userName"] = "customer_name"
         rv = client.post(
-            url,
-            data=json.dumps(
-                {
-                    "userName": "customer_name",
-                    "password": "123456789",
-                    "gender": "female",
-                    "phone": "0920198409",
-                    "email": "customer@gmail.com",
-                    "age": 20,
-                }
-            ),
-            content_type="application/json",
+            url, data=json.dumps(reg_user), content_type="application/json"
         )
         assert rv.status_code == 409
         # check if there is only one customer_name in user collection
         new_user = list(db.USER_COLLECTION.find({"userName": "customer_name"}))
         assert len(new_user) == 1
 
+    @freeze_time("2020-01-03 10:00:00")
     def test_register_wrong_fomat(self, client):
         # check if there is no customer_name3 in user collection
         new_user = db.USER_COLLECTION.find_one({"userName": "customer_name3"})
         assert new_user is None
         # test register api
         url = URL_PREFIX + "/register"
+        reg_user = self.new_user_profile.copy()
+        # wrong field, name => userName
+        reg_user["name"] = "customer_name3"
         rv = client.post(
-            url,
-            data=json.dumps(
-                {
-                    "userName": "customer_name3",
-                    "password": "123456789",
-                    "wrong-fild": "female",
-                    "phone": "0920198409",
-                    "email": "customer@gmail.com",
-                    "age": 20,
-                }
-            ),
-            content_type="application/json",
+            url, data=json.dumps(reg_user), content_type="application/json"
         )
         assert rv.status_code == 400
         # check if there is no customer_name3 in user collection
@@ -349,3 +368,73 @@ class TestUser(object):
         assert user_info["email"] == self.new_profile["email"]
         assert user_info["phone"] == self.new_profile["phone"]
         assert image["picture"] == Binary(b"1234")
+
+    # update state
+    def test_update_state_unauthorized(self, client):
+        url = URL_PREFIX + "/update/state"
+        for cur_state in self.update_state["state"]:
+            rv = client.post(
+                url,
+                data=json.dumps(
+                    {"id": self.update_state["id"], "state": cur_state}
+                ),
+                content_type="application/json",
+            )
+            assert rv.status_code == 403
+
+    def test_update_state_by_customer(self, client, customer):
+        url = URL_PREFIX + "/update/state"
+        for cur_state in self.update_state["state"]:
+            rv = client.post(
+                url,
+                data=json.dumps(
+                    {"id": self.update_state["id"], "state": cur_state}
+                ),
+                content_type="application/json",
+            )
+            assert rv.status_code == 403
+
+    def test_update_state_wrong_foramt(self, client, admin):
+        url = URL_PREFIX + "/update/state"
+        wrong_data = [
+            # wrong field, _id => id
+            {"_id": "5dd752c0ccce596d624d9a9d", "state": "frozen"},
+            # nonexist state
+            {"id": "5dd752c0ccce596d624d9a9d", "state": "wrong state"},
+        ]
+
+        for data in wrong_data:
+            # nonexist user id: 5dd752c0ccce596d624d9a9d
+            rv = client.post(
+                url, data=json.dumps(data), content_type="application/json"
+            )
+            assert rv.status_code == 400
+
+    def test_update_state_nonexist(self, client, admin):
+        url = URL_PREFIX + "/update/state"
+        for cur_state in self.update_state["state"]:
+            # nonexist user id: 5dd752c0ccce596d624d9a9d
+            rv = client.post(
+                url,
+                data=json.dumps(
+                    {"id": "5dd752c0ccce596d624d9a9d", "state": cur_state}
+                ),
+                content_type="application/json",
+            )
+            assert rv.status_code == 404
+
+    def test_update_state_success(self, client, admin):
+        url = URL_PREFIX + "/update/state"
+        for cur_state in self.update_state["state"]:
+            rv = client.post(
+                url,
+                data=json.dumps(
+                    {"id": self.update_state["id"], "state": cur_state}
+                ),
+                content_type="application/json",
+            )
+            assert rv.status_code == 200
+            cur_user = db.USER_COLLECTION.find_one(
+                {"_id": ObjectId(self.update_state["id"]), "state": cur_state}
+            )
+            assert cur_user is not None
