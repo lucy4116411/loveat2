@@ -8,6 +8,10 @@ from models import db
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
+def get_all_user():
+    return db.USER_COLLECTION.find({})
+
+
 def get_state(id):
     result = db.USER_COLLECTION.find_one({"_id": ObjectId(id)}, {"state": 1})
     return result["state"]

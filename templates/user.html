@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% set url = "boss" %}
+
+{% set defaultPush = False %}
+{% block header %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+<script src="{{ url_for('static', filename='js/user.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="full-container">
+    <form action="#" id="search-form">
+        <div class="form-row">
+            <div class="form-group col-sm-5">
+                <input type="text" id="search-name" class="form-control" placeholder="輸入帳號搜尋">
+            </div>
+            <div class="form-group col-sm-5">
+                <button class="btn btn-primary">搜尋帳號</button>
+            </div>
+        </div>
+    </form>
+    <table class="table" id="user-table">
+        <thead class="thead-dark">
+            <tr>
+                <th>帳號</th>
+                <th>電話</th>
+                <th>信箱</th>
+                <th>黑名單</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for user in users %}
+            <tr class="{{ 'frozen' if user['state'] == 'frozen' else '' }}">
+                <td>
+                    {{ user['userName'] }}
+                </td>
+                <td>
+                    {{ user['phone'] }}
+                </td>
+                <td>
+                    {{ user['email'] }}
+                </td>
+                <td>
+                    {% if user['state'] == 'frozen' %}
+                    <button class="btn btn-primary update-state" value='activate' id="{{ user['_id'] }}">移除</button>
+                    {% else %}
+                    <button class="btn btn-danger update-state" value='frozen' id="{{ user['_id'] }}">加入</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+
+    </table>
+</div>
+{% endblock %}
