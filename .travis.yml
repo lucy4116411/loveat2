@@ -12,7 +12,6 @@ jobs:
     script:
     - pipenv run flake8 .
   - name: python test
-    if: type != pull_request
     python: '3.7'
     before_install:
     - openssl aes-256-cbc -K $key -iv $iv -in secrets.tar.enc -out secrets.tar -d
