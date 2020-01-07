@@ -21,7 +21,8 @@ jobs:
     - pip install pipenv
     - pipenv install -d
     script:
-    - pytest
+    - pytest --cov=./
+    - codecov
   - name: js test
     language: node_js
     node_js: lts/*
