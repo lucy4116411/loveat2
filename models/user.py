@@ -57,7 +57,6 @@ def update_profile(id, data, pic, birth):
         },
     )
     if pic is not None:
-        print(pic)
         db.IMAGE_COLLECTION.update_one(
             {"uuid": pic_id}, {"$set": {"picture": pic}}
         )

@@ -39,6 +39,7 @@ class TestMenu(object):
         {"category": "combo", "content": [], "type": "招牌套餐"},
     ]
 
+    # get menu
     def test_list_menu_unauthorized(self, client):
         # test history api by anonymous
         rv = client.get(URL_PREFIX)
@@ -56,3 +57,31 @@ class TestMenu(object):
         rv = client.get(URL_PREFIX)
         assert rv.status_code == 200
         assert json.loads(rv.data)[15:19] == self.menu_test
+
+    # get item detail
+    def test_get_item_success(self, client):
+        url = URL_PREFIX + "item"
+        rv = client.post(
+            url,
+            data=json.dumps(["5dd67f098f0f6afb3ebc1b69"]),
+            content_type="application/json",
+        )
+        assert rv.status_code == 200
+        assert json.loads(rv.data) == [
+            {"_id": "5dd67f098f0f6afb3ebc1b69", "name": "奶茶", "price": 20}
+        ]
+
+    # get combo detail
+    """ can't execute, because mongomock doesn't support $map
+    def test_get_combo_success(self, client):
+        url = URL_PREFIX + "combo"
+        rv = client.post(
+            url,
+            data=json.dumps(["5dda567d09d84aa89699121c"]),
+            content_type="application/json",
+        )
+        assert rv.status_code == 200
+        assert json.loads(rv.data) == [
+            {"_id": "5dd67f098f0f6afb3ebc1b69", "name": "奶茶", "price": 20}
+        ]
+    """

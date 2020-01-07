@@ -112,11 +112,8 @@ def update_profile():
     except KeyError:
         pic = None
 
-    try:
-        user.update_profile(current_user.id, data, pic, birth)
-        return "", 200
-    except KeyError:
-        return "", 400
+    user.update_profile(current_user.id, data, pic, birth)
+    return "", 200
 
 
 @user_api.route("/update/state", methods=["POST"])
