@@ -35,7 +35,7 @@ class TestItem(object):
         "type": "5de35bb170a5892250dfdc6c",
         "name": "奶茶",
         "price": "20",
-        "description": "奶精，小心會拉肚子"
+        "description": "奶精，小心會拉肚子",
     }
     """ can't run, because mongomock doesn't support addfields
     def test_get_item_success(self, client):
@@ -165,22 +165,23 @@ class TestItem(object):
         assert rv.status_code == 200
         # test if delete success, there is an item named "new_item"
         tmp_item = db.ITEM_COLLECTION.find_one(
-            {"name": self.new_item["name"]}, {"_id": 0})
+            {"name": self.new_item["name"]}, {"_id": 0}
+        )
         assert tmp_item is not None
         assert tmp_item["picture"] is not None
         assert tmp_item == {
-            'type': ObjectId('5de35bb170a5892250dfdc6c'),
-            'name': '藍莓牛奶',
-            'picture': tmp_item["picture"],
-            'price': 20,
-            'description': '新品',
+            "type": ObjectId("5de35bb170a5892250dfdc6c"),
+            "name": "藍莓牛奶",
+            "picture": tmp_item["picture"],
+            "price": 20,
+            "description": "新品",
         }
 
     def test_add_duplicate(self, client, admin):
         # test if there is only one in item collection
-        tmp_item = list(db.ITEM_COLLECTION.find({
-            "name": self.exist_item["name"]
-            }))
+        tmp_item = list(
+            db.ITEM_COLLECTION.find({"name": self.exist_item["name"]})
+        )
         assert len(tmp_item) == 1
         url = URL_PREFIX + "/new"
         data = self.exist_item.copy()
@@ -188,78 +189,70 @@ class TestItem(object):
         rv = client.post(url, data=data, content_type="multipart/form-data")
         assert rv.status_code == 409
         # test if there is only one in item collection
-        tmp_item = list(db.ITEM_COLLECTION.find({
-            "name": self.exist_item["name"]
-            }))
+        tmp_item = list(
+            db.ITEM_COLLECTION.find({"name": self.exist_item["name"]})
+        )
         assert len(tmp_item) == 1
 
     def test_delete_unauthorized(self, client):
         # test there is an item in collection
-        tmp_item = db.ITEM_COLLECTION.find_one({
-            "name": self.exist_item["name"]
-            })
+        tmp_item = db.ITEM_COLLECTION.find_one(
+            {"name": self.exist_item["name"]}
+        )
         assert tmp_item is not None
         # test delete the exist item anonymons
         url = URL_PREFIX + "/delete"
         rv = client.post(
             url,
-            data=json.dumps({
-                "id": str(tmp_item["_id"])
-            }),
+            data=json.dumps({"id": str(tmp_item["_id"])}),
             content_type="application/json",
         )
         assert rv.status_code == 403
-        tmp_item = db.ITEM_COLLECTION.find_one({
-            "name": self.exist_item["name"]
-            })
+        tmp_item = db.ITEM_COLLECTION.find_one(
+            {"name": self.exist_item["name"]}
+        )
         assert tmp_item is not None
 
     def test_delete_by_customer(self, client, customer):
         # test there is an item in collection
-        tmp_item = db.ITEM_COLLECTION.find_one({
-            "name": self.exist_item["name"]
-            })
+        tmp_item = db.ITEM_COLLECTION.find_one(
+            {"name": self.exist_item["name"]}
+        )
         assert tmp_item is not None
         # test delete the exist item by customer
         url = URL_PREFIX + "/delete"
         rv = client.post(
             url,
-            data=json.dumps({
-                "id": str(tmp_item["_id"])
-            }),
+            data=json.dumps({"id": str(tmp_item["_id"])}),
             content_type="application/json",
         )
         assert rv.status_code == 403
-        tmp_item = db.ITEM_COLLECTION.find_one({
-            "name": self.exist_item["name"]
-            })
+        tmp_item = db.ITEM_COLLECTION.find_one(
+            {"name": self.exist_item["name"]}
+        )
         assert tmp_item is not None
 
     def test_delete_by_admin(self, client, admin):
         # test there is an item in collection
-        tmp_item = db.ITEM_COLLECTION.find_one({
-            "name": self.exist_item["name"]
-            })
+        tmp_item = db.ITEM_COLLECTION.find_one(
+            {"name": self.exist_item["name"]}
+        )
         assert tmp_item is not None
         tmp_image = db.IMAGE_COLLECTION.find_one(
             {"uuid": tmp_item["picture"]}
-            )["picture"]
+        )["picture"]
         assert tmp_image is not None
         # test delete the exist item by boss
         url = URL_PREFIX + "/delete"
         rv = client.post(
             url,
-            data=json.dumps({
-                "id": str(tmp_item["_id"])
-            }),
+            data=json.dumps({"id": str(tmp_item["_id"])}),
             content_type="application/json",
         )
         assert rv.status_code == 200
-        tmp_item = db.ITEM_COLLECTION.find_one({
-            "name": self.exist_item["name"]
-        })
-        assert tmp_item is None
-        item_image = db.IMAGE_COLLECTION.find_one(
-            {"uuid": tmp_image}
+        tmp_item = db.ITEM_COLLECTION.find_one(
+            {"name": self.exist_item["name"]}
         )
+        assert tmp_item is None
+        item_image = db.IMAGE_COLLECTION.find_one({"uuid": tmp_image})
         assert item_image is None
