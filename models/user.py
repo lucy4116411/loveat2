@@ -75,11 +75,8 @@ def update_state(id, state):
         raise ValueError
 
 
-def find(id, profile=False):
-    if profile:
-        projection = {"password": 0, "role": 0, "token": 0}
-    else:
-        projection = {"role": 1, "userName": 1}
+def find(id):
+    projection = {"role": 1, "userName": 1}
     return db.USER_COLLECTION.find_one({"_id": ObjectId(id)}, projection)
 
 
