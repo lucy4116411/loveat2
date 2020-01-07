@@ -147,6 +147,7 @@ class TestOrder(object):
         assert rv.status_code == 200
         assert json.loads(rv.data) == None
     """
+    # order history
     def test_search_raw_history_unauthorized(self, client):
         # test history api by anonymous
         url = URL_PREFIX + "/history"
@@ -161,9 +162,20 @@ class TestOrder(object):
 
     def test_search_raw_history(self, client, admin):
         # test history api by boss
-        url = URL_PREFIX + "/history?start=2019-12-03T01:01&end=2019-12-09T01:01" # noqa
+        url = URL_PREFIX + "/history?start=2019-12-09T01:01&end=2019-12-09T23:01" # noqa
         rv = client.get(url)
         assert rv.status_code == 200
+        assert json.loads(rv.data) == [{
+            'content': [
+                {
+                    'name': '火腿蛋吐司',
+                    'quantity': 2
+                }
+            ],
+            'createdAt': 'Sun, 08 Dec 2019 17:18:07 GMT',
+            'notes': '吐司不加美乃滋',
+            'orderID': '7'
+        }]
 
     def test_search_analysis_unauthorized(self, client):
         # test analysis history api by anonymous
@@ -179,6 +191,31 @@ class TestOrder(object):
 
     def test_search_analysis_history(self, client, admin):
         # test analysis history api by boss
-        url = URL_PREFIX + "/analysis-data?start=2019-12-03T01:01&end=2019-12-09T01:01" # noqa
+        url = URL_PREFIX + "/analysis-data?start=2019-12-09T01:01&end=2019-12-09T23:01" # noqa
         rv = client.get(url)
         assert rv.status_code == 200
+        print(json.loads(rv.data))
+        assert json.loads(rv.data) == {
+            'genderAnalysis': [
+                {'female': 0, 'male': 0, 'total': 0},
+                {'female': 1, 'male': 0, 'total': 1},
+                {'female': 0, 'male': 0, 'total': 0},
+                {'female': 0, 'male': 0, 'total': 0},
+                {'female': 0, 'male': 0, 'total': 0},
+                {'female': 0, 'male': 0, 'total': 0},
+                {'female': 0, 'male': 0, 'total': 0}
+            ],
+            'interval': [
+                '0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60+'
+            ],
+            'itemAnalysis': {
+                '火腿蛋吐司': {
+                    'female': [0, 2, 0, 0, 0, 0, 0],
+                    'femaleTotal': 2,
+                    'male': [0, 0, 0, 0, 0, 0, 0],
+                    'maleTotal': 0,
+                    'sum': [0, 2, 0, 0, 0, 0, 0],
+                    'total': 2
+                }
+            }
+        }

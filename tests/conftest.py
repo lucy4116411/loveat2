@@ -83,16 +83,6 @@ def establish_combo(cur_client):
     return None
 
 
-def establish_combo():
-    dir = os.path.join(FILE_DIR, "data/combo.json")
-    with open(dir, "r", encoding="utf-8") as file:
-        data = loads(file.read())
-        colletion = mongomock.MongoClient().db.collection
-        colletion.insert_many(data)
-        return colletion
-    return None
-
-
 @pytest.fixture(scope="function")
 def client(monkeypatch):
     cur_client = mongomock.MongoClient().db
