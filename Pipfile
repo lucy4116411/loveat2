@@ -10,6 +10,8 @@ flake8-import-order = "*"
 black = "==19.3b0"
 freezegun = "*"
 mongomock = {git = "https://github.com/mongomock/mongomock.git",ref = "develop"}
+codecov = "*"
+pytest-cov = "*"
 
 [packages]
 flask = "*"

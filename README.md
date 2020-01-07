@@ -4,6 +4,7 @@
 ![python code style](https://img.shields.io/badge/python%20code%20style-flake8%20-brightgreen)
 ![pr-closed](https://img.shields.io/github/issues-pr-closed/creek0810/loveat2?style=flat)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed/creek0810/loveat2)
+[![codecov](https://codecov.io/gh/creek0810/loveat2/branch/master/graph/badge.svg)](https://codecov.io/gh/creek0810/loveat2)
 
 ## Documentation
 [API](https://app.swaggerhub.com/apis-docs/creek0810/loveat2/1.0.0#/)
