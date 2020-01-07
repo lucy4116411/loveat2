@@ -12,6 +12,7 @@
 ## Built With
 - [Bootstrap](https://getbootstrap.com/)
 - [lozad.js](https://apoorv.pro/lozad.js/)
+- [Bootstrap datetimepicker](https://eonasdan.github.io/bootstrap-datetimepicker/)
 
 ## Authors
 

@@ -99,17 +99,19 @@ function checkStatus(status) {
 }
 
 async function sendOrder() {
-  const takenTime = document.getElementById('order-take-time').value;
+  const detailTime = $('#order-take-time').data('DateTimePicker').date();
+  const takenTime = detailTime.format('YYYY-MM-DDTHH:mm');
   if (takenTime === null || Date.parse(takenTime).valueOf() < Date.now()) {
     document.getElementById('hint-content').innerHTML = '訂單錯誤或預定取餐時間未營業';
     $('#order-send-hint-modal').modal('show');
   } else {
-    const order = {};
     const total = document.getElementById('total').innerHTML;
-    order.takenAt = takenTime;
-    order.notes = orderDescription();
-    order.total = parseInt(total, 10);
-    order.content = orderContent();
+    const order = {
+      takenAt: takenTime,
+      notes: orderDescription(),
+      total: parseInt(total, 10),
+      content: orderContent(),
+    };
     const response = await FetchData.post('/api/order/new', order);
     checkStatus(response.status);
   }
@@ -140,7 +142,7 @@ function drawItem(data) {
                 <button id="delete-${key}" class="btn btn-primary delete-item" type="button">Delete</button>
               </td>
             </tr>`, '');
-  // draw it
+    // draw it
   document.querySelector('#cart-table tbody').innerHTML = result;
   // add event listener
   const quantityInput = document.getElementsByClassName('quantity-input');
@@ -165,6 +167,11 @@ async function init() {
   drawItem(myCart.get());
   document.getElementById('clear-order').addEventListener('click', clearOrder);
   document.getElementById('send-order').addEventListener('click', sendOrder);
+  $('#order-take-time').datetimepicker({
+    showTodayButton: true,
+    format: 'YYYY/M/D H:mm',
+    dayViewHeaderFormat: 'YYYY/M/D H:mm',
+  });
 }
 
 window.addEventListener('load', init);
