@@ -36,6 +36,30 @@ class TestCombo(object):
             ]
         ),
     }
+    new_combo = {
+        "type": "5dd681c44a608a104f899151",
+        "name": "好哦謝謝",
+        "price": 70,
+        "description": "",
+        "content": json.dumps(
+            [
+                {"id": "5de35fc5fdb6b28d6100d776", "quantity": 10},
+                {"id": "5de22841f6bf2b651e091f6e", "quantity": 20},
+            ]
+        ),
+    }
+    exist_combo = {
+        "type": "5dd681c44a608a104f89914e",
+        "name": "鐵板麵套餐",
+        "price": 6742,
+        "description": "yoyoyo",
+        "content": json.dumps(
+            [
+                {"id": "5de35fc5fdb6b28d6100d776", "quantity": 10},
+                {"id": "5de22841f6bf2b651e091f6e", "quantity": 20},
+            ]
+        ),
+    }
     """ can't run, because mongomock doesn't support addfields
     def test_get_combo_success(self, client):
         # check get combo api
@@ -166,3 +190,150 @@ class TestCombo(object):
             "type": ObjectId("5dd681c44a608a104f89914e"),
         }
         assert cur_image == Binary(b"6742")
+
+    # add combo
+    def test_add_unauthorized(self, client):
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.new_combo["name"]}
+        )
+        assert tmp_combo is None
+        url = URL_PREFIX + "/new"
+        data = self.new_combo.copy()
+        data["picture"] = (io.BytesIO(b"6724"), "test.jpg")
+        rv = client.post(url, data=data, content_type="multipart/form-data")
+        assert rv.status_code == 403
+        # check : doesn't add in DB
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.new_combo["name"]}, {"_id": 0}
+        )
+        assert tmp_combo is None
+
+    def test_add_by_customer(self, client, customer):
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.new_combo["name"]}
+        )
+        assert tmp_combo is None
+        url = URL_PREFIX + "/new"
+        data = self.new_combo.copy()
+        data["picture"] = (io.BytesIO(b"6724"), "test.jpg")
+        rv = client.post(url, data=data, content_type="multipart/form-data")
+        assert rv.status_code == 403
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.new_combo["name"]}
+        )
+        assert tmp_combo is None
+
+    def test_add_success(self, client, admin):
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.new_combo["name"]}
+        )
+        assert tmp_combo is None
+        url = URL_PREFIX + "/new"
+        data = self.new_combo.copy()
+        data["picture"] = (io.BytesIO(b"6724"), "test.jpg")
+        rv = client.post(url, data=data, content_type="multipart/form-data")
+        assert rv.status_code == 200
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.new_combo["name"]}, {"_id": 0}
+        )
+        tmp_image = db.IMAGE_COLLECTION.find_one(
+            {"uuid": tmp_combo["picture"]}
+        )["picture"]
+        assert tmp_combo is not None
+        assert tmp_image is not None
+        assert tmp_combo == {
+            "type": ObjectId("5dd681c44a608a104f899151"),
+            "name": "好哦謝謝",
+            "price": 70,
+            "description": "",
+            "content": [
+                {
+                    "id": ObjectId("5de35fc5fdb6b28d6100d776"),
+                    "name": "鮮奶茶2",
+                    "quantity": 10,
+                },
+                {
+                    "id": ObjectId("5de22841f6bf2b651e091f6e"),
+                    "name": "紅茶",
+                    "quantity": 20,
+                },
+            ],
+            "picture": tmp_combo["picture"],
+        }
+
+    def test_add_duplicate(self, client, admin):
+        tmp_combo = list(
+            db.COMBO_COLLECTION.find({"name": self.exist_combo["name"]})
+        )
+        assert len(tmp_combo) == 1
+        url = URL_PREFIX + "/new"
+        data = self.exist_combo.copy()
+        data["picture"] = (io.BytesIO(b"6724"), "test.jpg")
+        rv = client.post(url, data=data, content_type="multipart/form-data")
+        # duplicate code : 409
+        assert rv.status_code == 409
+        tmp_combo = list(
+            db.COMBO_COLLECTION.find({"name": self.exist_combo["name"]})
+        )
+        assert len(tmp_combo) == 1
+
+    # delete combo
+    def test_delete_unauthorized(self, client):
+        # test there is a combo in collection
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.exist_combo["name"]}
+        )
+        assert tmp_combo is not None
+        # test delete the exist combo anonymons
+        url = URL_PREFIX + "/delete"
+        rv = client.post(
+            url,
+            data=json.dumps({"id": str(tmp_combo["_id"])}),
+            content_type="application/json",
+        )
+        assert rv.status_code == 403
+        # test there is a combo in collection
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.exist_combo["name"]}
+        )
+        assert tmp_combo is not None
+
+    def test_delete_by_customer(self, client, customer):
+        # test there is a combo in collection
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.exist_combo["name"]}
+        )
+        assert tmp_combo is not None
+        # test delete the exist combo by customer
+        url = URL_PREFIX + "/delete"
+        rv = client.post(
+            url,
+            data=json.dumps({"id": str(tmp_combo["_id"])}),
+            content_type="application/json",
+        )
+        assert rv.status_code == 403
+        # test there is a combo in collection
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.exist_combo["name"]}
+        )
+        assert tmp_combo is not None
+
+    def test_delete_by_admin(self, client, admin):
+        # test there is a combo in collection
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.exist_combo["name"]}
+        )
+        assert tmp_combo is not None
+        # test delete the exist combo by boss
+        url = URL_PREFIX + "/delete"
+        rv = client.post(
+            url,
+            data=json.dumps({"id": str(tmp_combo["_id"])}),
+            content_type="application/json",
+        )
+        assert rv.status_code == 200
+        # test there is no combo which has been deleted in collection
+        tmp_combo = db.COMBO_COLLECTION.find_one(
+            {"name": self.exist_combo["name"]}
+        )
+        assert tmp_combo is None

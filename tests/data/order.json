@@ -13,7 +13,7 @@
         "userName": "customer_name",
         "content": [
             {
-                "_id": {
+                "id": {
                     "$oid": "5dd688d30e5cb17b1d4d29fd"
                 },
                 "type": "item",
@@ -23,7 +23,7 @@
                 "name": "\u897f\u897f\u91cc\u96de\u817f\u5821"
             },
             {
-                "_id": {
+                "id": {
                     "$oid": "5dd688d30e5cb17b1d4d29ff"
                 },
                 "type": "item",
@@ -57,7 +57,7 @@
         "userName": "customer_name",
         "content": [
             {
-                "_id": {
+                "id": {
                     "$oid": "5dd6899bd268a673de091ed9"
                 },
                 "type": "item",
@@ -67,7 +67,7 @@
                 "name": "\u8d77\u53f8\u8c6c\u6392\u86cb\u5410\u53f8"
             },
             {
-                "_id": {
+                "id": {
                     "$oid": "5dd68abb0fb2aef0c498659a"
                 },
                 "type": "item",
@@ -77,7 +77,7 @@
                 "name": "\u539f\u5473\u86cb\u9905"
             },
             {
-                "_id": {
+                "id": {
                     "$oid": "5dd6899cd268a673de091edb"
                 },
                 "type": "item",
@@ -87,7 +87,7 @@
                 "name": "\u706b\u817f\u86cb\u5410\u53f8"
             },
             {
-                "_id": {
+                "id": {
                     "$oid": "5dd6899dd268a673de091edc"
                 },
                 "type": "item",
@@ -121,7 +121,7 @@
         "userName": "admin_name",
         "content": [
             {
-                "_id": {
+                "id": {
                     "$oid": "5dd6a6e0b1ee120dfb88775b"
                 },
                 "type": "item",
@@ -155,7 +155,7 @@
         "userName": "test29",
         "content": [
             {
-                "_id": {
+                "id": {
                     "$oid": "5dd6899cd268a673de091edb"
                 },
                 "type": "item",
@@ -172,6 +172,40 @@
         "createdAt": {
             "$date": {
                 "$numberLong": "1574529487954"
+            }
+        }
+    },
+    {
+        "_id": {
+            "$oid": "5dd8f950f5a90a5568400a67"
+        },
+        "orderID": "7",
+        "takenAt": {
+            "$date": {
+                "$numberLong": "1575914887908"
+            }
+        },
+        "state": "end",
+        "userName": "customer_name",
+        "content": [
+            {
+                "id": {
+                    "$oid": "5dd6899cd268a673de091edb"
+                },
+                "type": "item",
+                "quantity": {
+                    "$numberInt": "2"
+                },
+                "name": "\u706b\u817f\u86cb\u5410\u53f8"
+            }
+        ],
+        "notes": "\u5410\u53f8\u4e0d\u52a0\u7f8e\u4e43\u6ecb",
+        "total": {
+            "$numberInt": "110"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1575825487908"
             }
         }
     }
