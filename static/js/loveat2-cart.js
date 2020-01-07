@@ -99,14 +99,13 @@ function checkStatus(status) {
 }
 
 async function sendOrder() {
-  let takenTime = document.getElementById('order-take-time').value;
-
+  const detailTime = $('#order-take-time').data('DateTimePicker').date();
+  const takenTime = detailTime.format('YYYY-MM-DDTHH:mm');
   if (takenTime === null || Date.parse(takenTime).valueOf() < Date.now()) {
     document.getElementById('hint-content').innerHTML = '訂單錯誤或預定取餐時間未營業';
     $('#order-send-hint-modal').modal('show');
   } else {
     const total = document.getElementById('total').innerHTML;
-    takenTime = takenTime.replace(' ', 'T').substr(0, 16);
     const order = {
       takenAt: takenTime,
       notes: orderDescription(),
@@ -168,6 +167,11 @@ async function init() {
   drawItem(myCart.get());
   document.getElementById('clear-order').addEventListener('click', clearOrder);
   document.getElementById('send-order').addEventListener('click', sendOrder);
+  $('#order-take-time').datetimepicker({
+    showTodayButton: true,
+    format: 'YYYY/M/D H:mm',
+    dayViewHeaderFormat: 'YYYY/M/D H:mm',
+  });
 }
 
 window.addEventListener('load', init);
