@@ -139,6 +139,18 @@ class TestOrder(object):
         )
         assert rv.status_code == 404
 
+    def test_update_nonexist_state(self, client, admin):
+        # test update api
+        url = URL_PREFIX + "/update"
+        rv = client.post(
+            url,
+            data=json.dumps(
+                {"id": self.update_nonexist_order_id, "state": "i don't know"}
+            ),
+            content_type="application/json",
+        )
+        assert rv.status_code == 404
+
     # get todo order
     def test_get_todo_unauthorized(self, client):
         url = URL_PREFIX + "/todo"

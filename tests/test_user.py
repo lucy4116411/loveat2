@@ -155,7 +155,7 @@ class TestUser(object):
         assert new_user is None
 
     # update token
-    def test_update_token_success(self, client, customer):
+    def test_update_token_customer_success(self, client, customer):
         # check original token is empty
         token = db.USER_COLLECTION.find_one(
             {"userName": "customer_name"}, {"token": 1}
@@ -173,6 +173,27 @@ class TestUser(object):
         # check if update token of cutomer_name success
         token = db.USER_COLLECTION.find_one(
             {"userName": "customer_name"}, {"token": 1}
+        )
+        assert token["token"] == update_token
+
+    def test_update_token_admin_success(self, client, admin):
+        # check original token is empty
+        token = db.USER_COLLECTION.find_one(
+            {"userName": "admin_name"}, {"token": 1}
+        )
+        assert token["token"] == ""
+        # check update token api
+        update_token = "this is a new token"
+        url = URL_PREFIX + "/token"
+        rv = client.post(
+            url,
+            data=json.dumps({"token": update_token}),
+            content_type="application/json",
+        )
+        assert rv.status_code == 200
+        # check if update token of admin_name success
+        token = db.USER_COLLECTION.find_one(
+            {"userName": "admin_name"}, {"token": 1}
         )
         assert token["token"] == update_token
 

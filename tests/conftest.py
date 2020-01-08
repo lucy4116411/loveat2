@@ -112,6 +112,32 @@ def client(monkeypatch):
 
 
 @pytest.fixture(scope="function")
+def mockdb(monkeypatch):
+    cur_client = mongomock.MongoClient().db
+    monkeypatch.setattr(
+        "models.db.USER_COLLECTION", establish_user(cur_client)
+    )
+    monkeypatch.setattr(
+        "models.db.ORDER_COLLECTION", establish_order(cur_client)
+    )
+    monkeypatch.setattr(
+        "models.db.ITEM_COLLECTION", establish_item(cur_client)
+    )
+    monkeypatch.setattr(
+        "models.db.TYPE_COLLECTION", establish_type(cur_client)
+    )
+    monkeypatch.setattr(
+        "models.db.IMAGE_COLLECTION", establish_image(cur_client)
+    )
+    monkeypatch.setattr(
+        "models.db.COMBO_COLLECTION", establish_combo(cur_client)
+    )
+    monkeypatch.setattr(
+        "models.db.BUSINESS_COLLECTION", establish_business_time(cur_client)
+    )
+
+
+@pytest.fixture(scope="function")
 def customer(client):
     info = {"userName": "customer_name", "password": "123456789"}
     yield client.post(
