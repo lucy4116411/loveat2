@@ -37,7 +37,7 @@
                 </td>
                 <td>
                     <button class="btn btn-primary" onclick="update('doing','{{eachOrder['_id']}}')">接受</button>
-                    <button class="btn btn-danger"  onclick="update('cancel','{{eachOrder['_id']}}')" >拒絕</button>
+                    <button class="btn btn-danger"  onclick="showReasonForm('{{eachOrder['_id']}}')" >拒絕</button>
                 </td>
             </tr>
             {%endfor%}
@@ -63,5 +63,24 @@
               </div>
             </div>
           </div>
+    <div class="modal fade" id="orderRejectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5>拒絕訂單</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form name="form">
+                <div class="form-group">
+                  <label>原因:</label>
+                  <input type="text" class="form-control" id="reason" placeholder="為甚麼要拒絕訂單?">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="clickFormBtn()">確認送出</button>
+              </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

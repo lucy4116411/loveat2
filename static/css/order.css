@@ -16,3 +16,7 @@ th {
 .tr2 {
     background: rgba(100, 196, 237, 0.3);
 }
+
+form {
+	padding: 10px; 
+}

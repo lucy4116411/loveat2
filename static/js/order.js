@@ -3,11 +3,13 @@
 /* eslint-disable no-unused-vars */
 
 const updateOrderAPI = '/api/order/update';
+let rejectId = '';
 
-async function update(state, id) {
+async function update(state, id, content = '') {
   const result = await FetchData.post(updateOrderAPI, {
     id,
     state,
+    content,
   });
   if (result.status === 200) {
     const idx = document.getElementById(id).rowIndex;
@@ -16,6 +18,23 @@ async function update(state, id) {
     document.getElementById('orderHintContent').innerHTML = '更新訂單失敗!<br>請再次點擊訂單';
     $('#orderHintModal').modal('show');
   }
+}
+
+function showReasonForm(id) {
+  $('#orderRejectModal').modal('show');
+  rejectId = id;
+}
+
+
+function clickFormBtn() {
+  const { form } = document.forms;
+  const reason = form.elements.reason.value;
+  update('cancel', rejectId, reason);
+
+  $('#orderRejectModal').modal('hide');
+
+  document.getElementById('reason').value = '';
+  rejectId = '';
 }
 
 messaging.onMessage((payload) => {

@@ -70,7 +70,10 @@ def update_order_state():
     result = order.update_state(data)
     message = {
         "doing": {"title": "訂單已接受", "content": "老闆已接受您的訂單"},
-        "cancel": {"title": "訂單被拒絕", "content": "抱歉，老闆拒絕了您的訂單"},
+        "cancel": {
+            "title": "訂單被拒絕",
+            "content": "抱歉，老闆拒絕了您的訂單, 拒絕原因為：" + data["content"]
+        },
         "finish": {"title": "訂單已完成", "content": "餐點已製作完成，請儘速來取餐"},
     }
     if result:
