@@ -1,6 +1,8 @@
 codecov:
   require_ci_to_pass: yes
-
+ignore:
+  - "config_example.py"
+  - "views/*_web.py"
 coverage:
   precision: 2
   round: down
