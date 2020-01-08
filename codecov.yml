@@ -3,6 +3,7 @@ codecov:
 ignore:
   - "config_example.py"
   - "views/*_web.py"
+  - "views/root.py"
 coverage:
   precision: 2
   round: down
